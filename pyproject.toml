@@ -102,7 +102,7 @@ optional-dependencies = {}
 # than the one for a default included file.
 # By not using "*" and explicitly excluding the top level packages, they get a higher
 # score than the default inclusion
-excludes = ["doctyper", "typer", "tests", "pdm_build.py"]
+excludes = ["doctyper", "tests", "pdm_build.py"]
 # source-includes needs to explicitly define some value because PDM will check the
 # truthy value of the list, and if empty, will include some defaults, including "tests",
 # an empty string doesn't match anything, but makes the list truthy, so that PDM
@@ -196,7 +196,7 @@ ignore = [
 "docs_src/using_click/tutorial001.py" = ["B007"]
 
 [tool.ruff.lint.isort]
-known-third-party = ["doctyper", "typer", "click"]
+known-third-party = ["doctyper", "click"]
 # For docs_src/subcommands/tutorial003/
 known-first-party = ["reigns", "towns", "lands", "items", "users"]
 
