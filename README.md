@@ -44,7 +44,7 @@ if __name__ == "__main__":
     app()
 ```
 
-![image](doctyper_output.png)
+![image](https://github.com/audivir/doctyper/raw/master/doctyper_output.png)
 
 <p align="center">
   <a href="https://typer.tiangolo.com"><img src="https://typer.tiangolo.com/img/logo-margin/logo-margin-vector.svg#only-light" alt="Typer"></a>

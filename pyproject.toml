@@ -9,6 +9,9 @@ description = "Wrapper around Typer using Google-Doc strings for CLI description
 authors = [
     {name = "Sebastián Ramírez", email = "tiangolo@gmail.com"},
 ]
+maintainers = [
+    {name = "Tim Hörmann", email = "pypi@audivir.de"}
+]
 requires-python = ">=3.7"
 classifiers = [
     "Intended Audience :: Information Technology",
@@ -40,11 +43,10 @@ dependencies = [
 ]
 readme = "README.md"
 [project.urls]
-Homepage = "https://github.com/fastapi/typer"
+Homepage = "https://github.com/audivir/doctyper"
 Documentation = "https://typer.tiangolo.com"
-Repository = "https://github.com/fastapi/typer"
-Issues = "https://github.com/fastapi/typer/issues"
-Changelog = "https://typer.tiangolo.com/release-notes/"
+Repository = "https://github.com/audivir/doctyper"
+Issues = "https://github.com/audivir/doctyper/issues"
 
 [project.optional-dependencies]
 standard = [
