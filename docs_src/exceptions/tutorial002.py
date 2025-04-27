@@ -1,6 +1,6 @@
-import typer
+import doctyper
 
-app = typer.Typer(pretty_exceptions_show_locals=False)
+app = doctyper.Typer(pretty_exceptions_show_locals=False)
 
 
 @app.command()

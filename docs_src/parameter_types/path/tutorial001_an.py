@@ -1,14 +1,14 @@
 from pathlib import Path
 from typing import Optional
 
-import typer
+import doctyper
 from typing_extensions import Annotated
 
 
-def main(config: Annotated[Optional[Path], typer.Option()] = None):
+def main(config: Annotated[Optional[Path], doctyper.Option()] = None):
     if config is None:
         print("No config file")
-        raise typer.Abort()
+        raise doctyper.Abort()
     if config.is_file():
         text = config.read_text()
         print(f"Config file contents: {text}")
@@ -19,4 +19,4 @@ def main(config: Annotated[Optional[Path], typer.Option()] = None):
 
 
 if __name__ == "__main__":
-    typer.run(main)
+    doctyper.run(main)

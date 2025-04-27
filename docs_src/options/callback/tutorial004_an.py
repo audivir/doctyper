@@ -1,21 +1,23 @@
 from typing import Optional
 
-import typer
+import doctyper
 from typing_extensions import Annotated
 
 
-def name_callback(ctx: typer.Context, param: typer.CallbackParam, value: str):
+def name_callback(ctx: doctyper.Context, param: doctyper.CallbackParam, value: str):
     if ctx.resilient_parsing:
         return
     print(f"Validating param: {param.name}")
     if value != "Camila":
-        raise typer.BadParameter("Only Camila is allowed")
+        raise doctyper.BadParameter("Only Camila is allowed")
     return value
 
 
-def main(name: Annotated[Optional[str], typer.Option(callback=name_callback)] = None):
+def main(
+    name: Annotated[Optional[str], doctyper.Option(callback=name_callback)] = None,
+):
     print(f"Hello {name}")
 
 
 if __name__ == "__main__":
-    typer.run(main)
+    doctyper.run(main)

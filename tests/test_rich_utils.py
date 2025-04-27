@@ -1,12 +1,12 @@
-import typer
-import typer.completion
-from typer.testing import CliRunner
+import doctyper
+import doctyper.completion
+from doctyper.testing import CliRunner
 
 runner = CliRunner()
 
 
 def test_rich_utils_click_rewrapp():
-    app = typer.Typer(rich_markup_mode="markdown")
+    app = doctyper.Typer(rich_markup_mode="markdown")
 
     @app.command()
     def main():
@@ -40,7 +40,7 @@ def test_rich_utils_click_rewrapp():
 
 def test_rich_help_no_commands():
     """Ensure that the help still works for a Typer instance with no commands, but with a callback."""
-    app = typer.Typer(help="My cool Typer app")
+    app = doctyper.Typer(help="My cool Typer app")
 
     @app.callback(invoke_without_command=True, no_args_is_help=True)
     def main() -> None:

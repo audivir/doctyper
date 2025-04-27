@@ -1,21 +1,21 @@
 from typing import Union
 
-import typer
+import doctyper
 
-app = typer.Typer(rich_markup_mode="rich")
+app = doctyper.Typer(rich_markup_mode="rich")
 
 
 @app.command()
 def create(
-    username: str = typer.Argument(..., help="The username to create"),
-    lastname: str = typer.Argument(
+    username: str = doctyper.Argument(..., help="The username to create"),
+    lastname: str = doctyper.Argument(
         "", help="The last name of the new user", rich_help_panel="Secondary Arguments"
     ),
-    force: bool = typer.Option(False, help="Force the creation of the user"),
-    age: Union[int, None] = typer.Option(
+    force: bool = doctyper.Option(False, help="Force the creation of the user"),
+    age: Union[int, None] = doctyper.Option(
         None, help="The age of the new user", rich_help_panel="Additional Data"
     ),
-    favorite_color: Union[str, None] = typer.Option(
+    favorite_color: Union[str, None] = doctyper.Option(
         None,
         help="The favorite color of the new user",
         rich_help_panel="Additional Data",

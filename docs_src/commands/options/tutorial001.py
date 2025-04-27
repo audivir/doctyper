@@ -1,6 +1,6 @@
-import typer
+import doctyper
 
-app = typer.Typer()
+app = doctyper.Typer()
 
 
 @app.command()
@@ -11,7 +11,9 @@ def create(username: str):
 @app.command()
 def delete(
     username: str,
-    force: bool = typer.Option(..., prompt="Are you sure you want to delete the user?"),
+    force: bool = doctyper.Option(
+        ..., prompt="Are you sure you want to delete the user?"
+    ),
 ):
     if force:
         print(f"Deleting user: {username}")
@@ -21,7 +23,7 @@ def delete(
 
 @app.command()
 def delete_all(
-    force: bool = typer.Option(
+    force: bool = doctyper.Option(
         ..., prompt="Are you sure you want to delete ALL users?"
     ),
 ):

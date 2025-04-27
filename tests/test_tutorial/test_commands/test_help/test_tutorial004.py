@@ -2,7 +2,7 @@ import os
 import subprocess
 import sys
 
-from typer.testing import CliRunner
+from doctyper.testing import CliRunner
 
 from docs_src.commands.help import tutorial004 as mod
 

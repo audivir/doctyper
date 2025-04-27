@@ -1,5 +1,5 @@
 import click
-import typer
+import doctyper
 
 
 class CustomClass:
@@ -18,12 +18,12 @@ class CustomClassParser(click.ParamType):
 
 
 def main(
-    custom_arg: CustomClass = typer.Argument(click_type=CustomClassParser()),
-    custom_opt: CustomClass = typer.Option("Foo", click_type=CustomClassParser()),
+    custom_arg: CustomClass = doctyper.Argument(click_type=CustomClassParser()),
+    custom_opt: CustomClass = doctyper.Option("Foo", click_type=CustomClassParser()),
 ):
     print(f"custom_arg is {custom_arg}")
     print(f"--custom-opt is {custom_opt}")
 
 
 if __name__ == "__main__":
-    typer.run(main)
+    doctyper.run(main)

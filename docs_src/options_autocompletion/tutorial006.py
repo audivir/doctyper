@@ -1,12 +1,12 @@
 from typing import List
 
-import typer
+import doctyper
 
-app = typer.Typer()
+app = doctyper.Typer()
 
 
 @app.command()
-def main(name: List[str] = typer.Option(["World"], help="The name to say hi to.")):
+def main(name: List[str] = doctyper.Option(["World"], help="The name to say hi to.")):
     for each_name in name:
         print(f"Hello {each_name}")
 

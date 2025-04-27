@@ -1,10 +1,10 @@
-import typer
+import doctyper
 
 
 def main(
-    id: int = typer.Argument(..., min=0, max=1000),
-    age: int = typer.Option(20, min=18),
-    score: float = typer.Option(0, max=100),
+    id: int = doctyper.Argument(..., min=0, max=1000),
+    age: int = doctyper.Option(20, min=18),
+    score: float = doctyper.Option(0, max=100),
 ):
     print(f"ID is {id}")
     print(f"--age is {age}")
@@ -12,4 +12,4 @@ def main(
 
 
 if __name__ == "__main__":
-    typer.run(main)
+    doctyper.run(main)

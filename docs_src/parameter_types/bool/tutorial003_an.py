@@ -1,8 +1,10 @@
-import typer
+import doctyper
 from typing_extensions import Annotated
 
 
-def main(force: Annotated[bool, typer.Option("--force/--no-force", "-f/-F")] = False):
+def main(
+    force: Annotated[bool, doctyper.Option("--force/--no-force", "-f/-F")] = False,
+):
     if force:
         print("Forcing operation")
     else:
@@ -10,4 +12,4 @@ def main(force: Annotated[bool, typer.Option("--force/--no-force", "-f/-F")] = F
 
 
 if __name__ == "__main__":
-    typer.run(main)
+    doctyper.run(main)

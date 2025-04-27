@@ -1,7 +1,7 @@
-import typer
+import doctyper
 from typing_extensions import Annotated
 
-app = typer.Typer(help="Awesome CLI user manager.")
+app = doctyper.Typer(help="Awesome CLI user manager.")
 
 
 @app.command()
@@ -17,7 +17,7 @@ def delete(
     username: str,
     force: Annotated[
         bool,
-        typer.Option(
+        doctyper.Option(
             prompt="Are you sure you want to delete the user?",
             help="Force deletion without confirmation.",
         ),
@@ -38,7 +38,7 @@ def delete(
 def delete_all(
     force: Annotated[
         bool,
-        typer.Option(
+        doctyper.Option(
             prompt="Are you sure you want to delete ALL users?",
             help="Force deletion without confirmation.",
         ),

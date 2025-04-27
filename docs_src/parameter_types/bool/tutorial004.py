@@ -1,7 +1,7 @@
-import typer
+import doctyper
 
 
-def main(in_prod: bool = typer.Option(True, " /--demo", " /-d")):
+def main(in_prod: bool = doctyper.Option(True, " /--demo", " /-d")):
     if in_prod:
         print("Running in production")
     else:
@@ -9,4 +9,4 @@ def main(in_prod: bool = typer.Option(True, " /--demo", " /-d")):
 
 
 if __name__ == "__main__":
-    typer.run(main)
+    doctyper.run(main)

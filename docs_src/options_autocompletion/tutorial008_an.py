@@ -1,6 +1,6 @@
 from typing import List
 
-import typer
+import doctyper
 from rich.console import Console
 from typing_extensions import Annotated
 
@@ -20,14 +20,14 @@ def complete_name(args: List[str], incomplete: str):
             yield (name, help_text)
 
 
-app = typer.Typer()
+app = doctyper.Typer()
 
 
 @app.command()
 def main(
     name: Annotated[
         List[str],
-        typer.Option(help="The name to say hi to.", autocompletion=complete_name),
+        doctyper.Option(help="The name to say hi to.", autocompletion=complete_name),
     ] = ["World"],
 ):
     for n in name:

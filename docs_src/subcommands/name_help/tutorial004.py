@@ -1,6 +1,6 @@
-import typer
+import doctyper
 
-app = typer.Typer()
+app = doctyper.Typer()
 
 
 def old_callback():
@@ -9,7 +9,7 @@ def old_callback():
     """
 
 
-users_app = typer.Typer(callback=old_callback)
+users_app = doctyper.Typer(callback=old_callback)
 app.add_typer(users_app, name="users")
 
 

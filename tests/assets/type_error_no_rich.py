@@ -1,7 +1,6 @@
-import typer
-import typer.main
+import doctyper
 
-typer.main.rich = None
+doctyper.main.rich = None
 
 
 def main(name: str = "morty"):
@@ -9,4 +8,4 @@ def main(name: str = "morty"):
 
 
 if __name__ == "__main__":
-    typer.run(main)
+    doctyper.run(main)

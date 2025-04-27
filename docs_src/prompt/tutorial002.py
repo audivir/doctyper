@@ -1,13 +1,13 @@
-import typer
+import doctyper
 
 
 def main():
-    delete = typer.confirm("Are you sure you want to delete it?")
+    delete = doctyper.confirm("Are you sure you want to delete it?")
     if not delete:
         print("Not deleting")
-        raise typer.Abort()
+        raise doctyper.Abort()
     print("Deleting it!")
 
 
 if __name__ == "__main__":
-    typer.run(main)
+    doctyper.run(main)

@@ -10,7 +10,7 @@ def test_script():
             "coverage",
             "run",
             "-m",
-            "typer",
+            "doctyper",
             "tests/assets/cli/func_other_name.py",
             "run",
             "--name",

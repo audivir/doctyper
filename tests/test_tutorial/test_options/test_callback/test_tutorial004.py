@@ -2,14 +2,14 @@ import os
 import subprocess
 import sys
 
-import typer
-from typer.testing import CliRunner
+import doctyper
+from doctyper.testing import CliRunner
 
 from docs_src.options.callback import tutorial004 as mod
 
 runner = CliRunner()
 
-app = typer.Typer()
+app = doctyper.Typer()
 app.command()(mod.main)
 
 

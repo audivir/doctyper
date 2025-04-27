@@ -1,6 +1,6 @@
 import time
 
-import typer
+import doctyper
 from rich.progress import Progress, SpinnerColumn, TextColumn
 
 
@@ -17,4 +17,4 @@ def main():
 
 
 if __name__ == "__main__":
-    typer.run(main)
+    doctyper.run(main)

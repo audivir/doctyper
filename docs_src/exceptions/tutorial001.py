@@ -1,4 +1,4 @@
-import typer
+import doctyper
 
 
 def main(name: str = "morty"):
@@ -6,4 +6,4 @@ def main(name: str = "morty"):
 
 
 if __name__ == "__main__":
-    typer.run(main)
+    doctyper.run(main)

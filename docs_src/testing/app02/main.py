@@ -1,10 +1,10 @@
-import typer
+import doctyper
 
-app = typer.Typer()
+app = doctyper.Typer()
 
 
 @app.command()
-def main(name: str, email: str = typer.Option(..., prompt=True)):
+def main(name: str, email: str = doctyper.Option(..., prompt=True)):
     print(f"Hello {name}, your email is: {email}")
 
 

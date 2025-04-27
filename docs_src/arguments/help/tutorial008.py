@@ -1,7 +1,7 @@
-import typer
+import doctyper
 
 
-def main(name: str = typer.Argument("World", hidden=True)):
+def main(name: str = doctyper.Argument("World", hidden=True)):
     """
     Say hi to NAME very gently, like Dirk.
     """
@@ -9,4 +9,4 @@ def main(name: str = typer.Argument("World", hidden=True)):
 
 
 if __name__ == "__main__":
-    typer.run(main)
+    doctyper.run(main)

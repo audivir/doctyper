@@ -1,9 +1,9 @@
-import typer
-from typer.testing import CliRunner
+import doctyper
+from doctyper.testing import CliRunner
 
 from .main import main
 
-app = typer.Typer()
+app = doctyper.Typer()
 app.command()(main)
 
 runner = CliRunner()

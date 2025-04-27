@@ -1,15 +1,15 @@
 import subprocess
 import sys
 
-import typer
-import typer.core
-from typer.testing import CliRunner
+import doctyper
+import doctyper.core
+from doctyper.testing import CliRunner
 
 from docs_src.arguments.help import tutorial007 as mod
 
 runner = CliRunner()
 
-app = typer.Typer()
+app = doctyper.Typer()
 app.command()(mod.main)
 
 

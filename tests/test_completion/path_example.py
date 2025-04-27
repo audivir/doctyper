@@ -1,8 +1,8 @@
 from pathlib import Path
 
-import typer
+import doctyper
 
-app = typer.Typer()
+app = doctyper.Typer()
 
 
 @app.command()

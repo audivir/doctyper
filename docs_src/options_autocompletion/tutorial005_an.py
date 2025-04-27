@@ -1,4 +1,4 @@
-import typer
+import doctyper
 from typing_extensions import Annotated
 
 valid_completion_items = [
@@ -14,13 +14,14 @@ def complete_name(incomplete: str):
             yield (name, help_text)
 
 
-app = typer.Typer()
+app = doctyper.Typer()
 
 
 @app.command()
 def main(
     name: Annotated[
-        str, typer.Option(help="The name to say hi to.", autocompletion=complete_name)
+        str,
+        doctyper.Option(help="The name to say hi to.", autocompletion=complete_name),
     ] = "World",
 ):
     print(f"Hello {name}")

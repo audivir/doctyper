@@ -1,15 +1,15 @@
 import subprocess
 import sys
 
-import typer
-import typer.core
-from typer.testing import CliRunner
+import doctyper
+import doctyper.core
+from doctyper.testing import CliRunner
 
 from docs_src.parameter_types.bool import tutorial002_an as mod
 
 runner = CliRunner()
 
-app = typer.Typer()
+app = doctyper.Typer()
 app.command()(mod.main)
 
 
@@ -22,14 +22,14 @@ def test_help():
 
 
 def test_help_no_rich():
-    rich = typer.core.rich
-    typer.core.rich = None
+    rich = doctyper.core.rich
+    doctyper.core.rich = None
     result = runner.invoke(app, ["--help"])
     assert result.exit_code == 0
     assert "--accept" in result.output
     assert "--reject" in result.output
     assert "--no-accept" not in result.output
-    typer.core.rich = rich
+    doctyper.core.rich = rich
 
 
 def test_main():

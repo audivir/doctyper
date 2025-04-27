@@ -1,6 +1,6 @@
-import typer
+import doctyper
 
-app = typer.Typer()
+app = doctyper.Typer()
 
 
 def users():
@@ -9,7 +9,7 @@ def users():
     """
 
 
-users_app = typer.Typer(callback=users, name="users")
+users_app = doctyper.Typer(callback=users, name="users")
 app.add_typer(users_app)
 
 

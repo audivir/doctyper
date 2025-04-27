@@ -1,5 +1,5 @@
 import click
-import typer
+import doctyper
 from typing_extensions import Annotated
 
 
@@ -19,9 +19,11 @@ class CustomClassParser(click.ParamType):
 
 
 def main(
-    custom_arg: Annotated[CustomClass, typer.Argument(click_type=CustomClassParser())],
+    custom_arg: Annotated[
+        CustomClass, doctyper.Argument(click_type=CustomClassParser())
+    ],
     custom_opt: Annotated[
-        CustomClass, typer.Option(click_type=CustomClassParser())
+        CustomClass, doctyper.Option(click_type=CustomClassParser())
     ] = "Foo",
 ):
     print(f"custom_arg is {custom_arg}")
@@ -29,4 +31,4 @@ def main(
 
 
 if __name__ == "__main__":
-    typer.run(main)
+    doctyper.run(main)

@@ -1,13 +1,13 @@
 import subprocess
 import sys
 
-import typer
-from typer.testing import CliRunner
+import doctyper
+from doctyper.testing import CliRunner
 
 from docs_src.multiple_values.options_with_multiple_values import tutorial001_an as mod
 
 runner = CliRunner()
-app = typer.Typer()
+app = doctyper.Typer()
 app.command()(mod.main)
 
 

@@ -1,12 +1,12 @@
-import typer
+import doctyper
 
-app = typer.Typer()
+app = doctyper.Typer()
 
 
 def complete(args, incomplete, ctx):
-    typer.echo(f"info name is: {ctx.info_name}", err=True)
-    typer.echo(f"args is: {args}", err=True)
-    typer.echo(f"incomplete is: {incomplete}", err=True)
+    doctyper.echo(f"info name is: {ctx.info_name}", err=True)
+    doctyper.echo(f"args is: {args}", err=True)
+    doctyper.echo(f"incomplete is: {incomplete}", err=True)
     return [
         ("Camila", "The reader of books."),
         ("Carlos", "The writer of scripts."),
@@ -15,7 +15,7 @@ def complete(args, incomplete, ctx):
 
 
 @app.command()
-def main(name: str = typer.Option("World", autocompletion=complete)):
+def main(name: str = doctyper.Option("World", autocompletion=complete)):
     print(f"Hello {name}")
 
 

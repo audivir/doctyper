@@ -1,15 +1,15 @@
 import subprocess
 import sys
 
-import typer
-import typer.core
-from typer.testing import CliRunner
+import doctyper
+import doctyper.core
+from doctyper.testing import CliRunner
 
 from docs_src.arguments.optional import tutorial001 as mod
 
 runner = CliRunner()
 
-app = typer.Typer()
+app = doctyper.Typer()
 app.command()(mod.main)
 
 
@@ -27,12 +27,12 @@ def test_call_no_arg_standalone():
 
 def test_call_no_arg_no_rich():
     # Mainly for coverage
-    rich = typer.core.rich
-    typer.core.rich = None
+    rich = doctyper.core.rich
+    doctyper.core.rich = None
     result = runner.invoke(app)
     assert result.exit_code != 0
     assert "Error: Missing argument 'NAME'" in result.stdout
-    typer.core.rich = rich
+    doctyper.core.rich = rich
 
 
 def test_call_arg():

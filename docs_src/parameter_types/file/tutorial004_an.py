@@ -1,8 +1,8 @@
-import typer
+import doctyper
 from typing_extensions import Annotated
 
 
-def main(file: Annotated[typer.FileBinaryWrite, typer.Option()]):
+def main(file: Annotated[doctyper.FileBinaryWrite, doctyper.Option()]):
     first_line_str = "some settings\n"
     # You cannot write str directly to a binary file, you have to encode it to get bytes
     first_line_bytes = first_line_str.encode("utf-8")
@@ -15,4 +15,4 @@ def main(file: Annotated[typer.FileBinaryWrite, typer.Option()]):
 
 
 if __name__ == "__main__":
-    typer.run(main)
+    doctyper.run(main)

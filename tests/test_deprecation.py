@@ -1,19 +1,19 @@
 from typing import Optional
 
+import doctyper
 import pytest
-import typer
-from typer.testing import CliRunner
+from doctyper.testing import CliRunner
 
 runner = CliRunner()
 
 
 def test_deprecation():
-    app = typer.Typer()
+    app = doctyper.Typer()
 
     def add_command():
         @app.command()
         def cmd(
-            opt: Optional[float] = typer.Option(
+            opt: Optional[float] = doctyper.Option(
                 3.14,
                 is_flag=True,
                 flag_value="42",

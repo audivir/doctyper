@@ -1,11 +1,11 @@
 from typing import List
 
-import typer
+import doctyper
 
 
-def main(number: List[float] = typer.Option([])):
+def main(number: List[float] = doctyper.Option([])):
     print(f"The sum is {sum(number)}")
 
 
 if __name__ == "__main__":
-    typer.run(main)
+    doctyper.run(main)

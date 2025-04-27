@@ -1,9 +1,9 @@
-import typer
+import doctyper
 
 
 def main(
-    name: str = typer.Option(..., "--name", "-n"),
-    formal: bool = typer.Option(False, "--formal", "-f"),
+    name: str = doctyper.Option(..., "--name", "-n"),
+    formal: bool = doctyper.Option(False, "--formal", "-f"),
 ):
     if formal:
         print(f"Good day Ms. {name}.")
@@ -12,4 +12,4 @@ def main(
 
 
 if __name__ == "__main__":
-    typer.run(main)
+    doctyper.run(main)

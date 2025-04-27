@@ -1,8 +1,8 @@
-import typer
+import doctyper
 from typing_extensions import Annotated
 
 
-def main(file: Annotated[typer.FileBinaryRead, typer.Option()]):
+def main(file: Annotated[doctyper.FileBinaryRead, doctyper.Option()]):
     processed_total = 0
     for bytes_chunk in file:
         # Process the bytes in bytes_chunk
@@ -11,4 +11,4 @@ def main(file: Annotated[typer.FileBinaryRead, typer.Option()]):
 
 
 if __name__ == "__main__":
-    typer.run(main)
+    doctyper.run(main)

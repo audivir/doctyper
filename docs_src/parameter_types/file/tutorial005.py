@@ -1,10 +1,10 @@
-import typer
+import doctyper
 
 
-def main(config: typer.FileText = typer.Option(..., mode="a")):
+def main(config: doctyper.FileText = doctyper.Option(..., mode="a")):
     config.write("This is a single line\n")
     print("Config line written")
 
 
 if __name__ == "__main__":
-    typer.run(main)
+    doctyper.run(main)

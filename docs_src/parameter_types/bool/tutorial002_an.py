@@ -1,10 +1,12 @@
 from typing import Optional
 
-import typer
+import doctyper
 from typing_extensions import Annotated
 
 
-def main(accept: Annotated[Optional[bool], typer.Option("--accept/--reject")] = None):
+def main(
+    accept: Annotated[Optional[bool], doctyper.Option("--accept/--reject")] = None,
+):
     if accept is None:
         print("I don't know what you want yet")
     elif accept:
@@ -14,4 +16,4 @@ def main(accept: Annotated[Optional[bool], typer.Option("--accept/--reject")] = 
 
 
 if __name__ == "__main__":
-    typer.run(main)
+    doctyper.run(main)

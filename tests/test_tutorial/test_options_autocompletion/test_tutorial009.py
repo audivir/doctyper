@@ -2,7 +2,7 @@ import os
 import subprocess
 import sys
 
-from typer.testing import CliRunner
+from doctyper.testing import CliRunner
 
 from docs_src.options_autocompletion import tutorial009 as mod
 

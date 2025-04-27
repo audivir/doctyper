@@ -1,10 +1,10 @@
-import typer
+import doctyper
 from typing_extensions import Annotated
 
 
-def main(user_name: Annotated[str, typer.Option("-n")]):
+def main(user_name: Annotated[str, doctyper.Option("-n")]):
     print(f"Hello {user_name}")
 
 
 if __name__ == "__main__":
-    typer.run(main)
+    doctyper.run(main)

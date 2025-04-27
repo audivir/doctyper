@@ -10,7 +10,7 @@ def test_not_python():
             "coverage",
             "run",
             "-m",
-            "typer",
+            "doctyper",
             "tests/assets/cli/not_python.txt",
             "run",
         ],

@@ -1,4 +1,4 @@
-import typer
+import doctyper
 from rich.prompt import Prompt
 
 
@@ -8,4 +8,4 @@ def main():
 
 
 if __name__ == "__main__":
-    typer.run(main)
+    doctyper.run(main)

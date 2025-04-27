@@ -1,4 +1,4 @@
-from typer.testing import CliRunner
+from doctyper.testing import CliRunner
 
 from docs_src.one_file_per_command import main as mod
 

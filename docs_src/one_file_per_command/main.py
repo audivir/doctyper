@@ -1,9 +1,9 @@
-import typer
+import doctyper
 
 from .users import app as users_app
 from .version import app as version_app
 
-app = typer.Typer()
+app = doctyper.Typer()
 
 app.add_typer(version_app)
 app.add_typer(users_app, name="users")

@@ -1,11 +1,11 @@
 import time
 
-import typer
+import doctyper
 
 
 def main():
     total = 0
-    with typer.progressbar(range(100)) as progress:
+    with doctyper.progressbar(range(100)) as progress:
         for value in progress:
             # Fake processing time
             time.sleep(0.01)
@@ -14,4 +14,4 @@ def main():
 
 
 if __name__ == "__main__":
-    typer.run(main)
+    doctyper.run(main)

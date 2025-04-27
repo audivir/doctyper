@@ -1,10 +1,10 @@
 from datetime import datetime
 
-import typer
+import doctyper
 
 
 def main(
-    launch_date: datetime = typer.Argument(
+    launch_date: datetime = doctyper.Argument(
         ..., formats=["%Y-%m-%d", "%Y-%m-%dT%H:%M:%S", "%Y-%m-%d %H:%M:%S", "%m/%d/%Y"]
     ),
 ):
@@ -12,4 +12,4 @@ def main(
 
 
 if __name__ == "__main__":
-    typer.run(main)
+    doctyper.run(main)

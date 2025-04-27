@@ -1,17 +1,17 @@
 from typing import Optional
 
-import typer
+import doctyper
 
 
 def name_callback(value: str):
     if value != "Camila":
-        raise typer.BadParameter("Only Camila is allowed")
+        raise doctyper.BadParameter("Only Camila is allowed")
     return value
 
 
-def main(name: Optional[str] = typer.Option(default=None, callback=name_callback)):
+def main(name: Optional[str] = doctyper.Option(default=None, callback=name_callback)):
     print(f"Hello {name}")
 
 
 if __name__ == "__main__":
-    typer.run(main)
+    doctyper.run(main)

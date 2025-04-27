@@ -1,11 +1,11 @@
-import typer
+import doctyper
 from typing_extensions import Annotated
 
 
 def main(
     name: str,
     password: Annotated[
-        str, typer.Option(prompt=True, confirmation_prompt=True, hide_input=True)
+        str, doctyper.Option(prompt=True, confirmation_prompt=True, hide_input=True)
     ],
 ):
     print(f"Hello {name}. Doing something very secure with password.")
@@ -13,4 +13,4 @@ def main(
 
 
 if __name__ == "__main__":
-    typer.run(main)
+    doctyper.run(main)

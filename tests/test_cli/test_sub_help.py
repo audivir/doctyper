@@ -10,7 +10,7 @@ def test_script_help():
             "coverage",
             "run",
             "-m",
-            "typer",
+            "doctyper",
             "tests/assets/cli/sample.py",
             "run",
             "--help",

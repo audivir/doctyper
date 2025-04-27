@@ -3,14 +3,14 @@ import subprocess
 import sys
 from unittest import mock
 
+import doctyper
 import shellingham
-import typer
-from typer.testing import CliRunner
+from doctyper.testing import CliRunner
 
 from docs_src.commands.index import tutorial001 as mod
 
 runner = CliRunner()
-app = typer.Typer()
+app = doctyper.Typer()
 app.command()(mod.main)
 
 

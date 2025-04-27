@@ -3,7 +3,7 @@ from typing import Union
 from unittest.mock import patch
 
 import pytest
-from typer._completion_classes import _sanitize_help_text
+from doctyper._completion_classes import _sanitize_help_text
 
 
 @pytest.mark.parametrize(

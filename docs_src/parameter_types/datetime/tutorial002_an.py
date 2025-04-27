@@ -1,13 +1,13 @@
 from datetime import datetime
 
-import typer
+import doctyper
 from typing_extensions import Annotated
 
 
 def main(
     launch_date: Annotated[
         datetime,
-        typer.Argument(
+        doctyper.Argument(
             formats=["%Y-%m-%d", "%Y-%m-%dT%H:%M:%S", "%Y-%m-%d %H:%M:%S", "%m/%d/%Y"]
         ),
     ],
@@ -16,4 +16,4 @@ def main(
 
 
 if __name__ == "__main__":
-    typer.run(main)
+    doctyper.run(main)

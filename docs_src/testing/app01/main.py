@@ -1,8 +1,8 @@
 from typing import Optional
 
-import typer
+import doctyper
 
-app = typer.Typer()
+app = doctyper.Typer()
 
 
 @app.command()

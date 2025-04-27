@@ -1,11 +1,11 @@
-import typer
+import doctyper
 from typing_extensions import Annotated
 
 
-def main(config: Annotated[typer.FileTextWrite, typer.Option()]):
+def main(config: Annotated[doctyper.FileTextWrite, doctyper.Option()]):
     config.write("Some config written by the app")
     print("Config written")
 
 
 if __name__ == "__main__":
-    typer.run(main)
+    doctyper.run(main)

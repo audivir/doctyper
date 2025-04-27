@@ -1,6 +1,6 @@
 from uuid import UUID
 
-import typer
+import doctyper
 
 
 def main(user_id: UUID):
@@ -9,4 +9,4 @@ def main(user_id: UUID):
 
 
 if __name__ == "__main__":
-    typer.run(main)
+    doctyper.run(main)

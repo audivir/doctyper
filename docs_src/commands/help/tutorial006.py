@@ -1,6 +1,6 @@
-import typer
+import doctyper
 
-app = typer.Typer(rich_markup_mode="rich")
+app = doctyper.Typer(rich_markup_mode="rich")
 
 
 @app.command()

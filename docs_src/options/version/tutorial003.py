@@ -1,6 +1,6 @@
 from typing import Optional
 
-import typer
+import doctyper
 
 __version__ = "0.1.0"
 
@@ -8,18 +8,18 @@ __version__ = "0.1.0"
 def version_callback(value: bool):
     if value:
         print(f"Awesome CLI Version: {__version__}")
-        raise typer.Exit()
+        raise doctyper.Exit()
 
 
 def name_callback(name: str):
     if name != "Camila":
-        raise typer.BadParameter("Only Camila is allowed")
+        raise doctyper.BadParameter("Only Camila is allowed")
     return name
 
 
 def main(
-    name: str = typer.Option(..., callback=name_callback),
-    version: Optional[bool] = typer.Option(
+    name: str = doctyper.Option(..., callback=name_callback),
+    version: Optional[bool] = doctyper.Option(
         None, "--version", callback=version_callback, is_eager=True
     ),
 ):
@@ -27,4 +27,4 @@ def main(
 
 
 if __name__ == "__main__":
-    typer.run(main)
+    doctyper.run(main)

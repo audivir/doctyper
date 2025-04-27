@@ -1,6 +1,6 @@
-import typer
+import doctyper
 
-app = typer.Typer()
+app = doctyper.Typer()
 
 
 @app.command()
@@ -14,7 +14,7 @@ def delete(username: str):
 
 
 @app.callback()
-def main(ctx: typer.Context):
+def main(ctx: doctyper.Context):
     """
     Manage users in the awesome CLI app.
     """

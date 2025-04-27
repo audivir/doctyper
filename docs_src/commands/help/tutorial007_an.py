@@ -1,28 +1,32 @@
 from typing import Union
 
-import typer
+import doctyper
 from typing_extensions import Annotated
 
-app = typer.Typer(rich_markup_mode="rich")
+app = doctyper.Typer(rich_markup_mode="rich")
 
 
 @app.command()
 def create(
-    username: Annotated[str, typer.Argument(help="The username to create")],
+    username: Annotated[str, doctyper.Argument(help="The username to create")],
     lastname: Annotated[
         str,
-        typer.Argument(
+        doctyper.Argument(
             help="The last name of the new user", rich_help_panel="Secondary Arguments"
         ),
     ] = "",
-    force: Annotated[bool, typer.Option(help="Force the creation of the user")] = False,
+    force: Annotated[
+        bool, doctyper.Option(help="Force the creation of the user")
+    ] = False,
     age: Annotated[
         Union[int, None],
-        typer.Option(help="The age of the new user", rich_help_panel="Additional Data"),
+        doctyper.Option(
+            help="The age of the new user", rich_help_panel="Additional Data"
+        ),
     ] = None,
     favorite_color: Annotated[
         Union[str, None],
-        typer.Option(
+        doctyper.Option(
             help="The favorite color of the new user",
             rich_help_panel="Additional Data",
         ),

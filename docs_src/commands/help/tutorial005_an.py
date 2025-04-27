@@ -1,12 +1,12 @@
-import typer
+import doctyper
 from typing_extensions import Annotated
 
-app = typer.Typer(rich_markup_mode="markdown")
+app = doctyper.Typer(rich_markup_mode="markdown")
 
 
 @app.command()
 def create(
-    username: Annotated[str, typer.Argument(help="The username to be **created**")],
+    username: Annotated[str, doctyper.Argument(help="The username to be **created**")],
 ):
     """
     **Create** a new *shinny* user. :sparkles:
@@ -24,8 +24,10 @@ def create(
 
 @app.command(help="**Delete** a user with *USERNAME*.")
 def delete(
-    username: Annotated[str, typer.Argument(help="The username to be **deleted**")],
-    force: Annotated[bool, typer.Option(help="Force the **deletion** :boom:")] = False,
+    username: Annotated[str, doctyper.Argument(help="The username to be **deleted**")],
+    force: Annotated[
+        bool, doctyper.Option(help="Force the **deletion** :boom:")
+    ] = False,
 ):
     """
     Some internal utility function to delete.

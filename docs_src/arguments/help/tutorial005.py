@@ -1,8 +1,8 @@
-import typer
+import doctyper
 
 
 def main(
-    name: str = typer.Argument(
+    name: str = doctyper.Argument(
         "Wade Wilson", help="Who to greet", show_default="Deadpoolio the amazing's name"
     ),
 ):
@@ -10,4 +10,4 @@ def main(
 
 
 if __name__ == "__main__":
-    typer.run(main)
+    doctyper.run(main)

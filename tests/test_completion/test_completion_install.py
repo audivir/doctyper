@@ -4,16 +4,16 @@ import sys
 from pathlib import Path
 from unittest import mock
 
+import doctyper
 import shellingham
-import typer
-from typer.testing import CliRunner
+from doctyper.testing import CliRunner
 
 from docs_src.commands.index import tutorial001 as mod
 
 from ..utils import requires_completion_permission
 
 runner = CliRunner()
-app = typer.Typer()
+app = doctyper.Typer()
 app.command()(mod.main)
 
 

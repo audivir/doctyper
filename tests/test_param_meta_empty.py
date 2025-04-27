@@ -1,13 +1,13 @@
-import typer
-from typer.testing import CliRunner
+import doctyper
+from doctyper.testing import CliRunner
 
 runner = CliRunner()
 
 
 def test_default_with_class_with_custom_eq():
-    app = typer.Typer()
+    app = doctyper.Typer()
 
-    from typer.models import ParamMeta
+    from doctyper.models import ParamMeta
 
     class StupidClass:
         def __init__(self, a):

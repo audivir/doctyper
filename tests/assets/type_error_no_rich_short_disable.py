@@ -1,10 +1,9 @@
-import typer
-import typer.main
+import doctyper
 
-typer.main.rich = None
+doctyper.main.rich = None
 
 
-app = typer.Typer(pretty_exceptions_short=False)
+app = doctyper.Typer(pretty_exceptions_short=False)
 
 
 @app.command()

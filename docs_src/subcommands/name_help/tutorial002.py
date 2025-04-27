@@ -1,8 +1,8 @@
-import typer
+import doctyper
 
-app = typer.Typer()
+app = doctyper.Typer()
 
-users_app = typer.Typer()
+users_app = doctyper.Typer()
 app.add_typer(users_app, name="users")
 
 

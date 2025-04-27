@@ -1,8 +1,8 @@
 import subprocess
 import sys
 
-import typer.core
-from typer.testing import CliRunner
+import doctyper
+from doctyper.testing import CliRunner
 
 from docs_src.commands.callback import tutorial001 as mod
 
@@ -20,14 +20,14 @@ def test_help():
 
 
 def test_help_no_rich():
-    rich = typer.core.rich
-    typer.core.rich = None
+    rich = doctyper.core.rich
+    doctyper.core.rich = None
     result = runner.invoke(app, ["--help"])
     assert result.exit_code == 0
     assert "Manage users in the awesome CLI app." in result.output
     assert "--verbose" in result.output
     assert "--no-verbose" in result.output
-    typer.core.rich = rich
+    doctyper.core.rich = rich
 
 
 def test_create():

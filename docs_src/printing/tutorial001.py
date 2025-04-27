@@ -1,4 +1,4 @@
-import typer
+import doctyper
 from rich import print
 
 data = {
@@ -16,4 +16,4 @@ def main():
 
 
 if __name__ == "__main__":
-    typer.run(main)
+    doctyper.run(main)

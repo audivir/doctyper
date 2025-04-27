@@ -1,10 +1,10 @@
 from pathlib import Path
 
-import typer
+import doctyper
 
 
 def main(
-    config: Path = typer.Option(
+    config: Path = doctyper.Option(
         ...,
         exists=True,
         file_okay=True,
@@ -19,4 +19,4 @@ def main(
 
 
 if __name__ == "__main__":
-    typer.run(main)
+    doctyper.run(main)

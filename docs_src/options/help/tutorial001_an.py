@@ -1,11 +1,13 @@
-import typer
+import doctyper
 from typing_extensions import Annotated
 
 
 def main(
     name: str,
-    lastname: Annotated[str, typer.Option(help="Last name of person to greet.")] = "",
-    formal: Annotated[bool, typer.Option(help="Say hi formally.")] = False,
+    lastname: Annotated[
+        str, doctyper.Option(help="Last name of person to greet.")
+    ] = "",
+    formal: Annotated[bool, doctyper.Option(help="Say hi formally.")] = False,
 ):
     """
     Say hi to NAME, optionally with a --lastname.
@@ -19,4 +21,4 @@ def main(
 
 
 if __name__ == "__main__":
-    typer.run(main)
+    doctyper.run(main)

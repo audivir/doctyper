@@ -1,10 +1,10 @@
-import typer
+import doctyper
 from typing_extensions import Annotated
 
 
 def main(
     name: Annotated[
-        str, typer.Argument(help="Who to greet", show_default=False)
+        str, doctyper.Argument(help="Who to greet", show_default=False)
     ] = "World",
 ):
     """
@@ -14,4 +14,4 @@ def main(
 
 
 if __name__ == "__main__":
-    typer.run(main)
+    doctyper.run(main)

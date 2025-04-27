@@ -1,6 +1,6 @@
 from enum import Enum
 
-import typer
+import doctyper
 
 
 class NeuralNetwork(str, Enum):
@@ -14,4 +14,4 @@ def main(network: NeuralNetwork = NeuralNetwork.simple):
 
 
 if __name__ == "__main__":
-    typer.run(main)
+    doctyper.run(main)

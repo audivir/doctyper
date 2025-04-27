@@ -1,16 +1,16 @@
 from typing import List
 
+import doctyper
+import doctyper.completion
 import pytest
-import typer
-import typer.completion
-from typer.testing import CliRunner
+from doctyper.testing import CliRunner
 
 runner = CliRunner()
 rounded = ["╭", "─", "┬", "╮", "│", "├", "┼", "┤", "╰", "┴", "╯"]
 
 
 def test_rich_markup_mode_none():
-    app = typer.Typer(rich_markup_mode=None)
+    app = doctyper.Typer(rich_markup_mode=None)
 
     @app.command()
     def main(arg: str):
@@ -27,7 +27,7 @@ def test_rich_markup_mode_none():
 
 
 def test_rich_markup_mode_rich():
-    app = typer.Typer(rich_markup_mode="rich")
+    app = doctyper.Typer(rich_markup_mode="rich")
 
     @app.command()
     def main(arg: str):
@@ -60,7 +60,7 @@ def test_rich_markup_mode_rich():
     ],
 )
 def test_markup_mode_newline_pr815(mode: str, lines: List[str]):
-    app = typer.Typer(rich_markup_mode=mode)
+    app = doctyper.Typer(rich_markup_mode=mode)
 
     @app.command()
     def main(arg: str):
@@ -98,7 +98,7 @@ def test_markup_mode_newline_pr815(mode: str, lines: List[str]):
     ],
 )
 def test_markup_mode_newline_issue447(mode: str, lines: List[str]):
-    app = typer.Typer(rich_markup_mode=mode)
+    app = doctyper.Typer(rich_markup_mode=mode)
 
     @app.command()
     def main(arg: str):
@@ -172,7 +172,7 @@ def test_markup_mode_newline_issue447(mode: str, lines: List[str]):
     ],
 )
 def test_markup_mode_newline_mixed(mode: str, lines: List[str]):
-    app = typer.Typer(rich_markup_mode=mode)
+    app = doctyper.Typer(rich_markup_mode=mode)
 
     @app.command()
     def main(arg: str):
@@ -216,7 +216,7 @@ def test_markup_mode_newline_mixed(mode: str, lines: List[str]):
     ],
 )
 def test_markup_mode_bullets_single_newline(mode: str, lines: List[str]):
-    app = typer.Typer(rich_markup_mode=mode)
+    app = doctyper.Typer(rich_markup_mode=mode)
 
     @app.command()
     def main(arg: str):
@@ -259,7 +259,7 @@ def test_markup_mode_bullets_single_newline(mode: str, lines: List[str]):
     ],
 )
 def test_markup_mode_bullets_double_newline(mode: str, lines: List[str]):
-    app = typer.Typer(rich_markup_mode=mode)
+    app = doctyper.Typer(rich_markup_mode=mode)
 
     @app.command()
     def main(arg: str):

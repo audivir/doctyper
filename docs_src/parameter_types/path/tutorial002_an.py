@@ -1,13 +1,13 @@
 from pathlib import Path
 
-import typer
+import doctyper
 from typing_extensions import Annotated
 
 
 def main(
     config: Annotated[
         Path,
-        typer.Option(
+        doctyper.Option(
             exists=True,
             file_okay=True,
             dir_okay=False,
@@ -22,4 +22,4 @@ def main(
 
 
 if __name__ == "__main__":
-    typer.run(main)
+    doctyper.run(main)

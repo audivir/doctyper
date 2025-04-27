@@ -1,12 +1,12 @@
-import typer
+import doctyper
 
 
 def main(
-    name: str = typer.Argument(..., help="Who to greet"),
-    lastname: str = typer.Argument(
+    name: str = doctyper.Argument(..., help="Who to greet"),
+    lastname: str = doctyper.Argument(
         "", help="The last name", rich_help_panel="Secondary Arguments"
     ),
-    age: str = typer.Argument(
+    age: str = doctyper.Argument(
         "", help="The user's age", rich_help_panel="Secondary Arguments"
     ),
 ):
@@ -17,4 +17,4 @@ def main(
 
 
 if __name__ == "__main__":
-    typer.run(main)
+    doctyper.run(main)

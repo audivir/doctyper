@@ -1,10 +1,10 @@
 from typing import Tuple
 
-import typer
+import doctyper
 
 
 def main(
-    names: Tuple[str, str, str] = typer.Argument(
+    names: Tuple[str, str, str] = doctyper.Argument(
         ("Harry", "Hermione", "Ron"), help="Select 3 characters to play with"
     ),
 ):
@@ -13,4 +13,4 @@ def main(
 
 
 if __name__ == "__main__":
-    typer.run(main)
+    doctyper.run(main)

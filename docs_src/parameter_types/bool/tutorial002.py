@@ -1,9 +1,9 @@
 from typing import Optional
 
-import typer
+import doctyper
 
 
-def main(accept: Optional[bool] = typer.Option(None, "--accept/--reject")):
+def main(accept: Optional[bool] = doctyper.Option(None, "--accept/--reject")):
     if accept is None:
         print("I don't know what you want yet")
     elif accept:
@@ -13,4 +13,4 @@ def main(accept: Optional[bool] = typer.Option(None, "--accept/--reject")):
 
 
 if __name__ == "__main__":
-    typer.run(main)
+    doctyper.run(main)

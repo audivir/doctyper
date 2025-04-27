@@ -3,7 +3,7 @@ import subprocess
 import sys
 
 import pytest
-from typer.testing import CliRunner
+from doctyper.testing import CliRunner
 
 from docs_src.subcommands import tutorial001
 

@@ -1,9 +1,9 @@
-import typer
+import doctyper
 
 
-def main(name: str = typer.Argument()):
+def main(name: str = doctyper.Argument()):
     print(f"Hello {name}")
 
 
 if __name__ == "__main__":
-    typer.run(main)
+    doctyper.run(main)

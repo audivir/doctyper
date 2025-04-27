@@ -1,9 +1,9 @@
-import typer
+import doctyper
 
 
 def main(name: str):
-    typer.secho(f"Welcome here {name}", fg=typer.colors.MAGENTA)
+    doctyper.secho(f"Welcome here {name}", fg=doctyper.colors.MAGENTA)
 
 
 if __name__ == "__main__":
-    typer.run(main)
+    doctyper.run(main)

@@ -1,18 +1,20 @@
 from typing import Optional
 
-import typer
+import doctyper
 from typing_extensions import Annotated
 
 
 def name_callback(value: str):
     if value != "Camila":
-        raise typer.BadParameter("Only Camila is allowed")
+        raise doctyper.BadParameter("Only Camila is allowed")
     return value
 
 
-def main(name: Annotated[Optional[str], typer.Option(callback=name_callback)] = None):
+def main(
+    name: Annotated[Optional[str], doctyper.Option(callback=name_callback)] = None,
+):
     print(f"Hello {name}")
 
 
 if __name__ == "__main__":
-    typer.run(main)
+    doctyper.run(main)

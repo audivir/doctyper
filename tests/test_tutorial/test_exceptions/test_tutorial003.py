@@ -3,7 +3,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-from typer.testing import CliRunner
+from doctyper.testing import CliRunner
 
 from docs_src.exceptions import tutorial003 as mod
 

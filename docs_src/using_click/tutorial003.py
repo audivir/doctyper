@@ -1,7 +1,7 @@
 import click
-import typer
+import doctyper
 
-app = typer.Typer()
+app = doctyper.Typer()
 
 
 @app.command()
@@ -26,7 +26,7 @@ def hello(name):
     click.echo(f"Hello {name}!")
 
 
-typer_click_object = typer.main.get_command(app)
+typer_click_object = doctyper.main.get_command(app)
 
 typer_click_object.add_command(hello, "hello")
 

@@ -1,5 +1,5 @@
-import typer.core
-from typer.testing import CliRunner
+import doctyper
+from doctyper.testing import CliRunner
 
 from tests.assets import corner_cases as mod
 
@@ -17,8 +17,8 @@ def test_hidden_option():
 
 
 def test_hidden_option_no_rich():
-    rich = typer.core.rich
-    typer.core.rich = None
+    rich = doctyper.core.rich
+    doctyper.core.rich = None
     result = runner.invoke(mod.app, ["--help"])
     assert result.exit_code == 0
     assert "Say hello" in result.output
@@ -26,7 +26,7 @@ def test_hidden_option_no_rich():
     assert "/lastname" in result.output
     assert "TEST_LASTNAME" in result.output
     assert "(dynamic)" in result.output
-    typer.core.rich = rich
+    doctyper.core.rich = rich
 
 
 def test_coverage_call():

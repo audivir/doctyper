@@ -2,14 +2,14 @@ import subprocess
 import sys
 from pathlib import Path
 
-import typer
-from typer.testing import CliRunner
+import doctyper
+from doctyper.testing import CliRunner
 
 from docs_src.parameter_types.file import tutorial005 as mod
 
 runner = CliRunner()
 
-app = typer.Typer()
+app = doctyper.Typer()
 app.command()(mod.main)
 
 

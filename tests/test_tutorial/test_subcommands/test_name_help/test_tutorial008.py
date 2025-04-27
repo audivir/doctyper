@@ -1,7 +1,7 @@
 import subprocess
 import sys
 
-from typer.testing import CliRunner
+from doctyper.testing import CliRunner
 
 from docs_src.subcommands.name_help import tutorial008 as mod
 

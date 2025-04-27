@@ -1,9 +1,9 @@
-import typer
+import doctyper
 
 
 def main(
     name: str,
-    password: str = typer.Option(
+    password: str = doctyper.Option(
         ..., prompt=True, confirmation_prompt=True, hide_input=True
     ),
 ):
@@ -12,4 +12,4 @@ def main(
 
 
 if __name__ == "__main__":
-    typer.run(main)
+    doctyper.run(main)

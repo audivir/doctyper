@@ -1,11 +1,11 @@
-import typer
+import doctyper
 from typing_extensions import Annotated
 
-app = typer.Typer()
+app = doctyper.Typer()
 
 
 @app.command()
-def main(name: str, email: Annotated[str, typer.Option(prompt=True)]):
+def main(name: str, email: Annotated[str, doctyper.Option(prompt=True)]):
     print(f"Hello {name}, your email is: {email}")
 
 

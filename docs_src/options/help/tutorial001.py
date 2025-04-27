@@ -1,10 +1,10 @@
-import typer
+import doctyper
 
 
 def main(
     name: str,
-    lastname: str = typer.Option("", help="Last name of person to greet."),
-    formal: bool = typer.Option(False, help="Say hi formally."),
+    lastname: str = doctyper.Option("", help="Last name of person to greet."),
+    formal: bool = doctyper.Option(False, help="Say hi formally."),
 ):
     """
     Say hi to NAME, optionally with a --lastname.
@@ -18,4 +18,4 @@ def main(
 
 
 if __name__ == "__main__":
-    typer.run(main)
+    doctyper.run(main)

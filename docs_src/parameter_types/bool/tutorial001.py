@@ -1,7 +1,7 @@
-import typer
+import doctyper
 
 
-def main(force: bool = typer.Option(False, "--force")):
+def main(force: bool = doctyper.Option(False, "--force")):
     if force:
         print("Forcing operation")
     else:
@@ -9,4 +9,4 @@ def main(force: bool = typer.Option(False, "--force")):
 
 
 if __name__ == "__main__":
-    typer.run(main)
+    doctyper.run(main)

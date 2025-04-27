@@ -1,6 +1,6 @@
 from typing import List
 
-import typer
+import doctyper
 from rich.console import Console
 
 valid_completion_items = [
@@ -12,7 +12,7 @@ valid_completion_items = [
 err_console = Console(stderr=True)
 
 
-def complete_name(ctx: typer.Context, args: List[str], incomplete: str):
+def complete_name(ctx: doctyper.Context, args: List[str], incomplete: str):
     err_console.print(f"{args}")
     names = ctx.params.get("name") or []
     for name, help_text in valid_completion_items:
@@ -20,12 +20,12 @@ def complete_name(ctx: typer.Context, args: List[str], incomplete: str):
             yield (name, help_text)
 
 
-app = typer.Typer()
+app = doctyper.Typer()
 
 
 @app.command()
 def main(
-    name: List[str] = typer.Option(
+    name: List[str] = doctyper.Option(
         ["World"], help="The name to say hi to.", autocompletion=complete_name
     ),
 ):

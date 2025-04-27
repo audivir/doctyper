@@ -1,15 +1,15 @@
 from typing import List, Optional
 
-import typer
+import doctyper
 
 
-def main(user: Optional[List[str]] = typer.Option(None)):
+def main(user: Optional[List[str]] = doctyper.Option(None)):
     if not user:
         print(f"No provided users (raw input = {user})")
-        raise typer.Abort()
+        raise doctyper.Abort()
     for u in user:
         print(f"Processing user: {u}")
 
 
 if __name__ == "__main__":
-    typer.run(main)
+    doctyper.run(main)

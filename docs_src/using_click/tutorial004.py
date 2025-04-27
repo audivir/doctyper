@@ -1,5 +1,5 @@
 import click
-import typer
+import doctyper
 
 
 @click.group()
@@ -17,7 +17,7 @@ def dropdb():
     click.echo("Dropped the database")
 
 
-app = typer.Typer()
+app = doctyper.Typer()
 
 
 @app.command()
@@ -28,7 +28,7 @@ def sub():
     print("Typer is now below Click, the Click app is the top level")
 
 
-typer_click_object = typer.main.get_command(app)
+typer_click_object = doctyper.main.get_command(app)
 
 cli.add_command(typer_click_object, "sub")
 

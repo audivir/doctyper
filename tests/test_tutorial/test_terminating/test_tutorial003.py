@@ -1,15 +1,15 @@
 import subprocess
 import sys
 
-import typer
-import typer.core
-from typer.testing import CliRunner
+import doctyper
+import doctyper.core
+from doctyper.testing import CliRunner
 
 from docs_src.terminating import tutorial003 as mod
 
 runner = CliRunner()
 
-app = typer.Typer()
+app = doctyper.Typer()
 app.command()(mod.main)
 
 
@@ -34,13 +34,13 @@ def test_root_no_standalone():
 
 def test_root_no_rich():
     # Mainly for coverage
-    rich = typer.core.rich
-    typer.core.rich = None
+    rich = doctyper.core.rich
+    doctyper.core.rich = None
     result = runner.invoke(app, ["root"])
     assert result.exit_code == 1
     assert "The root user is reserved" in result.stdout
     assert "Aborted!" in result.stdout
-    typer.core.rich = rich
+    doctyper.core.rich = rich
 
 
 def test_script():

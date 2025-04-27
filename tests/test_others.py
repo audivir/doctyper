@@ -6,14 +6,14 @@ from pathlib import Path
 from unittest import mock
 
 import click
+import doctyper
+import doctyper.completion
 import pytest
 import shellingham
-import typer
-import typer.completion
-from typer.core import _split_opt
-from typer.main import solve_typer_info_defaults, solve_typer_info_help
-from typer.models import ParameterInfo, TyperInfo
-from typer.testing import CliRunner
+from doctyper.core import _split_opt
+from doctyper.main import solve_typer_info_defaults, solve_typer_info_help
+from doctyper.models import ParameterInfo, TyperInfo
+from doctyper.testing import CliRunner
 
 from .utils import requires_completion_permission
 
@@ -78,7 +78,7 @@ def test_valid_parser_permutations():
 
 @requires_completion_permission
 def test_install_invalid_shell():
-    app = typer.Typer()
+    app = doctyper.Typer()
 
     @app.command()
     def main():
@@ -94,13 +94,13 @@ def test_install_invalid_shell():
 
 
 def test_callback_too_many_parameters():
-    app = typer.Typer()
+    app = doctyper.Typer()
 
     def name_callback(ctx, param, val1, val2):
         pass  # pragma: no cover
 
     @app.command()
-    def main(name: str = typer.Option(..., callback=name_callback)):
+    def main(name: str = doctyper.Option(..., callback=name_callback)):
         pass  # pragma: no cover
 
     with pytest.raises(click.ClickException) as exc_info:
@@ -111,14 +111,14 @@ def test_callback_too_many_parameters():
 
 
 def test_callback_2_untyped_parameters():
-    app = typer.Typer()
+    app = doctyper.Typer()
 
     def name_callback(ctx, value):
         print(f"info name is: {ctx.info_name}")
         print(f"value is: {value}")
 
     @app.command()
-    def main(name: str = typer.Option(..., callback=name_callback)):
+    def main(name: str = doctyper.Option(..., callback=name_callback)):
         print("Hello World")
 
     result = runner.invoke(app, ["--name", "Camila"])
@@ -127,7 +127,7 @@ def test_callback_2_untyped_parameters():
 
 
 def test_callback_3_untyped_parameters():
-    app = typer.Typer()
+    app = doctyper.Typer()
 
     def name_callback(ctx, param, value):
         print(f"info name is: {ctx.info_name}")
@@ -135,7 +135,7 @@ def test_callback_3_untyped_parameters():
         print(f"value is: {value}")
 
     @app.command()
-    def main(name: str = typer.Option(..., callback=name_callback)):
+    def main(name: str = doctyper.Option(..., callback=name_callback)):
         print("Hello World")
 
     result = runner.invoke(app, ["--name", "Camila"])
@@ -216,13 +216,13 @@ def test_completion_untyped_parameters_different_order_correct_names():
 
 
 def test_autocompletion_too_many_parameters():
-    app = typer.Typer()
+    app = doctyper.Typer()
 
     def name_callback(ctx, args, incomplete, val2):
         pass  # pragma: no cover
 
     @app.command()
-    def main(name: str = typer.Option(..., autocompletion=name_callback)):
+    def main(name: str = doctyper.Option(..., autocompletion=name_callback)):
         pass  # pragma: no cover
 
     with pytest.raises(click.ClickException) as exc_info:
@@ -231,7 +231,7 @@ def test_autocompletion_too_many_parameters():
 
 
 def test_forward_references():
-    app = typer.Typer()
+    app = doctyper.Typer()
 
     @app.command()
     def main(arg1, arg2: int, arg3: "int", arg4: bool = False, arg5: "bool" = False):
@@ -252,7 +252,7 @@ def test_forward_references():
 
 
 def test_context_settings_inheritance_single_command():
-    app = typer.Typer(context_settings={"help_option_names": ["-h", "--help"]})
+    app = doctyper.Typer(context_settings={"help_option_names": ["-h", "--help"]})
 
     @app.command()
     def main(name: str):

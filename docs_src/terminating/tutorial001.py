@@ -1,4 +1,4 @@
-import typer
+import doctyper
 
 existing_usernames = ["rick", "morty"]
 
@@ -6,7 +6,7 @@ existing_usernames = ["rick", "morty"]
 def maybe_create_user(username: str):
     if username in existing_usernames:
         print("The user already exists")
-        raise typer.Exit()
+        raise doctyper.Exit()
     else:
         print(f"User created: {username}")
 
@@ -22,4 +22,4 @@ def main(username: str):
 
 
 if __name__ == "__main__":
-    typer.run(main)
+    doctyper.run(main)

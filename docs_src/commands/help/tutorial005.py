@@ -1,10 +1,12 @@
-import typer
+import doctyper
 
-app = typer.Typer(rich_markup_mode="markdown")
+app = doctyper.Typer(rich_markup_mode="markdown")
 
 
 @app.command()
-def create(username: str = typer.Argument(..., help="The username to be **created**")):
+def create(
+    username: str = doctyper.Argument(..., help="The username to be **created**"),
+):
     """
     **Create** a new *shiny* user. :sparkles:
 
@@ -21,8 +23,8 @@ def create(username: str = typer.Argument(..., help="The username to be **create
 
 @app.command(help="**Delete** a user with *USERNAME*.")
 def delete(
-    username: str = typer.Argument(..., help="The username to be **deleted**"),
-    force: bool = typer.Option(False, help="Force the **deletion** :boom:"),
+    username: str = doctyper.Argument(..., help="The username to be **deleted**"),
+    force: bool = doctyper.Option(False, help="Force the **deletion** :boom:"),
 ):
     """
     Some internal utility function to delete.

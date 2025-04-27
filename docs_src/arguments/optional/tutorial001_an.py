@@ -1,10 +1,10 @@
-import typer
+import doctyper
 from typing_extensions import Annotated
 
 
-def main(name: Annotated[str, typer.Argument()]):
+def main(name: Annotated[str, doctyper.Argument()]):
     print(f"Hello {name}")
 
 
 if __name__ == "__main__":
-    typer.run(main)
+    doctyper.run(main)

@@ -1,6 +1,6 @@
 from datetime import datetime
 
-import typer
+import doctyper
 
 
 def main(birth: datetime):
@@ -9,4 +9,4 @@ def main(birth: datetime):
 
 
 if __name__ == "__main__":
-    typer.run(main)
+    doctyper.run(main)
