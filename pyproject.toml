@@ -3,9 +3,9 @@ requires = ["pdm-backend"]
 build-backend = "pdm.backend"
 
 [project]
-name = "typer"
+name = "doctyper"
 dynamic = ["version"]
-description = "Typer, build great CLIs. Easy to code. Based on Python type hints."
+description = "Wrapper around Typer using Google-Doc strings for CLI descriptions."
 authors = [
     {name = "Sebastián Ramírez", email = "tiangolo@gmail.com"},
 ]
@@ -35,6 +35,7 @@ classifiers = [
 ]
 dependencies = [
     "click >= 8.0.0",
+    "docstring-parser",
     "typing-extensions >= 3.7.4.3",
 ]
 readme = "README.md"
@@ -52,7 +53,7 @@ standard = [
 ]
 
 [tool.pdm]
-version = { source = "file", path = "typer/__init__.py" }
+version = { source = "file", path = "doctyper/__init__.py" }
 distribution = true
 
 [tool.pdm.build]
@@ -80,7 +81,8 @@ include-optional-dependencies = ["standard"]
 optional-dependencies = {}
 
 [tool.tiangolo._internal-slim-build.packages.typer.project.scripts]
-typer = "typer.cli:main"
+# typer = "typer.cli:main"
+doctyper = "doctyper.cli:main"
 
 [tool.tiangolo._internal-slim-build.packages.typer-cli.project]
 name = "typer-cli"
@@ -100,7 +102,7 @@ optional-dependencies = {}
 # than the one for a default included file.
 # By not using "*" and explicitly excluding the top level packages, they get a higher
 # score than the default inclusion
-excludes = ["typer", "tests", "pdm_build.py"]
+excludes = ["doctyper", "typer", "tests", "pdm_build.py"]
 # source-includes needs to explicitly define some value because PDM will check the
 # truthy value of the list, and if empty, will include some defaults, including "tests",
 # an empty string doesn't match anything, but makes the list truthy, so that PDM
@@ -126,10 +128,10 @@ data_file = "coverage/.coverage"
 source = [
     "docs_src",
     "tests",
-    "typer"
+    "doctyper"
 ]
 omit = [
-    "typer/_typing.py"
+    "doctyper/_typing.py"
 ]
 context = '${CONTEXT}'
 relative_files = true
@@ -194,7 +196,7 @@ ignore = [
 "docs_src/using_click/tutorial001.py" = ["B007"]
 
 [tool.ruff.lint.isort]
-known-third-party = ["typer", "click"]
+known-third-party = ["doctyper", "typer", "click"]
 # For docs_src/subcommands/tutorial003/
 known-first-party = ["reigns", "towns", "lands", "items", "users"]
 

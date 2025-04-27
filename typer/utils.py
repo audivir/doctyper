@@ -3,6 +3,8 @@ import sys
 from copy import copy
 from typing import Any, Callable, Dict, List, Tuple, Type, cast
 
+import docstring_parser
+
 from ._typing import Annotated, get_args, get_origin, get_type_hints
 from .models import ArgumentInfo, OptionInfo, ParameterInfo, ParamMeta
 
@@ -104,12 +106,26 @@ def _split_annotation_from_typer_annotations(
     ]
 
 
+def _get_param_help_from_docstring(func: Callable[..., Any]) -> Dict[str, str]:
+    doc = inspect.getdoc(func)
+    if not doc:
+        return {}
+    parsed_doc = docstring_parser.parse(doc)
+    return {
+        doc_param.arg_name: doc_param.description
+        for doc_param in parsed_doc.meta
+        if isinstance(doc_param, docstring_parser.DocstringParam)
+        and doc_param.description
+    }
+
+
 def get_params_from_function(func: Callable[..., Any]) -> Dict[str, ParamMeta]:
     if sys.version_info >= (3, 10):
         signature = inspect.signature(func, eval_str=True)
     else:
         signature = inspect.signature(func)
 
+    doc_param_help = _get_param_help_from_docstring(func)
     type_hints = get_type_hints(func)
     params = {}
     for param in signature.parameters.values():
@@ -183,6 +199,15 @@ def get_params_from_function(func: Callable[..., Any]) -> Dict[str, ParamMeta]:
                     argument_name=param.name, param_type=type(parameter_info)
                 )
             default = parameter_info
+        else:
+            param_help = doc_param_help.get(param.name)
+            if param_help:
+                if default is param.empty:
+                    default = ArgumentInfo(
+                        default=..., help=param_help, show_default=False
+                    )
+                else:
+                    default = OptionInfo(default=default, help=param_help)
 
         params[param.name] = ParamMeta(
             name=param.name, default=default, annotation=annotation

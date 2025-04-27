@@ -1,3 +1,51 @@
+# doctyper
+
+A wrapper around [Typer](https://typer.tiangolo.com) to simplify the creation of command-line interfaces (CLIs).
+It use parsed docstrings to extract the arguments and options for the CLI commands.
+
+- Features:
+    - Use Google-style docstrings to create help strings for arguments and options.
+    - Use type-aliased identifiers
+    - Interpret Literals (for choices)
+    - `SlimTyper` disables completion and pretty traceback
+
+```python
+from typing import Literal
+
+import doctyper
+from typing_extensions import TypeAlias
+
+Alias: TypeAlias = int
+
+
+def main(
+    arg: str,
+    alias: Alias,  # output uses original name
+    lit_arg: Literal["arg", "other"],  # only strings allowed for literals
+    lit_opt: Literal["opt", "other"] = "opt",
+    other: int = 1,
+    flag: bool = False,
+) -> None:
+    """Run the main application.
+
+    Args:
+        arg: String argument.
+        alias: Argument using a aliased identifier.
+        other: Integer argument with default.
+        lit_arg: Argument with choices.
+        lit_opt: Option with choices and a default.
+        flag: Boolean flag.
+    """
+
+
+if __name__ == "__main__":
+    app = doctyper.SlimTyper()
+    app.command()(main)
+    app()
+```
+
+![image](doctyper_output.png)
+
 <p align="center">
   <a href="https://typer.tiangolo.com"><img src="https://typer.tiangolo.com/img/logo-margin/logo-margin-vector.svg#only-light" alt="Typer"></a>
 

@@ -15,8 +15,10 @@ from typing import Any, Callable, Dict, List, Optional, Sequence, Tuple, Type, U
 from uuid import UUID
 
 import click
+import docstring_parser
+from typing_extensions import TypeAliasType
 
-from ._typing import get_args, get_origin, is_union
+from ._typing import get_args, get_origin, is_literal_type, is_union, literal_values
 from .completion import get_completion_inspect_parameters
 from .core import (
     DEFAULT_MARKUP_MODE,
@@ -340,6 +342,19 @@ class Typer:
             raise e
 
 
+class SlimTyper(Typer):
+    """Disables completions and pretty traceback per default."""
+
+    def __init__(self, **kwargs: Any):
+        add_completion = kwargs.pop("add_completion", False)
+        pretty_exceptions_enable = kwargs.pop("pretty_exceptions_enable", False)
+        super().__init__(
+            add_completion=add_completion,
+            pretty_exceptions_enable=pretty_exceptions_enable,
+            **kwargs,
+        )
+
+
 def get_group(typer_instance: Typer) -> TyperGroup:
     group = get_group_from_info(
         TyperInfo(typer_instance),
@@ -398,7 +413,7 @@ def solve_typer_info_help(typer_info: TyperInfo) -> str:
             return inspect.cleandoc(callback_help or "")
     except AttributeError:
         pass
-    # Priority 3: Explicit value was set in sub_app = typer.Typer()
+    # Priority 3: Explicit value was set in sub_app = doctyper.Typer()
     try:
         instance_help = typer_info.typer_instance.info.help
         if not isinstance(instance_help, DefaultPlaceholder):
@@ -419,7 +434,7 @@ def solve_typer_info_help(typer_info: TyperInfo) -> str:
                 return doc
     except AttributeError:
         pass
-    # Priority 6: Implicit inference from callback docstring in typer.Typer()
+    # Priority 6: Implicit inference from callback docstring in doctyper.Typer()
     try:
         instance_callback = typer_info.typer_instance.info.callback
         if not isinstance(instance_callback, DefaultPlaceholder):
@@ -450,7 +465,7 @@ def solve_typer_info_defaults(typer_info: TyperInfo) -> TyperInfo:
                 continue
         except AttributeError:
             pass
-        # Priority 3: Value set in subapp = typer.Typer()
+        # Priority 3: Value set in subapp = doctyper.Typer()
         try:
             instance_value = getattr(
                 typer_info.typer_instance.info,  # type: ignore
@@ -576,6 +591,16 @@ def get_command_from_info(
     use_help = command_info.help
     if use_help is None:
         use_help = inspect.getdoc(command_info.callback)
+        if use_help:
+            parsed_help = docstring_parser.parse(use_help)
+            # only if there is meta data in the docstring use parsing
+            if parsed_help.meta:
+                if parsed_help.style != docstring_parser.DocstringStyle.GOOGLE:
+                    raise ValueError("Docstring style must be Google")
+                use_help = parsed_help.short_description or ""
+                if parsed_help.long_description:
+                    # add blank line inbetween
+                    use_help += "\n\n" + parsed_help.long_description
     else:
         use_help = inspect.cleandoc(use_help)
     (
@@ -704,6 +729,9 @@ def get_callback(
 def get_click_type(
     *, annotation: Any, parameter_info: ParameterInfo
 ) -> click.ParamType:
+    if isinstance(annotation, TypeAliasType):
+        annotation = annotation.__value__
+
     if parameter_info.click_type is not None:
         return parameter_info.click_type
 
@@ -789,6 +817,13 @@ def get_click_type(
     elif lenient_issubclass(annotation, Enum):
         return click.Choice(
             [item.value for item in annotation],
+            case_sensitive=parameter_info.case_sensitive,
+        )
+    elif is_literal_type(annotation):
+        if any(not isinstance(item, str) for item in literal_values(annotation)):
+            raise TypeError("Literal values must be strings")
+        return click.Choice(
+            literal_values(annotation),
             case_sensitive=parameter_info.case_sensitive,
         )
     raise RuntimeError(f"Type not yet supported: {annotation}")  # pragma: no cover
@@ -1102,8 +1137,8 @@ def launch(url: str, wait: bool = False, locate: bool = False) -> int:
 
     Examples::
 
-        typer.launch("https://typer.tiangolo.com/")
-        typer.launch("/my/downloaded/file", locate=True)
+        doctyper.launch("https://typer.tiangolo.com/")
+        doctyper.launch("/my/downloaded/file", locate=True)
 
     :param url: URL or filename of the thing to launch.
     :param wait: Wait for the program to exit before returning. This

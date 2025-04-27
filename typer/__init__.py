@@ -26,6 +26,7 @@ from click.utils import get_text_stream as get_text_stream
 from click.utils import open_file as open_file
 
 from . import colors as colors
+from .main import SlimTyper as SlimTyper
 from .main import Typer as Typer
 from .main import launch as launch
 from .main import run as run
