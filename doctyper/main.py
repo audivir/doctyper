@@ -16,7 +16,11 @@ from uuid import UUID
 
 import click
 import docstring_parser
-from typing_extensions import TypeAliasType
+
+if sys.version_info >= (3, 12):
+    from typing import TypeAliasType
+else:
+    from typing_extensions import TypeAliasType
 
 from ._typing import get_args, get_origin, is_literal_type, is_union, literal_values
 from .completion import get_completion_inspect_parameters
