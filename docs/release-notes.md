@@ -2,6 +2,8 @@
 
 ## Latest Changes
 
+## 0.15.3
+
 ### Fixes
 
 * 🐛 Ensure that autocompletion works for `Path` arguments/options. PR [#1138](https://github.com/fastapi/typer/pull/1138) by [@svlandeg](https://github.com/svlandeg).
@@ -9,6 +11,7 @@
 
 ### Internal
 
+* ⬆ Bump astral-sh/setup-uv from 5 to 6. PR [#1203](https://github.com/fastapi/typer/pull/1203) by [@dependabot[bot]](https://github.com/apps/dependabot).
 * ⬆ Bump ruff from 0.11.2 to 0.11.6. PR [#1200](https://github.com/fastapi/typer/pull/1200) by [@dependabot[bot]](https://github.com/apps/dependabot).
 * ⬆ [pre-commit.ci] pre-commit autoupdate. PR [#1196](https://github.com/fastapi/typer/pull/1196) by [@pre-commit-ci[bot]](https://github.com/apps/pre-commit-ci).
 * ⬆ Bump ruff from 0.11.1 to 0.11.2. PR [#1186](https://github.com/fastapi/typer/pull/1186) by [@dependabot[bot]](https://github.com/apps/dependabot).
