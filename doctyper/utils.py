@@ -199,6 +199,9 @@ def get_params_from_function(func: Callable[..., Any]) -> Dict[str, ParamMeta]:
                     argument_name=param.name, param_type=type(parameter_info)
                 )
             default = parameter_info
+
+            if not default.help:
+                default.help = doc_param_help.get(param.name)
         else:
             param_help = doc_param_help.get(param.name)
             if param_help:

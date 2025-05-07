@@ -4,25 +4,50 @@
 # mypy: ignore-errors
 
 import sys
+import types
 from typing import (
     Any,
     Callable,
+    ForwardRef,
     Optional,
     Tuple,
     Type,
     Union,
 )
 
+from eval_type_backport import eval_type_backport
+
+if sys.version_info >= (3, 12):
+    from typing import TypeAliasType
+else:
+    from typing_extensions import TypeAliasType
+
+if sys.version_info >= (3, 10):
+    from typing import TypeAlias
+else:
+    from typing_extensions import TypeAlias
+
 if sys.version_info >= (3, 9):
-    from typing import Annotated, Literal, get_args, get_origin, get_type_hints
+    from typing import (
+        Annotated,
+        Literal,
+        _AnnotatedAlias,
+        get_args,
+        get_origin,
+    )
 else:
     from typing_extensions import (
         Annotated,
         Literal,
+        _AnnotatedAlias,
         get_args,
         get_origin,
-        get_type_hints,
     )
+
+if sys.version_info >= (3, 9):
+    from typing import _strip_annotations
+else:
+    from typing_extensions import _strip_extras as _strip_annotations
 
 if sys.version_info < (3, 10):
 
@@ -48,6 +73,8 @@ __all__ = (
     "get_args",
     "get_origin",
     "get_type_hints",
+    "TypeAlias",
+    "TypeAliasType",
 )
 
 
@@ -93,7 +120,15 @@ def is_callable_type(type_: Type[Any]) -> bool:
 
 
 def is_literal_type(type_: Type[Any]) -> bool:
-    return Literal is not None and get_origin(type_) is Literal
+    from typing_extensions import Literal as _ExtLiteral
+
+    if get_origin(type_) is _ExtLiteral:
+        return True
+    if sys.version_info >= (3, 8):
+        from typing import Literal as _Literal
+
+        return get_origin(type_) is _Literal
+    return False
 
 
 def literal_values(type_: Type[Any]) -> Tuple[Any, ...]:
@@ -111,3 +146,97 @@ def all_literal_values(type_: Type[Any]) -> Tuple[Any, ...]:
 
     values = literal_values(type_)
     return tuple(x for value in values for x in all_literal_values(value))
+
+
+def get_type_hints(obj, globalns=None, localns=None, include_extras=False):
+    """Return type hints for an object.
+
+    This is often the same as obj.__annotations__, but it handles
+    forward references encoded as string literals and recursively replaces all
+    'Annotated[T, ...]' with 'T' (unless 'include_extras=True').
+
+    The argument may be a module, class, method, or function. The annotations
+    are returned as a dictionary. For classes, annotations include also
+    inherited members.
+
+    TypeError is raised if the argument is not of a type that can contain
+    annotations, and an empty dictionary is returned if no annotations are
+    present.
+
+    BEWARE -- the behavior of globalns and localns is counterintuitive
+    (unless you are familiar with how eval() and exec() work).  The
+    search order is locals first, then globals.
+
+    - If no dict arguments are passed, an attempt is made to use the
+      globals from obj (or the respective module's globals for classes),
+      and these are also used as the locals.  If the object does not appear
+      to have globals, an empty dictionary is used.  For classes, the search
+      order is globals first then locals.
+
+    - If one dict argument is passed, it is used for both globals and
+      locals.
+
+    - If two dict arguments are passed, they specify globals and
+      locals, respectively.
+    """
+    if getattr(obj, "__no_type_check__", None):
+        return {}
+    # We don't need class evaluations for analyzing commands.
+    # shortens the copied function body a bit.
+    if isinstance(obj, type):
+        raise TypeError("Class annotations are not supported.")
+
+    if globalns is None:
+        if isinstance(obj, types.ModuleType):
+            globalns = obj.__dict__
+        else:
+            nsobj = obj
+            # Find globalns for the unwrapped object.
+            while hasattr(nsobj, "__wrapped__"):
+                nsobj = nsobj.__wrapped__
+            globalns = getattr(nsobj, "__globals__", {})
+        if localns is None:
+            localns = globalns
+    elif localns is None:
+        localns = globalns
+    hints = getattr(obj, "__annotations__", None)
+    if hints is None:
+        # Return empty annotations for something that _could_ have them.
+        if isinstance(
+            obj,
+            (
+                types.FunctionType,
+                types.MethodType,
+                types.BuiltinFunctionType,
+                types.MethodWrapperType,
+            ),
+        ):
+            return {}
+        else:
+            raise TypeError(
+                "{!r} is not a module, class, method, or function.".format(obj)  # noqa: UP032
+            )
+    hints = dict(hints)
+    type_params = getattr(obj, "__type_params__", ())
+    # TypeVarTuple etc. not yet supported
+    if type_params:
+        raise TypeError("Type parameters are not yet supported.")
+    for name, value in hints.items():
+        if value is None:
+            value = type(None)
+        if isinstance(value, str):
+            # class-level forward refs were handled above, this must be either
+            # a module-level annotation or a function argument annotation
+            value = ForwardRef(
+                value,
+                is_argument=not isinstance(obj, types.ModuleType),
+                # is_class is False per default and not available in Python 3.8
+            )
+        if isinstance(value, _AnnotatedAlias):
+            value = get_args(value)[0]
+        hints[name] = eval_type_backport(value, globalns, localns)
+    return (
+        hints
+        if include_extras
+        else {k: _strip_annotations(t) for k, t in hints.items()}
+    )

@@ -11,18 +11,32 @@ from functools import update_wrapper
 from pathlib import Path
 from traceback import FrameSummary, StackSummary
 from types import TracebackType
-from typing import Any, Callable, Dict, List, Optional, Sequence, Tuple, Type, Union
+from typing import (
+    Any,
+    Callable,
+    Dict,
+    ForwardRef,
+    List,
+    Optional,
+    Sequence,
+    Tuple,
+    Type,
+    Union,
+)
 from uuid import UUID
 
 import click
 import docstring_parser
 
-if sys.version_info >= (3, 12):
-    from typing import TypeAliasType
-else:
-    from typing_extensions import TypeAliasType
-
-from ._typing import get_args, get_origin, is_literal_type, is_union, literal_values
+from ._typing import (
+    TypeAliasType,
+    eval_type_backport,
+    get_args,
+    get_origin,
+    is_literal_type,
+    is_union,
+    literal_values,
+)
 from .completion import get_completion_inspect_parameters
 from .core import (
     DEFAULT_MARKUP_MODE,
@@ -865,6 +879,10 @@ def get_click_param(
         annotation = param.annotation
     else:
         annotation = str
+
+    if isinstance(annotation, ForwardRef):
+        annotation = eval_type_backport(annotation)
+
     main_type = annotation
     is_list = False
     is_tuple = False

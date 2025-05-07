@@ -1,9 +1,14 @@
 import re
-from typing import Literal
+import sys
+from typing import TYPE_CHECKING
 
 import doctyper
 import pytest
+from doctyper._typing import Annotated, Literal, TypeAliasType
 from doctyper.testing import CliRunner
+
+if TYPE_CHECKING:
+    from typing import Literal
 
 runner = CliRunner()
 
@@ -66,6 +71,40 @@ def test_doc_flag():
     )
 
 
+@pytest.mark.skipif(sys.version_info < (3, 8), reason="Literal is not available")
+def test_choices_typing_literal():
+    from typing import Literal as _Literal
+
+    app = doctyper.SlimTyper()
+
+    @app.command()
+    def main(choice: _Literal["a", "b"]): ...
+
+    result = runner.invoke(app, ["--help"])
+    assert re.search(
+        r"choice\s+CHOICE:\{a\|b\}\s+\[default: None\] \[required\]",
+        result.stdout,
+    )
+
+
+# TODO: why is there a default value?
+
+
+def test_choices_typing_ext_literal():
+    from typing_extensions import Literal as _Literal
+
+    app = doctyper.SlimTyper()
+
+    @app.command()
+    def main(choice: _Literal["a", "b"]): ...
+
+    result = runner.invoke(app, ["--help"])
+    assert re.search(
+        r"choice\s+CHOICE:\{a\|b\}\s+\[default: None\] \[required\]",
+        result.stdout,
+    )
+
+
 def test_choices_help():
     app = doctyper.SlimTyper()
 
@@ -116,4 +155,91 @@ def test_choices_invalid_value():
     assert result.exit_code == 2
     assert (
         "Invalid value for 'CHOICE:{a|b}': 'c' is not one of 'a', 'b'." in result.stdout
+    )
+
+
+def test_future_annotations():
+    app = doctyper.SlimTyper()
+
+    @app.command()
+    def main(
+        opt: "str | None" = None,  # future annotation would convert str | None to "str | None"
+    ):
+        """Docstring.
+
+        Args:
+            opt: String Option with Default.
+        """
+
+    result = runner.invoke(app, ["--help"])
+    assert re.search(
+        r"--opt\s+TEXT\s+String Option with Default\. \[default: None\]", result.stdout
+    )
+
+
+def test_help_preference():
+    app = doctyper.SlimTyper()
+
+    @app.command()
+    def main(
+        doc_opt: Annotated[str, doctyper.Option()] = "string",
+        ann_opt: Annotated[
+            str, doctyper.Option(help="String Option with Annotated Help.")
+        ] = "string",
+    ):  # future annotation would convert str | None to "str | None"
+        """Docstring.
+
+        Args:
+            doc_opt: String Option with Docstring Help.
+            ann_opt: Not shown in help.
+        """
+
+    result = runner.invoke(app, ["--help"])
+    assert re.search(
+        r"--doc-opt\s+TEXT\s+String Option with Docstring Help\. \[default: string\]",
+        result.stdout,
+    )
+    assert re.search(
+        r"--ann-opt\s+TEXT\s+String Option with Annotated Help\. \[default: string\]",
+        result.stdout,
+    )
+
+
+def test_custom_annotated():
+    app = doctyper.SlimTyper()
+
+    @app.command()
+    def main(
+        opt: Annotated["str | None", doctyper.Option(show_default="Custom")] = None,
+    ):  # future annotation would convert str | None to "str | None"
+        """Docstring.
+
+        Args:
+            opt: String Option with Custom Default.
+        """
+
+    result = runner.invoke(app, ["--help"])
+    assert re.search(
+        r"--opt\s+TEXT\s+String Option with Custom Default\. \[default: \(Custom\)\]",
+        result.stdout,
+    )
+
+
+def test_type_alias():
+    app = doctyper.SlimTyper()
+    Alias = TypeAliasType("Alias", Literal["a", "b"])
+
+    @app.command()
+    def main(arg: Alias):
+        """Docstring.
+
+        Args:
+            arg: Aliased argument.
+        """
+
+    # TODO: automatically use the aliased name as metavar?
+
+    result = runner.invoke(app, ["--help"])
+    assert re.search(
+        r"arg\s+ARG:{a\|b}\s+Aliased argument\. \[required\]", result.stdout
     )

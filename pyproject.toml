@@ -39,6 +39,7 @@ classifiers = [
 dependencies = [
     "click >= 8.0.0",
     "docstring-parser",
+    "eval-type-backport",
     "typing-extensions >= 3.7.4.3",
 ]
 readme = "README.md"
