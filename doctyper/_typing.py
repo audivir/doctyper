@@ -49,6 +49,9 @@ else:
         return tp is Union or tp is types.UnionType  # noqa: E721
 
 
+# from python version 3.13 on a DeprecationWarning is raised
+# if no type_params are passed to _eval_type, so we need to pass an empty tuple
+# as we don't need eval_type_backport anymore
 if sys.version_info < (3, 13):
     from eval_type_backport import eval_type_backport as eval_type
 
