@@ -15,7 +15,6 @@ from typing import (
     Any,
     Callable,
     Dict,
-    ForwardRef,
     List,
     Optional,
     Sequence,
@@ -29,11 +28,10 @@ import click
 import docstring_parser
 
 from ._typing import (
-    TypeAliasType,
-    eval_type_backport,
     get_args,
     get_origin,
     is_literal_type,
+    is_type_alias_type,
     is_union,
     literal_values,
 )
@@ -747,7 +745,7 @@ def get_callback(
 def get_click_type(
     *, annotation: Any, parameter_info: ParameterInfo
 ) -> click.ParamType:
-    if isinstance(annotation, TypeAliasType):
+    if is_type_alias_type(type(annotation)):
         annotation = annotation.__value__
 
     if parameter_info.click_type is not None:
@@ -880,8 +878,8 @@ def get_click_param(
     else:
         annotation = str
 
-    if isinstance(annotation, ForwardRef):
-        annotation = eval_type_backport(annotation)
+    if required:
+        parameter_info.show_default = False
 
     main_type = annotation
     is_list = False

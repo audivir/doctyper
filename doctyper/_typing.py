@@ -8,6 +8,7 @@ import types
 from typing import (
     Any,
     Callable,
+    Dict,
     ForwardRef,
     Optional,
     Tuple,
@@ -17,21 +18,10 @@ from typing import (
 
 from eval_type_backport import eval_type_backport
 
-if sys.version_info >= (3, 12):
-    from typing import TypeAliasType
-else:
-    from typing_extensions import TypeAliasType
-
-if sys.version_info >= (3, 10):
-    from typing import TypeAlias
-else:
-    from typing_extensions import TypeAlias
-
 if sys.version_info >= (3, 9):
     from typing import (
         Annotated,
         Literal,
-        _AnnotatedAlias,
         get_args,
         get_origin,
     )
@@ -39,7 +29,6 @@ else:
     from typing_extensions import (
         Annotated,
         Literal,
-        _AnnotatedAlias,
         get_args,
         get_origin,
     )
@@ -73,8 +62,9 @@ __all__ = (
     "get_args",
     "get_origin",
     "get_type_hints",
-    "TypeAlias",
-    "TypeAliasType",
+    "is_type_alias_type",
+    "is_annotated_type",
+    "eval_type_backport",
 )
 
 
@@ -148,7 +138,38 @@ def all_literal_values(type_: Type[Any]) -> Tuple[Any, ...]:
     return tuple(x for value in values for x in all_literal_values(value))
 
 
-def get_type_hints(obj, globalns=None, localns=None, include_extras=False):
+def is_annotated_type(type_: Type[Any]) -> bool:
+    from typing_extensions import Annotated as _ExtAnnotated
+
+    if type_ is _ExtAnnotated:
+        return True
+    if sys.version_info >= (3, 9):
+        from typing import Annotated as _Annotated
+
+        if type_ is _Annotated:
+            return True
+    return False
+
+
+def is_type_alias_type(type_: Type[Any]) -> bool:
+    from typing_extensions import TypeAliasType as _ExtTypeAliasType
+
+    if type_ is _ExtTypeAliasType:
+        return True
+    if sys.version_info >= (3, 12):
+        from typing import TypeAliasType as _TypeAliasType
+
+        if type_ is _TypeAliasType:
+            return True
+    return False
+
+
+def get_type_hints(
+    obj: Callable[..., Any],
+    globalns: Any = None,
+    localns: Any = None,
+    include_extras: bool = False,
+) -> Dict[str, Any]:
     """Return type hints for an object.
 
     This is often the same as obj.__annotations__, but it handles
@@ -232,8 +253,13 @@ def get_type_hints(obj, globalns=None, localns=None, include_extras=False):
                 is_argument=not isinstance(obj, types.ModuleType),
                 # is_class is False per default and not available in Python 3.8
             )
-        if isinstance(value, _AnnotatedAlias):
-            value = get_args(value)[0]
+        if is_annotated_type(get_origin(value)):
+            # Annotated[ForwardRef(...), ...] is evaluated wrongly by eval_type_backport,
+            # so we evaluate the forward ref first and then the annotation
+            args = list(get_args(value))
+            args[0] = eval_type_backport(args[0], globalns, localns)
+            value = type(Annotated[int, "placeholder"])(args[0], tuple(args[1:]))
+
         hints[name] = eval_type_backport(value, globalns, localns)
     return (
         hints

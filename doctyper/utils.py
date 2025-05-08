@@ -1,11 +1,17 @@
 import inspect
 import sys
 from copy import copy
-from typing import Any, Callable, Dict, List, Tuple, Type, cast
+from typing import Any, Callable, Dict, ForwardRef, List, Tuple, Type, cast
 
 import docstring_parser
 
-from ._typing import Annotated, get_args, get_origin, get_type_hints
+from ._typing import (
+    eval_type_backport,
+    get_args,
+    get_origin,
+    get_type_hints,
+    is_annotated_type,
+)
 from .models import ArgumentInfo, OptionInfo, ParameterInfo, ParamMeta
 
 
@@ -96,7 +102,7 @@ class DefaultFactoryAndDefaultValueError(Exception):
 def _split_annotation_from_typer_annotations(
     base_annotation: Type[Any],
 ) -> Tuple[Type[Any], List[ParameterInfo]]:
-    if get_origin(base_annotation) is not Annotated:
+    if not is_annotated_type(get_origin(base_annotation)):  # type: ignore
         return base_annotation, []
     base_annotation, *maybe_typer_annotations = get_args(base_annotation)
     return base_annotation, [
@@ -122,16 +128,29 @@ def _get_param_help_from_docstring(func: Callable[..., Any]) -> Dict[str, str]:
 def get_params_from_function(func: Callable[..., Any]) -> Dict[str, ParamMeta]:
     if sys.version_info >= (3, 10):
         signature = inspect.signature(func, eval_str=True)
+        annotations = {
+            param.name: param.annotation for param in signature.parameters.values()
+        }
     else:
         signature = inspect.signature(func)
+        full_hints = get_type_hints(func, include_extras=True)
+        annotations = {
+            param.name: full_hints.get(param.name, param.annotation)
+            for param in signature.parameters.values()
+        }
 
     doc_param_help = _get_param_help_from_docstring(func)
     type_hints = get_type_hints(func)
+
     params = {}
     for param in signature.parameters.values():
         annotation, typer_annotations = _split_annotation_from_typer_annotations(
-            param.annotation,
+            annotations[param.name]
         )
+
+        if isinstance(annotation, ForwardRef):
+            annotation = eval_type_backport(annotation)
+
         if len(typer_annotations) > 1:
             raise MultipleTyperAnnotationsError(param.name)
 
@@ -206,9 +225,7 @@ def get_params_from_function(func: Callable[..., Any]) -> Dict[str, ParamMeta]:
             param_help = doc_param_help.get(param.name)
             if param_help:
                 if default is param.empty:
-                    default = ArgumentInfo(
-                        default=..., help=param_help, show_default=False
-                    )
+                    default = ArgumentInfo(default=..., help=param_help)
                 else:
                     default = OptionInfo(default=default, help=param_help)
 
