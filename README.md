@@ -8,32 +8,46 @@ It use parsed docstrings to extract the arguments and options for the CLI comman
     - Use type-aliased identifiers
     - Interpret Literals (for choices)
     - `SlimTyper` disables completion and pretty traceback
+    - Enable "str | None" type hints (and __future__ import annotations for python <= 3.10)
+    - Disables show_default for required arguments
 
 ```python
-from typing import Literal
+from __future__ import annotations  # for python < 3.10
 
 import doctyper
-from typing_extensions import TypeAlias
+from typing_extensions import (  # or from typing import ... in newer versions
+    Annotated,
+    Literal,
+    TypeAliasType,
+)
 
-Alias: TypeAlias = int
+Alias = TypeAliasType("Alias", int)  # in >=3.12: type Alias = int
 
 
 def main(
-    arg: str,
-    alias: Alias,  # output uses original name
+    arg: str, # disabled [default: None] in output
+    ann_arg: Annotated[str, doctyper.Argument(help="Supersedes help from docstring.")],
+    alias_arg: Alias,  # output original name
     lit_arg: Literal["arg", "other"],  # only strings allowed for literals
     lit_opt: Literal["opt", "other"] = "opt",
+    ann_opt: Annotated[
+        int, doctyper.Option(help="Supersedes help from docstring.")
+    ] = 1,
     other: int = 1,
+    str_or_none: str | None = None,  # enable "str | None" type hints
     flag: bool = False,
 ) -> None:
     """Run the main application.
 
     Args:
         arg: String argument.
-        alias: Argument using a aliased identifier.
+        ann_arg: This will not be used.
+        alias_arg: Argument using a aliased identifier.
         other: Integer argument with default.
         lit_arg: Argument with choices.
         lit_opt: Option with choices and a default.
+        ann_opt: This will not be used.
+        str_or_none: String argument with a default of None.
         flag: Boolean flag.
     """
 
@@ -44,7 +58,28 @@ if __name__ == "__main__":
     app()
 ```
 
-![image](https://github.com/audivir/doctyper/raw/master/doctyper_output.png)
+```console
+ Usage: t.py [OPTIONS] ARG ANN_ARG ALIAS_ARG LIT_ARG:{arg|other}
+
+ Run the main application.
+
+
+╭─ Arguments ──────────────────────────────────────────────────────────────────────────────────────╮
+│ *    arg            TEXT                 String argument. [required]                             │
+│ *    ann_arg        TEXT                 Supersedes help from docstring. [required]              │
+│ *    alias_arg      INTEGER              Argument using a aliased identifier. [required]         │
+│ *    lit_arg        LIT_ARG:{arg|other}  Argument with choices. [required]                       │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
+│ --lit-opt                     [opt|other]  Option with choices and a default. [default: opt]     │
+│ --ann-opt                     INTEGER      Supersedes help from docstring. [default: 1]          │
+│ --other                       INTEGER      Integer argument with default. [default: 1]           │
+│ --str-or-none                 TEXT         String argument with a default of None.               │
+│                                            [default: None]                                       │
+│ --flag           --no-flag                 Boolean flag. [default: no-flag]                      │
+│ --help                                     Show this message and exit.                           │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+```
 
 <p align="center">
   <a href="https://typer.tiangolo.com"><img src="https://typer.tiangolo.com/img/logo-margin/logo-margin-vector.svg#only-light" alt="Typer"></a>
