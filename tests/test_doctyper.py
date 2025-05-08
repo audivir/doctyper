@@ -1,5 +1,4 @@
 import re
-import sys
 import typing
 from typing import TYPE_CHECKING, Any, Sequence, Type
 
@@ -190,7 +189,8 @@ def test_custom_annotated():
         pytest.param(
             getattr(typing, "TypeAliasType", None),
             marks=pytest.mark.skipif(
-                sys.version_info < (3, 12), reason="TypeAliasType is not available"
+                not hasattr(typing, "TypeAliasType"),
+                reason="TypeAliasType is not available",
             ),
             id="typing.TypeAliasType",
         ),
@@ -216,7 +216,7 @@ def test_typing_type_alias(type_: Type[Any]):
         pytest.param(
             getattr(typing, "Annotated", None),
             marks=pytest.mark.skipif(
-                sys.version_info < (3, 9), reason="Annotated is not available"
+                not hasattr(typing, "Annotated"), reason="Annotated is not available"
             ),
             id="typing.Annotated",
         ),
@@ -240,7 +240,7 @@ def test_typing_annotated(type_: Type[Any]):
         pytest.param(
             getattr(typing, "Literal", None),
             marks=pytest.mark.skipif(
-                sys.version_info < (3, 8), reason="Literal is not available"
+                not hasattr(typing, "Literal"), reason="Literal is not available"
             ),
             id="typing.Literal",
         ),
