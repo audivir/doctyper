@@ -6,7 +6,7 @@ from typing import Any, Callable, Dict, ForwardRef, List, Tuple, Type, cast
 import docstring_parser
 
 from ._typing import (
-    eval_type_backport,
+    eval_type,
     get_args,
     get_origin,
     get_type_hints,
@@ -149,7 +149,7 @@ def get_params_from_function(func: Callable[..., Any]) -> Dict[str, ParamMeta]:
         )
 
         if isinstance(annotation, ForwardRef):
-            annotation = eval_type_backport(annotation)
+            annotation = eval_type(annotation)
 
         if len(typer_annotations) > 1:
             raise MultipleTyperAnnotationsError(param.name)

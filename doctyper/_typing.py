@@ -10,13 +10,12 @@ from typing import (
     Callable,
     Dict,
     ForwardRef,
+    Mapping,
     Optional,
     Tuple,
     Type,
     Union,
 )
-
-from eval_type_backport import eval_type_backport
 
 if sys.version_info >= (3, 9):
     from typing import (
@@ -50,6 +49,22 @@ else:
         return tp is Union or tp is types.UnionType  # noqa: E721
 
 
+if sys.version_info < (3, 13):
+    from eval_type_backport import eval_type_backport as eval_type
+
+else:
+    from typing import _eval_type
+
+    def eval_type(
+        value: Any,
+        globalns: Optional[Dict[str, Any]] = None,
+        localns: Optional[Mapping[str, Any]] = None,
+        try_default: bool = True,
+    ) -> Type[Any]:
+        del try_default  # Unused.
+        return _eval_type(value, globalns, localns, type_params=())
+
+
 __all__ = (
     "NoneType",
     "is_none_type",
@@ -64,7 +79,7 @@ __all__ = (
     "get_type_hints",
     "is_type_alias_type",
     "is_annotated_type",
-    "eval_type_backport",
+    "eval_type",
 )
 
 
@@ -257,10 +272,10 @@ def get_type_hints(
             # Annotated[ForwardRef(...), ...] is evaluated wrongly by eval_type_backport,
             # so we evaluate the forward ref first and then the annotation
             args = list(get_args(value))
-            args[0] = eval_type_backport(args[0], globalns, localns)
+            args[0] = eval_type(args[0], globalns, localns)
             value = type(Annotated[int, "placeholder"])(args[0], tuple(args[1:]))
 
-        hints[name] = eval_type_backport(value, globalns, localns)
+        hints[name] = eval_type(value, globalns, localns)
     return (
         hints
         if include_extras
