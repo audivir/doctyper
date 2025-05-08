@@ -1,16 +1,39 @@
 import re
 import sys
-from typing import TYPE_CHECKING
+import typing
+from typing import TYPE_CHECKING, Any, Sequence, Type
 
 import doctyper
 import pytest
-from doctyper._typing import Annotated, Literal, TypeAliasType
+import typing_extensions
+from doctyper._typing import Annotated, Callable, Literal
 from doctyper.testing import CliRunner
 
 if TYPE_CHECKING:
     from typing import Literal
 
 runner = CliRunner()
+
+
+def assert_run(
+    args: Sequence[str],
+    code: int,
+    expected: str,
+    func: Callable[..., None],
+    regex: bool = True,
+) -> None:
+    app = doctyper.SlimTyper()
+    app.command()(func)
+    result = runner.invoke(app, args)
+    assert result.exit_code == code
+    if regex:
+        assert re.search(expected, result.stdout)
+    else:
+        assert expected in result.stdout
+
+
+def assert_help(expected: str, func: Callable[..., None]) -> None:
+    assert_run(["--help"], 0, expected, func)
 
 
 def test_slim_typer():
@@ -22,9 +45,6 @@ def test_slim_typer():
 
 
 def test_doc_argument():
-    app = doctyper.SlimTyper()
-
-    @app.command()
     def main(arg: str):
         """Docstring.
 
@@ -32,14 +52,10 @@ def test_doc_argument():
             arg: String Argument.
         """
 
-    result = runner.invoke(app, ["--help"])
-    assert re.search(r"arg\s+TEXT\s+String Argument\. \[required\]", result.stdout)
+    assert_help(r"arg\s+TEXT\s+String Argument\. \[required\]", main)
 
 
 def test_doc_option():
-    app = doctyper.SlimTyper()
-
-    @app.command()
     def main(opt: str = 1):
         """Docstring.
 
@@ -47,16 +63,10 @@ def test_doc_option():
             opt: String Option with Default.
         """
 
-    result = runner.invoke(app, ["--help"])
-    assert re.search(
-        r"--opt\s+TEXT\s+String Option with Default\. \[default: 1\]", result.stdout
-    )
+    assert_help(r"--opt\s+TEXT\s+String Option with Default\. \[default: 1\]", main)
 
 
 def test_doc_flag():
-    app = doctyper.SlimTyper()
-
-    @app.command()
     def main(flag: bool = True):
         """Docstring.
 
@@ -64,51 +74,13 @@ def test_doc_flag():
             flag: Boolean Flag with Default.
         """
 
-    result = runner.invoke(app, ["--help"])
-    assert re.search(
+    assert_help(
         r"--flag\s+--no-flag\s+Boolean Flag with Default\. \[default: flag\]",
-        result.stdout,
-    )
-
-
-@pytest.mark.skipif(sys.version_info < (3, 8), reason="Literal is not available")
-def test_choices_typing_literal():
-    from typing import Literal as _Literal
-
-    app = doctyper.SlimTyper()
-
-    @app.command()
-    def main(choice: _Literal["a", "b"]): ...
-
-    result = runner.invoke(app, ["--help"])
-    assert re.search(
-        r"choice\s+CHOICE:\{a\|b\}\s+\[default: None\] \[required\]",
-        result.stdout,
-    )
-
-
-# TODO: why is there a default value?
-
-
-def test_choices_typing_ext_literal():
-    from typing_extensions import Literal as _Literal
-
-    app = doctyper.SlimTyper()
-
-    @app.command()
-    def main(choice: _Literal["a", "b"]): ...
-
-    result = runner.invoke(app, ["--help"])
-    assert re.search(
-        r"choice\s+CHOICE:\{a\|b\}\s+\[default: None\] \[required\]",
-        result.stdout,
+        main,
     )
 
 
 def test_choices_help():
-    app = doctyper.SlimTyper()
-
-    @app.command()
     def main(choice: Literal["a", "b"]):
         """Docstring.
 
@@ -116,33 +88,21 @@ def test_choices_help():
             choice: The valid choices.
         """
 
-    result = runner.invoke(app, ["--help"])
-    assert re.search(
-        r"choice\s+CHOICE:\{a\|b\}\s+The valid choices\. \[required\]",
-        result.stdout,
-    )
+    assert_help(r"choice\s+CHOICE:\{a\|b\}\s+The valid choices\. \[required\]", main)
 
 
 def test_choices_non_string():
-    app = doctyper.SlimTyper()
-
-    @app.command()
     def main(choice: Literal[1, 2]): ...
 
     with pytest.raises(TypeError, match="Literal values must be strings"):
-        runner.invoke(app, ["--help"])
+        assert_help("", main)
 
 
 def test_choices_valid_value():
-    app = doctyper.SlimTyper()
-
-    @app.command()
     def main(choice: Literal["a", "b"]):
         print("The choice was", choice)
 
-    result = runner.invoke(app, ["b"])
-    assert result.exit_code == 0
-    assert "The choice was b" in result.stdout
+    assert_run(["b"], 0, "The choice was b", main, regex=False)
 
 
 def test_choices_invalid_value():
@@ -151,17 +111,24 @@ def test_choices_invalid_value():
     @app.command()
     def main(choice: Literal["a", "b"]): ...
 
-    result = runner.invoke(app, ["c"])
-    assert result.exit_code == 2
-    assert (
-        "Invalid value for 'CHOICE:{a|b}': 'c' is not one of 'a', 'b'." in result.stdout
+    assert_run(
+        ["c"],
+        2,
+        "Invalid value for 'CHOICE:{a|b}': 'c' is not one of 'a', 'b'.",
+        main,
+        regex=False,
     )
 
 
 def test_future_annotations():
-    app = doctyper.SlimTyper()
+    def main(
+        opt: "str | None" = None,  # future annotation would convert str | None to "str | None"
+    ): ...
 
-    @app.command()
+    assert_help(r"--opt\s+TEXT\s+\[default: None\]", main)
+
+
+def test_future_annotations_with_docstring():
     def main(
         opt: "str | None" = None,  # future annotation would convert str | None to "str | None"
     ):
@@ -171,16 +138,10 @@ def test_future_annotations():
             opt: String Option with Default.
         """
 
-    result = runner.invoke(app, ["--help"])
-    assert re.search(
-        r"--opt\s+TEXT\s+String Option with Default\. \[default: None\]", result.stdout
-    )
+    assert_help(r"--opt\s+TEXT\s+String Option with Default\. \[default: None\]", main)
 
 
 def test_help_preference():
-    app = doctyper.SlimTyper()
-
-    @app.command()
     def main(
         doc_opt: Annotated[str, doctyper.Option()] = "string",
         ann_opt: Annotated[
@@ -194,21 +155,17 @@ def test_help_preference():
             ann_opt: Not shown in help.
         """
 
-    result = runner.invoke(app, ["--help"])
-    assert re.search(
+    assert_help(
         r"--doc-opt\s+TEXT\s+String Option with Docstring Help\. \[default: string\]",
-        result.stdout,
+        main,
     )
-    assert re.search(
+    assert_help(
         r"--ann-opt\s+TEXT\s+String Option with Annotated Help\. \[default: string\]",
-        result.stdout,
+        main,
     )
 
 
 def test_custom_annotated():
-    app = doctyper.SlimTyper()
-
-    @app.command()
     def main(
         opt: Annotated["str | None", doctyper.Option(show_default="Custom")] = None,
     ):  # future annotation would convert str | None to "str | None"
@@ -218,18 +175,30 @@ def test_custom_annotated():
             opt: String Option with Custom Default.
         """
 
-    result = runner.invoke(app, ["--help"])
-    assert re.search(
+    assert_help(
         r"--opt\s+TEXT\s+String Option with Custom Default\. \[default: \(Custom\)\]",
-        result.stdout,
+        main,
     )
 
 
-def test_type_alias():
-    app = doctyper.SlimTyper()
-    Alias = TypeAliasType("Alias", Literal["a", "b"])
+@pytest.mark.parametrize(
+    "type_",
+    [
+        pytest.param(
+            typing_extensions.TypeAliasType, id="typing_extensions.TypeAliasType"
+        ),
+        pytest.param(
+            getattr(typing, "TypeAliasType", None),
+            marks=pytest.mark.skipif(
+                sys.version_info < (3, 12), reason="TypeAliasType is not available"
+            ),
+            id="typing.TypeAliasType",
+        ),
+    ],
+)
+def test_typing_type_alias(type_: Type[Any]):
+    Alias = type_("Alias", Literal["a", "b"])
 
-    @app.command()
     def main(arg: Alias):
         """Docstring.
 
@@ -237,9 +206,47 @@ def test_type_alias():
             arg: Aliased argument.
         """
 
-    # TODO: automatically use the aliased name as metavar?
+    assert_help(r"arg\s+ARG:{a\|b}\s+Aliased argument\. \[required\]", main)
 
-    result = runner.invoke(app, ["--help"])
-    assert re.search(
-        r"arg\s+ARG:{a\|b}\s+Aliased argument\. \[required\]", result.stdout
+
+@pytest.mark.parametrize(
+    "type_",
+    [
+        pytest.param(typing_extensions.Annotated, id="typing_extensions.Annotated"),
+        pytest.param(
+            getattr(typing, "Annotated", None),
+            marks=pytest.mark.skipif(
+                sys.version_info < (3, 9), reason="Annotated is not available"
+            ),
+            id="typing.Annotated",
+        ),
+    ],
+)
+def test_typing_annotated(type_: Type[Any]):
+    def main(
+        ann_arg: type_[str, doctyper.Argument(help="Annotated Argument.")],
+    ): ...
+
+    assert_help(
+        r"ann_arg\s+TEXT\s+Annotated Argument\. \[required\]",
+        main,
     )
+
+
+@pytest.mark.parametrize(
+    "type_",
+    [
+        pytest.param(typing_extensions.Literal, id="typing_extensions.Literal"),
+        pytest.param(
+            getattr(typing, "Literal", None),
+            marks=pytest.mark.skipif(
+                sys.version_info < (3, 8), reason="Literal is not available"
+            ),
+            id="typing.Literal",
+        ),
+    ],
+)
+def test_typing_literal(type_: Type[Any]):
+    def main(choice: type_["a", "b"]): ...  # noqa: F821
+
+    assert_help(r"choice\s+CHOICE:\{a\|b\}\s+\[required\]", main)
