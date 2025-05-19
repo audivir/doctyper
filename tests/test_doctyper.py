@@ -119,6 +119,30 @@ def test_choices_invalid_value():
     )
 
 
+def test_choices_help_list():
+    def main(choice: list[Literal["a", "b"]]):
+        """Docstring.
+
+        Args:
+            choice: The valid choices.
+        """
+
+    assert_help(
+        r"choice\s+CHOICE:\{a\|b\}\.\.\.\s+The valid choices\. \[required\]", main
+    )
+
+
+def test_choices_help_tuple():
+    def main(choice: tuple[Literal["a", "b"], int]):
+        """Docstring.
+
+        Args:
+            choice: Tuple with 'a'/'b' and an int.
+        """
+
+    assert_help(r"choice\s+CHOICE\.\.\.\s+Tuple with 'a'/'b' and an int\. \[required\]", main)
+
+
 def test_future_annotations():
     def main(
         opt: "str | None" = None,  # future annotation would convert str | None to "str | None"
