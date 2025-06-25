@@ -26,6 +26,7 @@ from uuid import UUID
 
 import click
 import docstring_parser
+from doctyper._types import TyperChoice
 
 from ._typing import (
     get_args,
@@ -831,7 +832,12 @@ def get_click_type(
             atomic=parameter_info.atomic,
         )
     elif lenient_issubclass(annotation, Enum):
-        return click.Choice(
+        # The custom TyperChoice is only needed for Click < 8.2.0, to parse the
+        # command line values matching them to the enum values. Click 8.2.0 added
+        # support for enum values but reading enum names.
+        # Passing here the list of enum values (instead of just the enum) accounts for
+        # Click < 8.2.0.
+        return TyperChoice(
             [item.value for item in annotation],
             case_sensitive=parameter_info.case_sensitive,
         )
@@ -904,16 +910,16 @@ def get_click_param(
             main_type = get_args(main_type)[0]
             if not is_literal_type(main_type):
                 assert not get_origin(main_type), (
-                "List types with complex sub-types are not currently supported"
-            )
+                    "List types with complex sub-types are not currently supported"
+                )
             is_list = True
         elif lenient_issubclass(origin, Tuple):  # type: ignore
             types = []
             for type_ in get_args(main_type):
                 if not is_literal_type(type_):
                     assert not get_origin(type_), (
-                    "Tuple types with complex sub-types are not currently supported"
-                )
+                        "Tuple types with complex sub-types are not currently supported"
+                    )
                 types.append(
                     get_click_type(annotation=type_, parameter_info=parameter_info)
                 )

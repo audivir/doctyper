@@ -37,7 +37,7 @@ classifiers = [
     "License :: OSI Approved :: MIT License",
 ]
 dependencies = [
-    "click >= 8.0.0,<8.2",
+    "click >= 8.0.0",
     "docstring-parser",
     "eval-type-backport",
     "typing-extensions >= 3.7.4.3",

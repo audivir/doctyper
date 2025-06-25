@@ -38,8 +38,8 @@ def test_root_no_rich():
     doctyper.core.rich = None
     result = runner.invoke(app, ["root"])
     assert result.exit_code == 1
-    assert "The root user is reserved" in result.stdout
-    assert "Aborted!" in result.stdout
+    assert "The root user is reserved" in result.output
+    assert "Aborted!" in result.output
     doctyper.core.rich = rich
 
 
