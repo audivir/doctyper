@@ -35,6 +35,7 @@ from ._typing import (
     is_type_alias_type,
     is_union,
     literal_values,
+    Literal,
 )
 from .completion import get_completion_inspect_parameters
 from .core import (
@@ -902,6 +903,9 @@ def get_click_param(
                 if type_ is NoneType:
                     continue
                 types.append(type_)
+            if all(is_literal_type(typ) for typ in types):
+                combined_args = dict.fromkeys(arg for typ in types for arg in get_args(typ))
+                types = [Literal[tuple(combined_args)]]
             assert len(types) == 1, "Typer Currently doesn't support Union types"
             main_type = types[0]
             origin = get_origin(main_type)

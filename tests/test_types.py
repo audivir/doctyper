@@ -1,9 +1,9 @@
 from enum import Enum
 
-import typer
-from typer.testing import CliRunner
+import doctyper
+from doctyper.testing import CliRunner
 
-app = typer.Typer(context_settings={"token_normalize_func": str.lower})
+app = doctyper.Typer(context_settings={"token_normalize_func": str.lower})
 
 
 class User(str, Enum):

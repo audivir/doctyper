@@ -29,7 +29,7 @@ def main(
     ann_arg: Annotated[str, doctyper.Argument(help="Supersedes help from docstring.")],
     alias_arg: Alias,  # output original name
     lit_arg: Literal["arg", "other"],  # only strings allowed for literals
-    lit_opt: Literal["opt", "other"] = "opt",
+    lit_opt: Literal["opt"] | Literal["other"] = "opt", # literal only unions are supported
     ann_opt: Annotated[
         int, doctyper.Option(help="Supersedes help from docstring.")
     ] = 1,

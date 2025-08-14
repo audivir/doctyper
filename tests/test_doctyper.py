@@ -140,7 +140,29 @@ def test_choices_help_tuple():
             choice: Tuple with 'a'/'b' and an int.
         """
 
-    assert_help(r"choice\s+CHOICE\.\.\.\s+Tuple with 'a'/'b' and an int\. \[required\]", main)
+    assert_help(
+        r"choice\s+CHOICE\.\.\.\s+Tuple with 'a'/'b' and an int\. \[required\]", main
+    )
+
+
+def test_choices_union():
+    def main(choice: Literal["a"] | Literal["b"]):
+        """Docstring.
+
+        Args:
+            choice: The valid choices.
+        """
+
+    assert_help(r"choice\s+CHOICE:\{a\|b\}\s+The valid choices\. \[required\]", main)
+
+
+def test_choices_union_error():
+    def main(choice: Literal["a"] | str): ...
+
+    with pytest.raises(
+        AssertionError, match="Typer Currently doesn't support Union types"
+    ):
+        assert_help("", main)
 
 
 def test_future_annotations():

@@ -31,13 +31,8 @@ def test_call_no_arg_no_rich():
     doctyper.core.rich = None
     result = runner.invoke(app)
     assert result.exit_code != 0
-<<<<<<< HEAD
     assert "Error: Missing argument 'NAME'" in result.stdout
     doctyper.core.rich = rich
-=======
-    assert "Error: Missing argument 'NAME'" in result.output
-    typer.core.rich = rich
->>>>>>> upstream/master
 
 
 def test_call_arg():
