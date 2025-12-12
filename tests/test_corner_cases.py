@@ -1,5 +1,5 @@
-import pytest
 import doctyper.core
+import pytest
 from doctyper.testing import CliRunner
 
 from tests.assets import corner_cases as mod

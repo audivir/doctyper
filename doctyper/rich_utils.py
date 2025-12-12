@@ -9,6 +9,7 @@ from os import getenv
 from typing import Any, DefaultDict, Dict, Iterable, List, Optional, Union
 
 import click
+from doctyper.models import DeveloperExceptionConfig
 from rich import box
 from rich.align import Align
 from rich.columns import Columns
@@ -23,7 +24,6 @@ from rich.table import Table
 from rich.text import Text
 from rich.theme import Theme
 from rich.traceback import Traceback
-from doctyper.models import DeveloperExceptionConfig
 
 if sys.version_info >= (3, 9):
     from typing import Literal

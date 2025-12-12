@@ -10,8 +10,6 @@ import doctyper
 import doctyper.completion
 import pytest
 import shellingham
-import doctyper
-import doctyper.completion
 from doctyper.core import _split_opt
 from doctyper.main import solve_typer_info_defaults, solve_typer_info_help
 from doctyper.models import ParameterInfo, TyperInfo

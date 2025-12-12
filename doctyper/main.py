@@ -29,13 +29,13 @@ import docstring_parser
 from doctyper._types import TyperChoice
 
 from ._typing import (
+    Literal,
     get_args,
     get_origin,
     is_literal_type,
     is_type_alias_type,
     is_union,
     literal_values,
-    Literal,
 )
 from .completion import get_completion_inspect_parameters
 from .core import (

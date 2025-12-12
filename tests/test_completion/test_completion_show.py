@@ -3,7 +3,6 @@ import subprocess
 import sys
 from unittest import mock
 
-import doctyper
 import shellingham
 from doctyper.testing import CliRunner
 

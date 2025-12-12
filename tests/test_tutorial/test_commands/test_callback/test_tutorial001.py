@@ -1,8 +1,8 @@
 import subprocess
 import sys
 
-import pytest
 import doctyper.core
+import pytest
 from doctyper.testing import CliRunner
 
 from docs_src.commands.callback import tutorial001 as mod
