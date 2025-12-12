@@ -1,6 +1,9 @@
 import doctyper
 
+app = doctyper.Typer()
 
+
+@app.command()
 def main(
     id: int = doctyper.Argument(..., min=0, max=1000),
     rank: int = doctyper.Option(0, max=10, clamp=True),
@@ -12,4 +15,4 @@ def main(
 
 
 if __name__ == "__main__":
-    doctyper.run(main)
+    app()

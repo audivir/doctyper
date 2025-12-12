@@ -3,7 +3,10 @@ from typing import List, Optional
 import doctyper
 from typing_extensions import Annotated
 
+app = doctyper.Typer()
 
+
+@app.command()
 def main(user: Annotated[Optional[List[str]], doctyper.Option()] = None):
     if not user:
         print(f"No provided users (raw input = {user})")
@@ -13,4 +16,4 @@ def main(user: Annotated[Optional[List[str]], doctyper.Option()] = None):
 
 
 if __name__ == "__main__":
-    doctyper.run(main)
+    app()

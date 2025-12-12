@@ -1,6 +1,9 @@
 import doctyper
 
+app = doctyper.Typer()
 
+
+@app.command()
 def main(
     name: str,
     lastname: str = doctyper.Option("", help="Last name of person to greet."),
@@ -23,4 +26,4 @@ def main(
 
 
 if __name__ == "__main__":
-    doctyper.run(main)
+    app()

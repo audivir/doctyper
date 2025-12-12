@@ -2,7 +2,10 @@ from typing import Optional
 
 import doctyper
 
+app = doctyper.Typer()
 
+
+@app.command()
 def main(accept: Optional[bool] = doctyper.Option(None, "--accept/--reject")):
     if accept is None:
         print("I don't know what you want yet")
@@ -13,4 +16,4 @@ def main(accept: Optional[bool] = doctyper.Option(None, "--accept/--reject")):
 
 
 if __name__ == "__main__":
-    doctyper.run(main)
+    app()

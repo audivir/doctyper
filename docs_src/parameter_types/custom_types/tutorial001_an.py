@@ -14,6 +14,10 @@ def parse_custom_class(value: str):
     return CustomClass(value * 2)
 
 
+app = doctyper.Typer()
+
+
+@app.command()
 def main(
     custom_arg: Annotated[CustomClass, doctyper.Argument(parser=parse_custom_class)],
     custom_opt: Annotated[
@@ -25,4 +29,4 @@ def main(
 
 
 if __name__ == "__main__":
-    doctyper.run(main)
+    app()

@@ -2,6 +2,8 @@ from typing import Optional
 
 import doctyper
 
+app = doctyper.Typer()
+
 
 def name_callback(value: str):
     print("Validating name")
@@ -10,9 +12,10 @@ def name_callback(value: str):
     return value
 
 
+@app.command()
 def main(name: Optional[str] = doctyper.Option(default=None, callback=name_callback)):
     print(f"Hello {name}")
 
 
 if __name__ == "__main__":
-    doctyper.run(main)
+    app()

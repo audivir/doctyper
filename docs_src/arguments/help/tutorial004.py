@@ -1,6 +1,9 @@
 import doctyper
 
+app = doctyper.Typer()
 
+
+@app.command()
 def main(
     name: str = doctyper.Argument("World", help="Who to greet", show_default=False),
 ):
@@ -11,4 +14,4 @@ def main(
 
 
 if __name__ == "__main__":
-    doctyper.run(main)
+    app()

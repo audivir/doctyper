@@ -1,6 +1,6 @@
 import doctyper
 
-doctyper.main.rich = None
+doctyper.main.HAS_RICH = False
 
 
 app = doctyper.Typer(pretty_exceptions_short=False)

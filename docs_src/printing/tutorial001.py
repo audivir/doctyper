@@ -9,11 +9,14 @@ data = {
     "affiliation": None,
 }
 
+app = doctyper.Typer()
 
+
+@app.command()
 def main():
     print("Here's the data")
     print(data)
 
 
 if __name__ == "__main__":
-    doctyper.run(main)
+    app()

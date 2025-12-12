@@ -3,6 +3,8 @@ from typing import Optional
 import doctyper
 from typing_extensions import Annotated
 
+app = doctyper.Typer()
+
 
 def name_callback(value: str):
     if value != "Camila":
@@ -10,6 +12,7 @@ def name_callback(value: str):
     return value
 
 
+@app.command()
 def main(
     name: Annotated[Optional[str], doctyper.Option(callback=name_callback)] = None,
 ):
@@ -17,4 +20,4 @@ def main(
 
 
 if __name__ == "__main__":
-    doctyper.run(main)
+    app()

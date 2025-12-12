@@ -1,6 +1,9 @@
 import doctyper
 
+app = doctyper.Typer()
 
+
+@app.command()
 def main(
     fullname: str = doctyper.Option(
         "Wade Wilson", show_default="Deadpoolio the amazing's name"
@@ -10,4 +13,4 @@ def main(
 
 
 if __name__ == "__main__":
-    doctyper.run(main)
+    app()

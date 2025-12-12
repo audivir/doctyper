@@ -3,7 +3,10 @@ import time
 import doctyper
 from rich.progress import track
 
+app = doctyper.Typer()
 
+
+@app.command()
 def main():
     total = 0
     for value in track(range(100), description="Processing..."):
@@ -14,4 +17,4 @@ def main():
 
 
 if __name__ == "__main__":
-    doctyper.run(main)
+    app()

@@ -1,6 +1,9 @@
 import doctyper
 
+app = doctyper.Typer()
 
+
+@app.command()
 def main(file: doctyper.FileBinaryRead = doctyper.Option(...)):
     processed_total = 0
     for bytes_chunk in file:
@@ -10,4 +13,4 @@ def main(file: doctyper.FileBinaryRead = doctyper.Option(...)):
 
 
 if __name__ == "__main__":
-    doctyper.run(main)
+    app()

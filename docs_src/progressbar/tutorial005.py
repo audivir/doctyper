@@ -2,7 +2,10 @@ import time
 
 import doctyper
 
+app = doctyper.Typer()
 
+
+@app.command()
 def main():
     total = 0
     with doctyper.progressbar(range(100), label="Processing") as progress:
@@ -14,4 +17,4 @@ def main():
 
 
 if __name__ == "__main__":
-    doctyper.run(main)
+    app()

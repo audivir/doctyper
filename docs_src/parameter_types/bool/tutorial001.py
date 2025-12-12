@@ -1,6 +1,9 @@
 import doctyper
 
+app = doctyper.Typer()
 
+
+@app.command()
 def main(force: bool = doctyper.Option(False, "--force")):
     if force:
         print("Forcing operation")
@@ -9,4 +12,4 @@ def main(force: bool = doctyper.Option(False, "--force")):
 
 
 if __name__ == "__main__":
-    doctyper.run(main)
+    app()

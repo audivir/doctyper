@@ -1,15 +1,12 @@
 import subprocess
 import sys
 
-import doctyper
 from doctyper.testing import CliRunner
 
 from docs_src.parameter_types.datetime import tutorial002_an as mod
 
 runner = CliRunner()
-
-app = doctyper.Typer()
-app.command()(mod.main)
+app = mod.app
 
 
 def test_main():

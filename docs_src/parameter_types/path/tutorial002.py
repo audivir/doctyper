@@ -2,7 +2,10 @@ from pathlib import Path
 
 import doctyper
 
+app = doctyper.Typer()
 
+
+@app.command()
 def main(
     config: Path = doctyper.Option(
         ...,
@@ -19,4 +22,4 @@ def main(
 
 
 if __name__ == "__main__":
-    doctyper.run(main)
+    app()

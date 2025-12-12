@@ -3,7 +3,10 @@ from typing import Tuple
 import doctyper
 from typing_extensions import Annotated
 
+app = doctyper.Typer()
 
+
+@app.command()
 def main(
     names: Annotated[
         Tuple[str, str, str],
@@ -15,4 +18,4 @@ def main(
 
 
 if __name__ == "__main__":
-    doctyper.run(main)
+    app()

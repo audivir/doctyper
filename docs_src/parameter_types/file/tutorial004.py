@@ -1,6 +1,9 @@
 import doctyper
 
+app = doctyper.Typer()
 
+
+@app.command()
 def main(file: doctyper.FileBinaryWrite = doctyper.Option(...)):
     first_line_str = "some settings\n"
     # You cannot write str directly to a binary file, you have to encode it to get bytes
@@ -14,4 +17,4 @@ def main(file: doctyper.FileBinaryWrite = doctyper.Option(...)):
 
 
 if __name__ == "__main__":
-    doctyper.run(main)
+    app()

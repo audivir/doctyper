@@ -1,6 +1,9 @@
 import doctyper
 
+app = doctyper.Typer()
 
+
+@app.command()
 def main(
     name: str,
     lastname: str = doctyper.Option(..., prompt="Please tell me your last name"),
@@ -9,4 +12,4 @@ def main(
 
 
 if __name__ == "__main__":
-    doctyper.run(main)
+    app()

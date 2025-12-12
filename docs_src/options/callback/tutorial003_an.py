@@ -3,6 +3,8 @@ from typing import Optional
 import doctyper
 from typing_extensions import Annotated
 
+app = doctyper.Typer()
+
 
 def name_callback(ctx: doctyper.Context, value: str):
     if ctx.resilient_parsing:
@@ -13,6 +15,7 @@ def name_callback(ctx: doctyper.Context, value: str):
     return value
 
 
+@app.command()
 def main(
     name: Annotated[Optional[str], doctyper.Option(callback=name_callback)] = None,
 ):
@@ -20,4 +23,4 @@ def main(
 
 
 if __name__ == "__main__":
-    doctyper.run(main)
+    app()

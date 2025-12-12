@@ -8,13 +8,12 @@ import doctyper
 import shellingham
 from doctyper.testing import CliRunner
 
-from docs_src.commands.index import tutorial001 as mod
+from docs_src.typer_app import tutorial001 as mod
 
 from ..utils import requires_completion_permission
 
 runner = CliRunner()
-app = doctyper.Typer()
-app.command()(mod.main)
+app = mod.app
 
 
 @requires_completion_permission

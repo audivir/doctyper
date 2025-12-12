@@ -2,7 +2,10 @@ from typing import List, Optional
 
 import doctyper
 
+app = doctyper.Typer()
 
+
+@app.command()
 def main(user: Optional[List[str]] = doctyper.Option(None)):
     if not user:
         print(f"No provided users (raw input = {user})")
@@ -12,4 +15,4 @@ def main(user: Optional[List[str]] = doctyper.Option(None)):
 
 
 if __name__ == "__main__":
-    doctyper.run(main)
+    app()

@@ -3,7 +3,10 @@ from datetime import datetime
 import doctyper
 from typing_extensions import Annotated
 
+app = doctyper.Typer()
 
+
+@app.command()
 def main(
     launch_date: Annotated[
         datetime,
@@ -16,4 +19,4 @@ def main(
 
 
 if __name__ == "__main__":
-    doctyper.run(main)
+    app()

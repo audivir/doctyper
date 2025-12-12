@@ -3,7 +3,10 @@ from typing import Optional
 
 import doctyper
 
+app = doctyper.Typer()
 
+
+@app.command()
 def main(config: Optional[Path] = doctyper.Option(None)):
     if config is None:
         print("No config file")
@@ -18,4 +21,4 @@ def main(config: Optional[Path] = doctyper.Option(None)):
 
 
 if __name__ == "__main__":
-    doctyper.run(main)
+    app()

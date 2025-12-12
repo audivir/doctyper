@@ -1,7 +1,8 @@
 import subprocess
 import sys
 
-import doctyper
+import pytest
+import doctyper.core
 from doctyper.testing import CliRunner
 
 from docs_src.commands.callback import tutorial001 as mod
@@ -19,15 +20,13 @@ def test_help():
     assert "--no-verbose" in result.output
 
 
-def test_help_no_rich():
-    rich = doctyper.core.rich
-    doctyper.core.rich = None
+def test_help_no_rich(monkeypatch: pytest.MonkeyPatch):
+    monkeypatch.setattr(doctyper.core, "HAS_RICH", False)
     result = runner.invoke(app, ["--help"])
     assert result.exit_code == 0
     assert "Manage users in the awesome CLI app." in result.output
     assert "--verbose" in result.output
     assert "--no-verbose" in result.output
-    doctyper.core.rich = rich
 
 
 def test_create():

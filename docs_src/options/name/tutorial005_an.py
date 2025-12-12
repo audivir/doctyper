@@ -1,7 +1,10 @@
 import doctyper
 from typing_extensions import Annotated
 
+app = doctyper.Typer()
 
+
+@app.command()
 def main(
     name: Annotated[str, doctyper.Option("--name", "-n")],
     formal: Annotated[bool, doctyper.Option("--formal", "-f")] = False,
@@ -13,4 +16,4 @@ def main(
 
 
 if __name__ == "__main__":
-    doctyper.run(main)
+    app()

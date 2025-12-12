@@ -1,16 +1,12 @@
 import subprocess
 import sys
 
-import doctyper
-import doctyper.core
 from doctyper.testing import CliRunner
 
 from docs_src.arguments.help import tutorial007 as mod
 
 runner = CliRunner()
-
-app = doctyper.Typer()
-app.command()(mod.main)
+app = mod.app
 
 
 def test_help():

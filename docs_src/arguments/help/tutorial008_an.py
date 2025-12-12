@@ -1,7 +1,10 @@
 import doctyper
 from typing_extensions import Annotated
 
+app = doctyper.Typer()
 
+
+@app.command()
 def main(name: Annotated[str, doctyper.Argument(hidden=True)] = "World"):
     """
     Say hi to NAME very gently, like Dirk.
@@ -10,4 +13,4 @@ def main(name: Annotated[str, doctyper.Argument(hidden=True)] = "World"):
 
 
 if __name__ == "__main__":
-    doctyper.run(main)
+    app()

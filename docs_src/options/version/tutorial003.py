@@ -4,6 +4,8 @@ import doctyper
 
 __version__ = "0.1.0"
 
+app = doctyper.Typer()
+
 
 def version_callback(value: bool):
     if value:
@@ -17,6 +19,7 @@ def name_callback(name: str):
     return name
 
 
+@app.command()
 def main(
     name: str = doctyper.Option(..., callback=name_callback),
     version: Optional[bool] = doctyper.Option(
@@ -27,4 +30,4 @@ def main(
 
 
 if __name__ == "__main__":
-    doctyper.run(main)
+    app()

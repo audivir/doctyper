@@ -4,7 +4,10 @@ import doctyper
 
 APP_NAME = "my-super-cli-app"
 
+app = doctyper.Typer()
 
+
+@app.command()
 def main():
     app_dir = doctyper.get_app_dir(APP_NAME)
     app_dir_path = Path(app_dir)
@@ -18,4 +21,4 @@ def main():
 
 
 if __name__ == "__main__":
-    doctyper.run(main)
+    app()

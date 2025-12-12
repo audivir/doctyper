@@ -3,7 +3,10 @@ from typing import Optional
 import doctyper
 from typing_extensions import Annotated
 
+app = doctyper.Typer()
 
+
+@app.command()
 def main(
     accept: Annotated[Optional[bool], doctyper.Option("--accept/--reject")] = None,
 ):
@@ -16,4 +19,4 @@ def main(
 
 
 if __name__ == "__main__":
-    doctyper.run(main)
+    app()

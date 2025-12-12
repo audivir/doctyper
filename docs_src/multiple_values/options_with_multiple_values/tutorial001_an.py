@@ -3,7 +3,10 @@ from typing import Tuple
 import doctyper
 from typing_extensions import Annotated
 
+app = doctyper.Typer()
 
+
+@app.command()
 def main(
     user: Annotated[Tuple[str, int, bool], doctyper.Option()] = (None, None, None),
 ):
@@ -17,4 +20,4 @@ def main(
 
 
 if __name__ == "__main__":
-    doctyper.run(main)
+    app()

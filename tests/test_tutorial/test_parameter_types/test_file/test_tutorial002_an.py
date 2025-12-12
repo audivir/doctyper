@@ -2,15 +2,12 @@ import subprocess
 import sys
 from pathlib import Path
 
-import doctyper
 from doctyper.testing import CliRunner
 
 from docs_src.parameter_types.file import tutorial002_an as mod
 
 runner = CliRunner()
-
-app = doctyper.Typer()
-app.command()(mod.main)
+app = mod.app
 
 
 def test_main(tmpdir):

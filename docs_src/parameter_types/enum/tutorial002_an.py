@@ -10,6 +10,10 @@ class NeuralNetwork(str, Enum):
     lstm = "lstm"
 
 
+app = doctyper.Typer()
+
+
+@app.command()
 def main(
     network: Annotated[
         NeuralNetwork, doctyper.Option(case_sensitive=False)
@@ -19,4 +23,4 @@ def main(
 
 
 if __name__ == "__main__":
-    doctyper.run(main)
+    app()

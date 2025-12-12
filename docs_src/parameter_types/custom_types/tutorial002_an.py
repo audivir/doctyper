@@ -18,6 +18,10 @@ class CustomClassParser(click.ParamType):
         return CustomClass(value * 3)
 
 
+app = doctyper.Typer()
+
+
+@app.command()
 def main(
     custom_arg: Annotated[
         CustomClass, doctyper.Argument(click_type=CustomClassParser())
@@ -31,4 +35,4 @@ def main(
 
 
 if __name__ == "__main__":
-    doctyper.run(main)
+    app()

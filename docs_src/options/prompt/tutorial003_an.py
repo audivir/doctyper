@@ -1,7 +1,10 @@
 import doctyper
 from typing_extensions import Annotated
 
+app = doctyper.Typer()
 
+
+@app.command()
 def main(
     project_name: Annotated[
         str, doctyper.Option(prompt=True, confirmation_prompt=True)
@@ -11,4 +14,4 @@ def main(
 
 
 if __name__ == "__main__":
-    doctyper.run(main)
+    app()

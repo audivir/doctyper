@@ -1,4 +1,5 @@
-import doctyper
+import pytest
+import doctyper.core
 from doctyper.testing import CliRunner
 
 from tests.assets import corner_cases as mod
@@ -16,9 +17,9 @@ def test_hidden_option():
     assert "(dynamic)" in result.output
 
 
-def test_hidden_option_no_rich():
-    rich = doctyper.core.rich
-    doctyper.core.rich = None
+def test_hidden_option_no_rich(monkeypatch: pytest.MonkeyPatch):
+    monkeypatch.setattr(doctyper.core, "HAS_RICH", False)
+
     result = runner.invoke(mod.app, ["--help"])
     assert result.exit_code == 0
     assert "Say hello" in result.output
@@ -26,7 +27,6 @@ def test_hidden_option_no_rich():
     assert "/lastname" in result.output
     assert "TEST_LASTNAME" in result.output
     assert "(dynamic)" in result.output
-    doctyper.core.rich = rich
 
 
 def test_coverage_call():

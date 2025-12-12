@@ -1,6 +1,9 @@
 import doctyper
 
+app = doctyper.Typer()
 
+
+@app.command()
 def main(
     name: str = doctyper.Option(..., "--name", "-n"),
     formal: bool = doctyper.Option(False, "--formal", "-f"),
@@ -12,4 +15,4 @@ def main(
 
 
 if __name__ == "__main__":
-    doctyper.run(main)
+    app()

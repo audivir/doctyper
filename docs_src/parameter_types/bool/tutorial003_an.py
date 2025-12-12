@@ -1,7 +1,10 @@
 import doctyper
 from typing_extensions import Annotated
 
+app = doctyper.Typer()
 
+
+@app.command()
 def main(
     force: Annotated[bool, doctyper.Option("--force/--no-force", "-f/-F")] = False,
 ):
@@ -12,4 +15,4 @@ def main(
 
 
 if __name__ == "__main__":
-    doctyper.run(main)
+    app()

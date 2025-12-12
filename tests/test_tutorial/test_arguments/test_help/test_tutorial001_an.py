@@ -1,6 +1,7 @@
 import subprocess
 import sys
 
+import pytest
 import doctyper
 import doctyper.core
 from doctyper.testing import CliRunner
@@ -8,9 +9,7 @@ from doctyper.testing import CliRunner
 from docs_src.arguments.help import tutorial001_an as mod
 
 runner = CliRunner()
-
-app = doctyper.Typer()
-app.command()(mod.main)
+app = mod.app
 
 
 def test_help():
@@ -23,9 +22,8 @@ def test_help():
     assert "[required]" in result.output
 
 
-def test_help_no_rich():
-    rich = doctyper.core.rich
-    doctyper.core.rich = None
+def test_help_no_rich(monkeypatch: pytest.MonkeyPatch):
+    monkeypatch.setattr(doctyper.core, "HAS_RICH", False)
     result = runner.invoke(app, ["--help"])
     assert result.exit_code == 0
     assert "[OPTIONS] NAME" in result.output
@@ -33,7 +31,6 @@ def test_help_no_rich():
     assert "NAME" in result.output
     assert "The name of the user to greet" in result.output
     assert "[required]" in result.output
-    doctyper.core.rich = rich
 
 
 def test_call_arg():

@@ -1,7 +1,10 @@
 import doctyper
 from typing_extensions import Annotated
 
+app = doctyper.Typer()
 
+
+@app.command()
 def main(
     id: Annotated[int, doctyper.Argument(min=0, max=1000)],
     age: Annotated[int, doctyper.Option(min=18)] = 20,
@@ -13,4 +16,4 @@ def main(
 
 
 if __name__ == "__main__":
-    doctyper.run(main)
+    app()

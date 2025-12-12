@@ -3,7 +3,10 @@ import time
 import doctyper
 from rich.progress import Progress, SpinnerColumn, TextColumn
 
+app = doctyper.Typer()
 
+
+@app.command()
 def main():
     with Progress(
         SpinnerColumn(),
@@ -17,4 +20,4 @@ def main():
 
 
 if __name__ == "__main__":
-    doctyper.run(main)
+    app()

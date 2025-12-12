@@ -11,6 +11,10 @@ class Food(str, Enum):
     food_3 = "Cheese"
 
 
+app = doctyper.Typer()
+
+
+@app.command()
 def main(
     groceries: Annotated[List[Food], doctyper.Option()] = [Food.food_1, Food.food_3],
 ):
@@ -18,4 +22,4 @@ def main(
 
 
 if __name__ == "__main__":
-    doctyper.run(main)
+    app()

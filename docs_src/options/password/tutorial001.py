@@ -1,6 +1,9 @@
 import doctyper
 
+app = doctyper.Typer()
 
+
+@app.command()
 def main(
     name: str, email: str = doctyper.Option(..., prompt=True, confirmation_prompt=True)
 ):
@@ -8,4 +11,4 @@ def main(
 
 
 if __name__ == "__main__":
-    doctyper.run(main)
+    app()

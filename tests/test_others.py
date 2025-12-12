@@ -10,10 +10,13 @@ import doctyper
 import doctyper.completion
 import pytest
 import shellingham
+import doctyper
+import doctyper.completion
 from doctyper.core import _split_opt
 from doctyper.main import solve_typer_info_defaults, solve_typer_info_help
 from doctyper.models import ParameterInfo, TyperInfo
 from doctyper.testing import CliRunner
+from typing_extensions import Annotated
 
 from .utils import requires_completion_permission
 
@@ -142,6 +145,48 @@ def test_callback_3_untyped_parameters():
     assert "info name is: main" in result.stdout
     assert "param name is: name" in result.stdout
     assert "value is: Camila" in result.stdout
+
+
+def test_callback_4_list_none():
+    app = doctyper.Typer()
+
+    def names_callback(ctx, param, values: typing.Optional[typing.List[str]]):
+        if values is None:
+            return values
+        return [value.upper() for value in values]
+
+    @app.command()
+    def main(
+        names: typing.Optional[typing.List[str]] = doctyper.Option(
+            None, "--name", callback=names_callback
+        ),
+    ):
+        if names is None:
+            print("Hello World")
+        else:
+            print(f"Hello {', '.join(names)}")
+
+    result = runner.invoke(app, ["--name", "Sideshow", "--name", "Bob"])
+    assert "Hello SIDESHOW, BOB" in result.stdout
+
+    result = runner.invoke(app, [])
+    assert "Hello World" in result.stdout
+
+
+def test_empty_list_default_generator():
+    def empty_list() -> typing.List[str]:
+        return []
+
+    app = doctyper.Typer()
+
+    @app.command()
+    def main(
+        names: Annotated[typing.List[str], doctyper.Option(default_factory=empty_list)],
+    ):
+        print(names)
+
+    result = runner.invoke(app)
+    assert "[]" in result.output
 
 
 def test_completion_argument():

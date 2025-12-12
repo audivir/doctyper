@@ -1,6 +1,9 @@
 import doctyper
 
+app = doctyper.Typer()
 
+
+@app.command()
 def main(username: str):
     if username == "root":
         print("The root user is reserved")
@@ -9,4 +12,4 @@ def main(username: str):
 
 
 if __name__ == "__main__":
-    doctyper.run(main)
+    app()

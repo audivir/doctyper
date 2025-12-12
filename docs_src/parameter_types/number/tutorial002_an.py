@@ -1,7 +1,10 @@
 import doctyper
 from typing_extensions import Annotated
 
+app = doctyper.Typer()
 
+
+@app.command()
 def main(
     id: Annotated[int, doctyper.Argument(min=0, max=1000)],
     rank: Annotated[int, doctyper.Option(max=10, clamp=True)] = 0,
@@ -13,4 +16,4 @@ def main(
 
 
 if __name__ == "__main__":
-    doctyper.run(main)
+    app()
