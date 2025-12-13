@@ -1,5 +1,7 @@
 import re
+import sys
 import typing
+from enum import Enum
 from typing import TYPE_CHECKING, Any, Sequence, Type
 
 import doctyper
@@ -20,15 +22,20 @@ def assert_run(
     expected: str,
     func: Callable[..., None],
     regex: bool = True,
+    stderr: bool = False,
 ) -> None:
     app = doctyper.SlimTyper()
     app.command()(func)
     result = runner.invoke(app, args)
+    output = (
+        result.stdout if sys.version_info < (3, 10) or not stderr else result.stderr
+    )
+    print(output)
     assert result.exit_code == code
     if regex:
-        assert re.search(expected, result.stdout)
+        assert re.search(expected, output)
     else:
-        assert expected in result.stdout
+        assert expected in output
 
 
 def assert_help(expected: str, func: Callable[..., None]) -> None:
@@ -90,18 +97,32 @@ def test_choices_help():
     assert_help(r"choice\s+CHOICE:\{a\|b\}\s+The valid choices\. \[required\]", main)
 
 
+def test_choices_valid_value():
+    def main(choice: Literal["a", "b"]):
+        print(f"The choice was {choice!r}")
+
+    assert_run(["b"], 0, "The choice was 'b'", main, regex=False)
+
+
+@pytest.mark.skipif(
+    sys.version_info >= (3, 10), reason="Non-string values only for Python >= 3.10"
+)
 def test_choices_non_string():
-    def main(choice: Literal[1, 2]): ...
+    def main(choice: Literal[1, 2]):
+        print(f"The choice was {choice!r}")
 
     with pytest.raises(TypeError, match="Literal values must be strings"):
         assert_help("", main)
 
 
-def test_choices_valid_value():
-    def main(choice: Literal["a", "b"]):
-        print("The choice was", choice)
+@pytest.mark.skipif(
+    sys.version_info < (3, 10), reason="Non-string values only for Python >= 3.10"
+)
+def test_choices_other_type():
+    def main(choice: Literal[1, 2]):
+        print(f"The choice was {choice!r}")
 
-    assert_run(["b"], 0, "The choice was b", main, regex=False)
+    assert_run(["2"], 0, "The choice was 2", main, regex=False)
 
 
 def test_choices_invalid_value():
@@ -116,6 +137,7 @@ def test_choices_invalid_value():
         "Invalid value for 'CHOICE:{a|b}': 'c' is not one of 'a', 'b'.",
         main,
         regex=False,
+        stderr=True,
     )
 
 
@@ -146,7 +168,7 @@ def test_choices_help_tuple():
 
 
 def test_choices_union():
-    def main(choice: Literal["a"] | Literal["b"]):
+    def main(choice: 'Literal["a"] | Literal["b"]'):
         """Docstring.
 
         Args:
@@ -157,11 +179,55 @@ def test_choices_union():
 
 
 def test_choices_union_error():
-    def main(choice: Literal["a"] | str): ...
+    def main(choice: 'Literal["a"] | str'): ...
 
     with pytest.raises(
         AssertionError, match="Typer Currently doesn't support Union types"
     ):
+        assert_help("", main)
+
+
+def test_non_unique():
+    def main(choice: Literal["1", 1]): ...
+
+    with pytest.raises(ValueError, match="Literal values must be unique"):
+        assert_help("", main)
+
+    class OneEnum(Enum):
+        ONE_STR = "1"
+        ONE_INT = 1
+
+    def main(choice: OneEnum): ...
+
+    with pytest.raises(ValueError, match="Enum values must be unique"):
+        assert_help("", main)
+
+
+def test_choices_non_unique_case_dependent():
+    def main(choice: Literal["a", "A"]): ...
+
+    assert_help(r"choice\s+CHOICE:\{a\|A\}", main)
+
+    def main(
+        choice: Annotated[Literal["a", "A"], doctyper.Option(case_sensitive=False)],
+    ): ...
+
+    with pytest.raises(ValueError, match="Literal values must be unique"):
+        assert_help("", main)
+
+    class CaseEnum(Enum):
+        A = "a"
+        B = "A"
+
+    def main(choice: CaseEnum): ...
+
+    assert_help(r"choice\s+CHOICE:\{a\|A\}", main)
+
+    def main(
+        choice: Annotated[CaseEnum, doctyper.Option(case_sensitive=False)],
+    ): ...
+
+    with pytest.raises(ValueError, match="Enum values must be unique"):
         assert_help("", main)
 
 

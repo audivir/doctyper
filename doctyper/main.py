@@ -738,6 +738,13 @@ def get_callback(
     return wrapper
 
 
+def are_unique_values(values: Sequence[str], case_sensitive: bool) -> bool:
+    values = [str(value) for value in values]  # stringify values
+    if not case_sensitive:
+        values = [value.lower() for value in values]
+    return len(values) == len(set(values))
+
+
 def get_click_type(
     *, annotation: Any, parameter_info: ParameterInfo
 ) -> click.ParamType:
@@ -832,15 +839,22 @@ def get_click_type(
         # support for enum values but reading enum names.
         # Passing here the list of enum values (instead of just the enum) accounts for
         # Click < 8.2.0.
+        values = [item.value for item in annotation]
+        if not are_unique_values(values, parameter_info.case_sensitive):
+            raise ValueError("Enum values must be unique")
         return TyperChoice(
-            [item.value for item in annotation],
+            values,
             case_sensitive=parameter_info.case_sensitive,
         )
     elif is_literal_type(annotation):
-        # if any(not isinstance(item, str) for item in literal_values(annotation)):
-        #    raise TypeError("Literal values must be strings")
+        values = literal_values(annotation)
+        if not are_unique_values(values, parameter_info.case_sensitive):
+            raise ValueError("Literal values must be unique")
+        if sys.version_info < (3, 10):
+            if any(not isinstance(item, str) for item in values):
+                raise TypeError("Literal values must be strings")
         return click.Choice(
-            literal_values(annotation),
+            values,
             case_sensitive=parameter_info.case_sensitive,
         )
     raise RuntimeError(f"Type not yet supported: {annotation}")  # pragma: no cover
