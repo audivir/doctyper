@@ -2,7 +2,7 @@ import re
 import sys
 import typing
 from enum import Enum
-from typing import TYPE_CHECKING, Any, Sequence, Type
+from typing import TYPE_CHECKING, Any, List, Sequence, Tuple, Type
 
 import doctyper
 import pytest
@@ -141,6 +141,9 @@ def test_choices_invalid_value():
     )
 
 
+@pytest.mark.skipif(
+    sys.version_info < (3, 9), reason="tuple/list not subscriptable in Python < 3.9"
+)
 def test_choices_help_list():
     def main(choice: list[Literal["a", "b"]]):
         """Docstring.
@@ -154,8 +157,43 @@ def test_choices_help_list():
     )
 
 
+@pytest.mark.skipif(
+    sys.version_info >= (3, 9), reason="tuple/list not subscriptable in Python < 3.9"
+)
+def test_choices_help_typing_list():
+    def main(choice: List[Literal["a", "b"]]):
+        """Docstring.
+
+        Args:
+            choice: The valid choices.
+        """
+
+    assert_help(
+        r"choice\s+CHOICE:\{a\|b\}\.\.\.\s+The valid choices\. \[required\]", main
+    )
+
+
+@pytest.mark.skipif(
+    sys.version_info < (3, 9), reason="tuple/list not subscriptable in Python < 3.9"
+)
 def test_choices_help_tuple():
     def main(choice: tuple[Literal["a", "b"], int]):
+        """Docstring.
+
+        Args:
+            choice: Tuple with 'a'/'b' and an int.
+        """
+
+    assert_help(
+        r"choice\s+CHOICE\.\.\.\s+Tuple with 'a'/'b' and an int\. \[required\]", main
+    )
+
+
+@pytest.mark.skipif(
+    sys.version_info >= (3, 9), reason="tuple/list not subscriptable in Python < 3.9"
+)
+def test_choices_help_typing_tuple():
+    def main(choice: Tuple[Literal["a", "b"], int]):
         """Docstring.
 
         Args:
