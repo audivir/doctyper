@@ -839,22 +839,22 @@ def get_click_type(
         # support for enum values but reading enum names.
         # Passing here the list of enum values (instead of just the enum) accounts for
         # Click < 8.2.0.
-        values = [item.value for item in annotation]
-        if not are_unique_values(values, parameter_info.case_sensitive):
+        enum_values = [item.value for item in annotation]
+        if not are_unique_values(enum_values, parameter_info.case_sensitive):
             raise ValueError("Enum values must be unique")
         return TyperChoice(
-            values,
+            enum_values,
             case_sensitive=parameter_info.case_sensitive,
         )
     elif is_literal_type(annotation):
-        values = literal_values(annotation)
-        if not are_unique_values(values, parameter_info.case_sensitive):
+        lit_values = literal_values(annotation)
+        if not are_unique_values(lit_values, parameter_info.case_sensitive):
             raise ValueError("Literal values must be unique")
         if sys.version_info < (3, 10):
-            if any(not isinstance(item, str) for item in values):
+            if any(not isinstance(item, str) for item in lit_values):
                 raise TypeError("Literal values must be strings")
         return click.Choice(
-            values,
+            lit_values,
             case_sensitive=parameter_info.case_sensitive,
         )
     raise RuntimeError(f"Type not yet supported: {annotation}")  # pragma: no cover
