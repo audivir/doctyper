@@ -6,10 +6,10 @@ from pathlib import Path
 from unittest import mock
 
 import click
-import doctyper
-import doctyper.completion
 import pytest
-import shellingham
+import doctyper
+import doctyper._completion_shared
+import doctyper.completion
 from doctyper.core import _split_opt
 from doctyper.main import solve_typer_info_defaults, solve_typer_info_help
 from doctyper.models import ParameterInfo, TyperInfo
@@ -86,7 +86,7 @@ def test_install_invalid_shell():
         print("Hello World")
 
     with mock.patch.object(
-        shellingham, "detect_shell", return_value=("xshell", "/usr/bin/xshell")
+        doctyper._completion_shared, "_get_shell_name", return_value="xshell"
     ):
         result = runner.invoke(app, ["--install-completion"])
         assert "Shell xshell is not supported." in result.stdout
@@ -321,3 +321,21 @@ def test_split_opt():
     prefix, opt = _split_opt("verbose")
     assert prefix == ""
     assert opt == "verbose"
+
+
+def test_options_metadata_typer_default():
+    app = doctyper.Typer(options_metavar="[options]")
+
+    @app.command()
+    def c1():
+        pass  # pragma: no cover
+
+    @app.command(options_metavar="[OPTS]")
+    def c2():
+        pass  # pragma: no cover
+
+    result = runner.invoke(app, ["c1", "--help"])
+    assert "Usage: root c1 [options]" in result.stdout
+
+    result = runner.invoke(app, ["c2", "--help"])
+    assert "Usage: root c2 [OPTS]" in result.stdout
