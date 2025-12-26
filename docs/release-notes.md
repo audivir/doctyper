@@ -4,6 +4,21 @@
 
 ### Internal
 
+* ⬆ Bump mypy from 1.14.1 to 1.18.2. PR [#1382](https://github.com/fastapi/typer/pull/1382) by [@dependabot[bot]](https://github.com/apps/dependabot).
+
+## 0.21.0
+
+### Breaking Changes
+
+* ➖ Drop support for Python 3.8. PR [#1464](https://github.com/fastapi/typer/pull/1464) by [@tiangolo](https://github.com/tiangolo).
+* ➖ Drop support for Python 3.8 in CI. PR [#1463](https://github.com/fastapi/typer/pull/1463) by [@YuriiMotov](https://github.com/YuriiMotov) and [@tiangolo](https://github.com/tiangolo).
+
+### Docs
+
+* 📝 Update code examples to Python 3.9. PR [#1459](https://github.com/fastapi/typer/pull/1459) by [@YuriiMotov](https://github.com/YuriiMotov).
+
+### Internal
+
 * 💚 Move `ruff` dependency to shared `requirements-docs-tests.txt` to fix "Build docs" workflow in CI. PR [#1458](https://github.com/fastapi/typer/pull/1458) by [@YuriiMotov](https://github.com/YuriiMotov).
 * ⬆ Bump markdown-include-variants from 0.0.5 to 0.0.8. PR [#1442](https://github.com/fastapi/typer/pull/1442) by [@dependabot[bot]](https://github.com/apps/dependabot).
 * 👷 Add pre-commit workflow. PR [#1453](https://github.com/fastapi/typer/pull/1453) by [@tiangolo](https://github.com/tiangolo).

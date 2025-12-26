@@ -1,0 +1,22 @@
+from typing import Annotated
+
+import doctyper
+
+app = doctyper.Typer()
+
+
+@app.command()
+def main(
+    user: Annotated[tuple[str, int, bool], doctyper.Option()] = (None, None, None),
+):
+    username, coins, is_wizard = user
+    if not username:
+        print("No user provided")
+        raise doctyper.Abort()
+    print(f"The username {username} has {coins} coins")
+    if is_wizard:
+        print("And this user is a wizard!")
+
+
+if __name__ == "__main__":
+    app()

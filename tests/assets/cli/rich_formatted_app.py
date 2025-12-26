@@ -1,5 +1,6 @@
+from typing import Annotated
+
 import doctyper
-from typing_extensions import Annotated
 
 app = doctyper.Typer(
     rich_markup_mode="rich",

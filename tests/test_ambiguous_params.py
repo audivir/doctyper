@@ -1,3 +1,5 @@
+from typing import Annotated
+
 import doctyper
 import pytest
 from doctyper.testing import CliRunner
@@ -8,7 +10,6 @@ from doctyper.utils import (
     MultipleTyperAnnotationsError,
     _split_annotation_from_typer_annotations,
 )
-from typing_extensions import Annotated
 
 runner = CliRunner()
 

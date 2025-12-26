@@ -3,18 +3,18 @@ import subprocess
 import sys
 import typing
 from pathlib import Path
+from typing import Annotated
 from unittest import mock
 
 import click
-import pytest
 import doctyper
 import doctyper._completion_shared
 import doctyper.completion
+import pytest
 from doctyper.core import _split_opt
 from doctyper.main import solve_typer_info_defaults, solve_typer_info_help
 from doctyper.models import ParameterInfo, TyperInfo
 from doctyper.testing import CliRunner
-from typing_extensions import Annotated
 
 from .utils import requires_completion_permission
 
@@ -148,14 +148,14 @@ def test_callback_3_untyped_parameters():
 def test_callback_4_list_none():
     app = doctyper.Typer()
 
-    def names_callback(ctx, param, values: typing.Optional[typing.List[str]]):
+    def names_callback(ctx, param, values: typing.Optional[list[str]]):
         if values is None:
             return values
         return [value.upper() for value in values]
 
     @app.command()
     def main(
-        names: typing.Optional[typing.List[str]] = doctyper.Option(
+        names: typing.Optional[list[str]] = doctyper.Option(
             None, "--name", callback=names_callback
         ),
     ):
@@ -172,14 +172,14 @@ def test_callback_4_list_none():
 
 
 def test_empty_list_default_generator():
-    def empty_list() -> typing.List[str]:
+    def empty_list() -> list[str]:
         return []
 
     app = doctyper.Typer()
 
     @app.command()
     def main(
-        names: Annotated[typing.List[str], doctyper.Option(default_factory=empty_list)],
+        names: Annotated[list[str], doctyper.Option(default_factory=empty_list)],
     ):
         print(names)
 

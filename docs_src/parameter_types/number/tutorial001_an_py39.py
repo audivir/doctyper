@@ -1,0 +1,20 @@
+from typing import Annotated
+
+import doctyper
+
+app = doctyper.Typer()
+
+
+@app.command()
+def main(
+    id: Annotated[int, doctyper.Argument(min=0, max=1000)],
+    age: Annotated[int, doctyper.Option(min=18)] = 20,
+    score: Annotated[float, doctyper.Option(max=100)] = 0,
+):
+    print(f"ID is {id}")
+    print(f"--age is {age}")
+    print(f"--score is {score}")
+
+
+if __name__ == "__main__":
+    app()

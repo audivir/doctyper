@@ -6,7 +6,7 @@ from pathlib import Path
 import pytest
 from doctyper.testing import CliRunner
 
-from docs_src.exceptions import tutorial001 as mod
+from docs_src.exceptions import tutorial001_py39 as mod
 
 runner = CliRunner()
 

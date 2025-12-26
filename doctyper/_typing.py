@@ -1,51 +1,33 @@
 # Copied from pydantic 1.9.2 (the latest version to support python 3.6.)
 # https://github.com/pydantic/pydantic/blob/v1.9.2/pydantic/typing.py
-# Reduced drastically to only include Typer-specific 3.7+ functionality
+# Reduced drastically to only include Typer-specific 3.9+ functionality
 # mypy: ignore-errors
 
 import sys
 import types
+from collections.abc import Mapping
 from typing import (
+    Annotated,
     Any,
     Callable,
-    Dict,
     ForwardRef,
-    Mapping,
+    Literal,
     Optional,
-    Tuple,
-    Type,
     Union,
+    _strip_annotations,
+    get_args,
+    get_origin,
 )
-
-if sys.version_info >= (3, 9):
-    from typing import (
-        Annotated,
-        Literal,
-        get_args,
-        get_origin,
-    )
-else:
-    from typing_extensions import (
-        Annotated,
-        Literal,
-        get_args,
-        get_origin,
-    )
-
-if sys.version_info >= (3, 9):
-    from typing import _strip_annotations
-else:
-    from typing_extensions import _strip_extras as _strip_annotations
 
 if sys.version_info < (3, 10):
 
-    def is_union(tp: Optional[Type[Any]]) -> bool:
+    def is_union(tp: Optional[type[Any]]) -> bool:
         return tp is Union
 
 else:
     import types
 
-    def is_union(tp: Optional[Type[Any]]) -> bool:
+    def is_union(tp: Optional[type[Any]]) -> bool:
         return tp is Union or tp is types.UnionType  # noqa: E721
 
 
@@ -60,10 +42,10 @@ else:
 
     def eval_type(
         value: Any,
-        globalns: Optional[Dict[str, Any]] = None,
+        globalns: Optional[Mapping[str, Any]] = None,
         localns: Optional[Mapping[str, Any]] = None,
         try_default: bool = True,
-    ) -> Type[Any]:
+    ) -> type[Any]:
         del try_default  # Unused.
         return _eval_type(value, globalns, localns, type_params=())
 
@@ -81,7 +63,6 @@ __all__ = (
     "get_origin",
     "get_type_hints",
     "is_type_alias_type",
-    "is_annotated_type",
     "eval_type",
 )
 
@@ -89,7 +70,7 @@ __all__ = (
 NoneType = None.__class__
 
 
-NONE_TYPES: Tuple[Any, Any, Any] = (None, NoneType, Literal[None])
+NONE_TYPES: tuple[Any, Any, Any] = (None, NoneType, Literal[None])
 
 
 if sys.version_info[:2] == (3, 8):
@@ -113,21 +94,21 @@ else:
         return False
 
 
-def is_callable_type(type_: Type[Any]) -> bool:
+def is_callable_type(type_: type[Any]) -> bool:
     return type_ is Callable or get_origin(type_) is Callable
 
 
-def is_literal_type(type_: Type[Any]) -> bool:
+def is_literal_type(type_: type[Any]) -> bool:
     import typing_extensions
 
     return get_origin(type_) in (Literal, typing_extensions.Literal)
 
 
-def literal_values(type_: Type[Any]) -> Tuple[Any, ...]:
+def literal_values(type_: type[Any]) -> tuple[Any, ...]:
     return get_args(type_)
 
 
-def all_literal_values(type_: Type[Any]) -> Tuple[Any, ...]:
+def all_literal_values(type_: type[Any]) -> tuple[Any, ...]:
     """
     This method is used to retrieve all Literal values as
     Literal can be used recursively (see https://www.python.org/dev/peps/pep-0586)
@@ -140,20 +121,7 @@ def all_literal_values(type_: Type[Any]) -> Tuple[Any, ...]:
     return tuple(x for value in values for x in all_literal_values(value))
 
 
-def is_annotated_type(type_: Type[Any]) -> bool:
-    from typing_extensions import Annotated as _ExtAnnotated
-
-    if type_ is _ExtAnnotated:
-        return True
-    if sys.version_info >= (3, 9):
-        from typing import Annotated as _Annotated
-
-        if type_ is _Annotated:
-            return True
-    return False
-
-
-def is_type_alias_type(type_: Type[Any]) -> bool:
+def is_type_alias_type(type_: type[Any]) -> bool:
     from typing_extensions import TypeAliasType as _ExtTypeAliasType
 
     if type_ is _ExtTypeAliasType:
@@ -171,7 +139,7 @@ def get_type_hints(
     globalns: Any = None,
     localns: Any = None,
     include_extras: bool = False,
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """Return type hints for an object.
 
     This is often the same as obj.__annotations__, but it handles
@@ -255,7 +223,7 @@ def get_type_hints(
                 is_argument=not isinstance(obj, types.ModuleType),
                 # is_class is False per default and not available in Python 3.8
             )
-        if is_annotated_type(get_origin(value)):
+        if get_origin(value) is Annotated:
             # Annotated[ForwardRef(...), ...] is evaluated wrongly by eval_type_backport,
             # so we evaluate the forward ref first and then the annotation
             args = list(get_args(value))

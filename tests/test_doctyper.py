@@ -1,8 +1,9 @@
 import re
 import sys
 import typing
+from collections.abc import Sequence
 from enum import Enum
-from typing import TYPE_CHECKING, Any, List, Sequence, Tuple, Type
+from typing import TYPE_CHECKING, Any
 
 import doctyper
 import pytest
@@ -141,9 +142,6 @@ def test_choices_invalid_value():
     )
 
 
-@pytest.mark.skipif(
-    sys.version_info < (3, 9), reason="tuple/list not subscriptable in Python < 3.9"
-)
 def test_choices_help_list():
     def main(choice: list[Literal["a", "b"]]):
         """Docstring.
@@ -157,43 +155,8 @@ def test_choices_help_list():
     )
 
 
-@pytest.mark.skipif(
-    sys.version_info >= (3, 9), reason="tuple/list not subscriptable in Python < 3.9"
-)
-def test_choices_help_typing_list():
-    def main(choice: List[Literal["a", "b"]]):
-        """Docstring.
-
-        Args:
-            choice: The valid choices.
-        """
-
-    assert_help(
-        r"choice\s+CHOICE:\{a\|b\}\.\.\.\s+The valid choices\. \[required\]", main
-    )
-
-
-@pytest.mark.skipif(
-    sys.version_info < (3, 9), reason="tuple/list not subscriptable in Python < 3.9"
-)
 def test_choices_help_tuple():
     def main(choice: tuple[Literal["a", "b"], int]):
-        """Docstring.
-
-        Args:
-            choice: Tuple with 'a'/'b' and an int.
-        """
-
-    assert_help(
-        r"choice\s+CHOICE\.\.\.\s+Tuple with 'a'/'b' and an int\. \[required\]", main
-    )
-
-
-@pytest.mark.skipif(
-    sys.version_info >= (3, 9), reason="tuple/list not subscriptable in Python < 3.9"
-)
-def test_choices_help_typing_tuple():
-    def main(choice: Tuple[Literal["a", "b"], int]):
         """Docstring.
 
         Args:
@@ -346,7 +309,7 @@ def test_custom_annotated():
         ),
     ],
 )
-def test_typing_type_alias(type_: Type[Any]):
+def test_typing_type_alias(type_: type[Any]):
     Alias = type_("Alias", Literal["a", "b"])
 
     def main(arg: Alias):
@@ -359,22 +322,9 @@ def test_typing_type_alias(type_: Type[Any]):
     assert_help(r"arg\s+ARG:{a\|b}\s+Aliased argument\. \[required\]", main)
 
 
-@pytest.mark.parametrize(
-    "type_",
-    [
-        pytest.param(typing_extensions.Annotated, id="typing_extensions.Annotated"),
-        pytest.param(
-            getattr(typing, "Annotated", None),
-            marks=pytest.mark.skipif(
-                not hasattr(typing, "Annotated"), reason="Annotated is not available"
-            ),
-            id="typing.Annotated",
-        ),
-    ],
-)
-def test_typing_annotated(type_: Type[Any]):
+def test_typing_annotated():
     def main(
-        ann_arg: type_[str, doctyper.Argument(help="Annotated Argument.")],
+        ann_arg: Annotated[str, doctyper.Argument(help="Annotated Argument.")],
     ): ...
 
     assert_help(
@@ -383,20 +333,7 @@ def test_typing_annotated(type_: Type[Any]):
     )
 
 
-@pytest.mark.parametrize(
-    "type_",
-    [
-        pytest.param(typing_extensions.Literal, id="typing_extensions.Literal"),
-        pytest.param(
-            getattr(typing, "Literal", None),
-            marks=pytest.mark.skipif(
-                not hasattr(typing, "Literal"), reason="Literal is not available"
-            ),
-            id="typing.Literal",
-        ),
-    ],
-)
-def test_typing_literal(type_: Type[Any]):
-    def main(choice: type_["a", "b"]): ...  # noqa: F821
+def test_typing_literal():
+    def main(choice: Literal["a", "b"]): ...  # noqa: F821
 
     assert_help(r"choice\s+CHOICE:\{a\|b\}\s+\[required\]", main)
