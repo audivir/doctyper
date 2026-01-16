@@ -9,9 +9,9 @@ It use parsed docstrings to extract the arguments and options for the CLI comman
     - Interpret Literals (for choices) (meanwhile added to upstream typer)
         - Interpret unions, lists or tuples of Literals (not yet added to upstream typer)
         - Raise error on non-string literal values for python3 <= 3.10
-        - Checks for uniqueness in Literals/Enums as `Literal["1", 1]` would interupt type safety
+        - Checks for uniqueness in Literals/Enums as `Literal["1", 1]` would interrupt type safety
     - `SlimTyper` disables completion and pretty traceback
-    - Enable "str | None" type hints (and __future__ import annotations for python <= 3.10)
+    - Enable "str | None" type hints (and `__future__ import annotations` for python <= 3.10)
     - Disables show_default for required arguments
 
 ```python
