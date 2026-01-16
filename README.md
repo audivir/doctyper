@@ -6,7 +6,10 @@ It use parsed docstrings to extract the arguments and options for the CLI comman
 - Features:
     - Use Google-style docstrings to create help strings for arguments and options.
     - Use type-aliased identifiers
-    - Interpret Literals (for choices)
+    - Interpret Literals (for choices) (meanwhile added to upstream typer)
+        - Interpret unions, lists or tuples of Literals (not yet added to upstream typer)
+        - Raise error on non-string literal values for python3 <= 3.10
+        - Checks for uniqueness in Literals/Enums as `Literal["1", 1]` would interupt type safety
     - `SlimTyper` disables completion and pretty traceback
     - Enable "str | None" type hints (and __future__ import annotations for python <= 3.10)
     - Disables show_default for required arguments
@@ -46,6 +49,7 @@ def main(
         other: Integer argument with default.
         lit_arg: Argument with choices.
         lit_opt: Option with choices and a default.
+        list_li
         ann_opt: This will not be used.
         str_or_none: String argument with a default of None.
         flag: Boolean flag.
