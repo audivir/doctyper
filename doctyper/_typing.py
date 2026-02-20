@@ -5,30 +5,21 @@
 
 import sys
 import types
-from collections.abc import Mapping
+from collections.abc import Callable, Mapping
 from typing import (
     Annotated,
     Any,
-    Callable,
     ForwardRef,
     Literal,
-    Optional,
     Union,
     _strip_annotations,
     get_args,
     get_origin,
 )
 
-if sys.version_info < (3, 10):
 
-    def is_union(tp: Optional[type[Any]]) -> bool:
-        return tp is Union
-
-else:
-    import types
-
-    def is_union(tp: Optional[type[Any]]) -> bool:
-        return tp is Union or tp is types.UnionType  # noqa: E721
+def is_union(tp: type[Any] | None) -> bool:
+    return tp is Union or tp is types.UnionType  # noqa: E721
 
 
 # from python version 3.13 on a DeprecationWarning is raised
@@ -42,8 +33,8 @@ else:
 
     def eval_type(
         value: Any,
-        globalns: Optional[Mapping[str, Any]] = None,
-        localns: Optional[Mapping[str, Any]] = None,
+        globalns: Mapping[str, Any] | None = None,
+        localns: Mapping[str, Any] | None = None,
         try_default: bool = True,
     ) -> type[Any]:
         del try_default  # Unused.

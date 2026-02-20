@@ -1,7 +1,7 @@
 import inspect
-import sys
+from collections.abc import Callable
 from copy import copy
-from typing import Annotated, Any, Callable, ForwardRef, cast
+from typing import Annotated, Any, ForwardRef, cast
 
 import docstring_parser
 
@@ -125,20 +125,12 @@ def _get_param_help_from_docstring(func: Callable[..., Any]) -> dict[str, str]:
 
 
 def get_params_from_function(func: Callable[..., Any]) -> dict[str, ParamMeta]:
-    if sys.version_info >= (3, 10):
-        signature = inspect.signature(func, eval_str=True)
-        annotations = {
-            param.name: param.annotation for param in signature.parameters.values()
-        }
-    else:
-        signature = inspect.signature(func)
-        full_hints = get_type_hints(func, include_extras=True)
-        annotations = {
-            param.name: full_hints.get(param.name, param.annotation)
-            for param in signature.parameters.values()
-        }
-
+    signature = inspect.signature(func, eval_str=True)
+    annotations = {
+        param.name: param.annotation for param in signature.parameters.values()
+    }
     doc_param_help = _get_param_help_from_docstring(func)
+
     type_hints = get_type_hints(func)
 
     params = {}
@@ -232,3 +224,14 @@ def get_params_from_function(func: Callable[..., Any]) -> dict[str, ParamMeta]:
             name=param.name, default=default, annotation=annotation
         )
     return params
+
+
+def parse_boolean_env_var(env_var_value: str | None, default: bool) -> bool:
+    if env_var_value is None:
+        return default
+    value = env_var_value.lower()
+    if value in ("y", "yes", "t", "true", "on", "1"):
+        return True
+    if value in ("n", "no", "f", "false", "off", "0"):
+        return False
+    return default

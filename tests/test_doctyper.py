@@ -1,5 +1,4 @@
 import re
-import sys
 import typing
 from collections.abc import Sequence
 from enum import Enum
@@ -28,9 +27,7 @@ def assert_run(
     app = doctyper.SlimTyper()
     app.command()(func)
     result = runner.invoke(app, args)
-    output = (
-        result.stdout if sys.version_info < (3, 10) or not stderr else result.stderr
-    )
+    output = result.output
     print(output)
     assert result.exit_code == code
     if regex:
@@ -105,20 +102,6 @@ def test_choices_valid_value():
     assert_run(["b"], 0, "The choice was 'b'", main, regex=False)
 
 
-@pytest.mark.skipif(
-    sys.version_info >= (3, 10), reason="Non-string values only for Python >= 3.10"
-)
-def test_choices_non_string():
-    def main(choice: Literal[1, 2]):
-        print(f"The choice was {choice!r}")
-
-    with pytest.raises(TypeError, match="Literal values must be strings"):
-        assert_help("", main)
-
-
-@pytest.mark.skipif(
-    sys.version_info < (3, 10), reason="Non-string values only for Python >= 3.10"
-)
 def test_choices_other_type():
     def main(choice: Literal[1, 2]):
         print(f"The choice was {choice!r}")

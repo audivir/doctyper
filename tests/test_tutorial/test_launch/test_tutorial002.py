@@ -3,11 +3,11 @@ import sys
 from pathlib import Path
 from unittest.mock import patch
 
-import pytest
 import doctyper
+import pytest
 from doctyper.testing import CliRunner
 
-from docs_src.launch import tutorial002_py39 as mod
+from docs_src.launch import tutorial002_py310 as mod
 
 runner = CliRunner()
 

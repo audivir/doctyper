@@ -4,7 +4,7 @@ import sys
 import doctyper
 from doctyper.testing import CliRunner
 
-from docs_src.first_steps import tutorial006_py39 as mod
+from docs_src.first_steps import tutorial006_py310 as mod
 
 runner = CliRunner()
 

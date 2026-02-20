@@ -1,90 +1,3 @@
-# doctyper
-
-A wrapper around [Typer](https://typer.tiangolo.com) to simplify the creation of command-line interfaces (CLIs).
-It use parsed docstrings to extract the arguments and options for the CLI commands.
-
-- Features:
-    - Use Google-style docstrings to create help strings for arguments and options.
-    - Use type-aliased identifiers
-    - Interpret Literals (for choices) (meanwhile added to upstream typer)
-        - Interpret unions, lists or tuples of Literals (not yet added to upstream typer)
-        - Raise error on non-string literal values for python3 <= 3.10
-        - Checks for uniqueness in Literals/Enums as `Literal["1", 1]` would interrupt type safety
-    - `SlimTyper` disables completion and pretty traceback
-    - Enable "str | None" type hints (and `__future__ import annotations` for python <= 3.10)
-    - Disables show_default for required arguments
-
-```python
-from __future__ import annotations  # for python < 3.10
-
-import doctyper
-from typing_extensions import (  # or from typing import ... in newer versions
-    Annotated,
-    Literal,
-    TypeAliasType,
-)
-
-Alias = TypeAliasType("Alias", int)  # in >=3.12: type Alias = int
-
-
-def main(
-    arg: str, # disabled [default: None] in output
-    ann_arg: Annotated[str, doctyper.Argument(help="Supersedes help from docstring.")],
-    alias_arg: Alias,  # output original name
-    lit_arg: Literal["arg", "other"],  # only strings allowed for literals
-    lit_opt: Literal["opt"] | Literal["other"] = "opt", # literal only unions are supported
-    ann_opt: Annotated[
-        int, doctyper.Option(help="Supersedes help from docstring.")
-    ] = 1,
-    other: int = 1,
-    str_or_none: str | None = None,  # enable "str | None" type hints
-    flag: bool = False,
-) -> None:
-    """Run the main application.
-
-    Args:
-        arg: String argument.
-        ann_arg: This will not be used.
-        alias_arg: Argument using a aliased identifier.
-        other: Integer argument with default.
-        lit_arg: Argument with choices.
-        lit_opt: Option with choices and a default.
-        list_li
-        ann_opt: This will not be used.
-        str_or_none: String argument with a default of None.
-        flag: Boolean flag.
-    """
-
-
-if __name__ == "__main__":
-    app = doctyper.SlimTyper()
-    app.command()(main)
-    app()
-```
-
-```console
- Usage: t.py [OPTIONS] ARG ANN_ARG ALIAS_ARG LIT_ARG:{arg|other}
-
- Run the main application.
-
-
-╭─ Arguments ──────────────────────────────────────────────────────────────────────────────────────╮
-│ *    arg            TEXT                 String argument. [required]                             │
-│ *    ann_arg        TEXT                 Supersedes help from docstring. [required]              │
-│ *    alias_arg      INTEGER              Argument using a aliased identifier. [required]         │
-│ *    lit_arg        LIT_ARG:{arg|other}  Argument with choices. [required]                       │
-╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
-╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --lit-opt                     [opt|other]  Option with choices and a default. [default: opt]     │
-│ --ann-opt                     INTEGER      Supersedes help from docstring. [default: 1]          │
-│ --other                       INTEGER      Integer argument with default. [default: 1]           │
-│ --str-or-none                 TEXT         String argument with a default of None.               │
-│                                            [default: None]                                       │
-│ --flag           --no-flag                 Boolean flag. [default: no-flag]                      │
-│ --help                                     Show this message and exit.                           │
-╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
-```
-
 <p align="center">
   <a href="https://typer.tiangolo.com"><img src="https://typer.tiangolo.com/img/logo-margin/logo-margin-vector.svg#only-light" alt="Typer"></a>
 
@@ -443,34 +356,19 @@ For a more complete example including more features, see the <a href="https://ty
 
 ## Dependencies
 
-**Typer** stands on the shoulders of a giant. Its only internal required dependency is <a href="https://click.palletsprojects.com/" class="external-link" target="_blank">Click</a>.
+**Typer** stands on the shoulders of giants. It has three required dependencies:
 
-By default it also comes with extra standard dependencies:
-
+* <a href="https://click.palletsprojects.com/" class="external-link" target="_blank">Click</a>: a popular tool for building CLIs in Python. Typer is based on it.
 * <a href="https://rich.readthedocs.io/en/stable/index.html" class="external-link" target="_blank"><code>rich</code></a>: to show nicely formatted errors automatically.
 * <a href="https://github.com/sarugaku/shellingham" class="external-link" target="_blank"><code>shellingham</code></a>: to automatically detect the current shell when installing completion.
-    * With `shellingham` you can just use `--install-completion`.
-    * Without `shellingham`, you have to pass the name of the shell to install completion for, e.g. `--install-completion bash`.
 
 ### `typer-slim`
 
-If you don't want the extra standard optional dependencies, install `typer-slim` instead.
+There used to be a slimmed-down version of Typer called `typer-slim`, which didn't include the dependencies `rich` and `shellingham`, nor the `typer` command.
 
-When you install with:
+However, since version 0.22.0, we have stopped supporting this, and `typer-slim` now simply installs (all of) Typer.
 
-```bash
-pip install typer
-```
-
-...it includes the same code and dependencies as:
-
-```bash
-pip install "typer-slim[standard]"
-```
-
-The `standard` extra dependencies are `rich` and `shellingham`.
-
-**Note**: The `typer` command is only included in the `typer` package.
+If you want to disable Rich globally, you can set an environmental variable `TYPER_USE_RICH` to `False` or `0`.
 
 ## License
 

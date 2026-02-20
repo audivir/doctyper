@@ -1,18 +1,18 @@
 # See https://pre-commit.com for more information
 # See https://pre-commit.com/hooks.html for more hooks
 repos:
--   repo: https://github.com/pre-commit/pre-commit-hooks
+  - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v6.0.0
     hooks:
       - id: check-added-large-files
       - id: check-toml
       - id: check-yaml
         args:
-        -   --unsafe
+          - --unsafe
       - id: end-of-file-fixer
       - id: trailing-whitespace
 
--   repo: local
+  - repo: local
     hooks:
       - id: local-ruff-check
         name: ruff check
@@ -30,10 +30,17 @@ repos:
 
       - id: local-mypy
         name: mypy check
-        entry: uv run mypy typer
+        entry: uv run mypy doctyper
         require_serial: true
         language: unsupported
         pass_filenames: false
+
+      # - id: local-ty
+      #   name: ty
+      #   entry: uv run ty check typer
+      #   require_serial: true
+      #   language: unsupported
+      #   pass_filenames: false
 
       - id: generate-readme
         language: unsupported

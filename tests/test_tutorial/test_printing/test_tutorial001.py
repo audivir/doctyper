@@ -2,10 +2,10 @@ import subprocess
 import sys
 from unittest.mock import patch
 
-from rich.console import Console  # noqa: TID251
 from doctyper.testing import CliRunner
+from rich.console import Console  # noqa: TID251
 
-import docs_src.printing.tutorial001_py39 as mod
+import docs_src.printing.tutorial001_py310 as mod
 from tests.utils import normalize_rich_output
 
 app = mod.app

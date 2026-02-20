@@ -3,8 +3,8 @@ import subprocess
 import sys
 from types import ModuleType
 
-import pytest
 import doctyper
+import pytest
 from doctyper.testing import CliRunner
 
 runner = CliRunner()
@@ -13,8 +13,8 @@ runner = CliRunner()
 @pytest.fixture(
     name="mod",
     params=[
-        pytest.param("tutorial000_py39"),
-        pytest.param("tutorial000_an_py39"),
+        pytest.param("tutorial000_py310"),
+        pytest.param("tutorial000_an_py310"),
     ],
 )
 def get_mod(request: pytest.FixtureRequest) -> ModuleType:

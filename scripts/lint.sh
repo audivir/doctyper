@@ -3,6 +3,7 @@
 set -e
 set -x
 
-mypy doctyper
-ruff check doctyper tests docs_src scripts
-ruff format doctyper tests docs_src scripts --check
+mypy typer
+ty check typer
+ruff check typer tests docs_src scripts
+ruff format typer tests docs_src scripts --check

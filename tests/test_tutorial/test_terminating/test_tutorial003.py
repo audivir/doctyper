@@ -6,7 +6,7 @@ import doctyper.core
 import pytest
 from doctyper.testing import CliRunner
 
-from docs_src.terminating import tutorial003_py39 as mod
+from docs_src.terminating import tutorial003_py310 as mod
 
 runner = CliRunner()
 app = mod.app
