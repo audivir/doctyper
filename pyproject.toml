@@ -34,7 +34,7 @@ classifiers = [
     "Programming Language :: Python :: 3.14",
 ]
 dependencies = [
-    "typing_extensions",
+    "typing-extensions",
     "docstring-parser",
     "eval-type-backport",
     "click >= 8.2.1",
@@ -52,6 +52,7 @@ Issues = "https://github.com/audivir/doctyper/issues"
 Changelog = "https://typer.tiangolo.com/release-notes/"
 
 [project.scripts]
+typer = "typer.cli:main"
 doctyper = "doctyper.cli:main"
 
 [dependency-groups]
