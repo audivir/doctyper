@@ -34,6 +34,7 @@ classifiers = [
     "Programming Language :: Python :: 3.14",
 ]
 dependencies = [
+    "typing_extensions",
     "docstring-parser",
     "eval-type-backport",
     "click >= 8.2.1",

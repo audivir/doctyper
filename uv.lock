@@ -514,6 +514,7 @@ dependencies = [
     { name = "eval-type-backport" },
     { name = "rich" },
     { name = "shellingham" },
+    { name = "typing-extensions" },
 ]
 
 [package.dev-dependencies]
@@ -582,6 +583,7 @@ requires-dist = [
     { name = "eval-type-backport" },
     { name = "rich", specifier = ">=12.3.0" },
     { name = "shellingham", specifier = ">=1.3.0" },
+    { name = "typing-extensions" },
 ]
 
 [package.metadata.requires-dev]
