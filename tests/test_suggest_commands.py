@@ -1,20 +1,20 @@
-import doctyper
-from doctyper.testing import CliRunner
+import typer
+from typer.testing import CliRunner
 
 runner = CliRunner()
 
 
 def test_typo_suggestion_enabled():
     """Test that typo suggestions work when enabled"""
-    app = doctyper.Typer()
+    app = typer.Typer()
 
     @app.command()
     def create():  # pragma: no cover
-        doctyper.echo("Creating...")
+        typer.echo("Creating...")
 
     @app.command()
     def delete():  # pragma: no cover
-        doctyper.echo("Deleting...")
+        typer.echo("Deleting...")
 
     result = runner.invoke(app, ["crate"])
     assert result.exit_code != 0
@@ -24,15 +24,15 @@ def test_typo_suggestion_enabled():
 
 def test_typo_suggestion_multiple_matches():
     """Test that multiple suggestions are shown when there are multiple close matches"""
-    app = doctyper.Typer()
+    app = typer.Typer()
 
     @app.command()
     def create():  # pragma: no cover
-        doctyper.echo("Creating...")
+        typer.echo("Creating...")
 
     @app.command()
     def createnew():  # pragma: no cover
-        doctyper.echo("Creating new...")
+        typer.echo("Creating new...")
 
     result = runner.invoke(app, ["crate"])
     assert result.exit_code != 0
@@ -43,15 +43,15 @@ def test_typo_suggestion_multiple_matches():
 
 def test_typo_suggestion_no_matches():
     """Test that no suggestions are shown when there are no close matches"""
-    app = doctyper.Typer()
+    app = typer.Typer()
 
     @app.command()
     def create():  # pragma: no cover
-        doctyper.echo("Creating...")
+        typer.echo("Creating...")
 
     @app.command()
     def delete():  # pragma: no cover
-        doctyper.echo("Deleting...")
+        typer.echo("Deleting...")
 
     result = runner.invoke(app, ["xyz"])
     assert result.exit_code != 0
@@ -61,15 +61,15 @@ def test_typo_suggestion_no_matches():
 
 def test_typo_suggestion_exact_match_works():
     """Test that exact matches still work normally"""
-    app = doctyper.Typer()
+    app = typer.Typer()
 
     @app.command()
     def create():
-        doctyper.echo("Creating...")
+        typer.echo("Creating...")
 
     @app.command()
     def delete():
-        doctyper.echo("Deleting...")
+        typer.echo("Deleting...")
 
     result = runner.invoke(app, ["create"])
     assert result.exit_code == 0
@@ -82,15 +82,15 @@ def test_typo_suggestion_exact_match_works():
 
 def test_typo_suggestion_disabled():
     """Test that typo suggestions can be explicitly disabled"""
-    app = doctyper.Typer(suggest_commands=False)
+    app = typer.Typer(suggest_commands=False)
 
     @app.command()
     def create():  # pragma: no cover
-        doctyper.echo("Creating...")
+        typer.echo("Creating...")
 
     @app.command()
     def delete():  # pragma: no cover
-        doctyper.echo("Deleting...")
+        typer.echo("Deleting...")
 
     result = runner.invoke(app, ["crate"])
     assert result.exit_code != 0

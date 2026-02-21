@@ -1,6 +1,6 @@
-import doctyper
+import typer
 
-app = doctyper.Typer()
+app = typer.Typer()
 
 
 @app.command()
@@ -9,9 +9,9 @@ def hello(name: str = "World", formal: bool = False):
     Say hi
     """
     if formal:
-        doctyper.echo(f"Good morning Ms. {name}")
+        typer.echo(f"Good morning Ms. {name}")
     else:
-        doctyper.echo(f"Hello {name}!")
+        typer.echo(f"Hello {name}!")
 
 
 @app.command()
@@ -20,6 +20,6 @@ def bye(friend: bool = False):
     Say bye
     """
     if friend:
-        doctyper.echo("Goodbye my friend")
+        typer.echo("Goodbye my friend")
     else:
-        doctyper.echo("Goodbye")
+        typer.echo("Goodbye")

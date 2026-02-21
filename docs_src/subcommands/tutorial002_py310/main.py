@@ -1,9 +1,9 @@
-import doctyper
+import typer
 
-app = doctyper.Typer()
-items_app = doctyper.Typer()
+app = typer.Typer()
+items_app = typer.Typer()
 app.add_typer(items_app, name="items")
-users_app = doctyper.Typer()
+users_app = typer.Typer()
 app.add_typer(users_app, name="users")
 
 

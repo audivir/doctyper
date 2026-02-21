@@ -1,10 +1,10 @@
-import doctyper
+import typer
 
-app = doctyper.Typer()
+app = typer.Typer()
 
 
 @app.command()
-def main(force: bool = doctyper.Option(False, "--force")):
+def main(force: bool = typer.Option(False, "--force")):
     if force:
         print("Forcing operation")
     else:

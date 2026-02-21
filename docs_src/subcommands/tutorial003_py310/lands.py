@@ -1,9 +1,9 @@
-import doctyper
+import typer
 
 import reigns
 import towns
 
-app = doctyper.Typer()
+app = typer.Typer()
 app.add_typer(reigns.app, name="reigns")
 app.add_typer(towns.app, name="towns")
 

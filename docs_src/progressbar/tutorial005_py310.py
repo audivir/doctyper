@@ -1,14 +1,14 @@
 import time
 
-import doctyper
+import typer
 
-app = doctyper.Typer()
+app = typer.Typer()
 
 
 @app.command()
 def main():
     total = 0
-    with doctyper.progressbar(range(100), label="Processing") as progress:
+    with typer.progressbar(range(100), label="Processing") as progress:
         for value in progress:
             # Fake processing time
             time.sleep(0.01)

@@ -2,8 +2,8 @@ import subprocess
 import sys
 from unittest.mock import patch
 
-from doctyper.testing import CliRunner
 from rich.console import Console  # noqa: TID251
+from typer.testing import CliRunner
 
 import docs_src.printing.tutorial002_py310 as mod
 from tests.utils import normalize_rich_output

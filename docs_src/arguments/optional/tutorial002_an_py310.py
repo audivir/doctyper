@@ -1,12 +1,12 @@
 from typing import Annotated
 
-import doctyper
+import typer
 
-app = doctyper.Typer()
+app = typer.Typer()
 
 
 @app.command()
-def main(name: Annotated[str, doctyper.Argument()] = "World"):
+def main(name: Annotated[str, typer.Argument()] = "World"):
     print(f"Hello {name}!")
 
 

@@ -1,12 +1,12 @@
-import doctyper
+import typer
 
-app = doctyper.Typer()
+app = typer.Typer()
 
 
 @app.command(
     context_settings={"allow_extra_args": True, "ignore_unknown_options": True}
 )
-def main(ctx: doctyper.Context):
+def main(ctx: typer.Context):
     for extra_arg in ctx.args:
         print(f"Got extra arg: {extra_arg}")
 

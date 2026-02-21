@@ -1,11 +1,11 @@
-import doctyper
+import typer
 
-app = doctyper.Typer()
+app = typer.Typer()
 
 
 @app.command()
 def main(name: str):
-    doctyper.secho(f"Welcome here {name}", fg=doctyper.colors.MAGENTA)
+    typer.secho(f"Welcome here {name}", fg=typer.colors.MAGENTA)
 
 
 if __name__ == "__main__":

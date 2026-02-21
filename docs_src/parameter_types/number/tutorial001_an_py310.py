@@ -1,15 +1,15 @@
 from typing import Annotated
 
-import doctyper
+import typer
 
-app = doctyper.Typer()
+app = typer.Typer()
 
 
 @app.command()
 def main(
-    id: Annotated[int, doctyper.Argument(min=0, max=1000)],
-    age: Annotated[int, doctyper.Option(min=18)] = 20,
-    score: Annotated[float, doctyper.Option(max=100)] = 0,
+    id: Annotated[int, typer.Argument(min=0, max=1000)],
+    age: Annotated[int, typer.Option(min=18)] = 20,
+    score: Annotated[float, typer.Option(max=100)] = 0,
 ):
     print(f"ID is {id}")
     print(f"--age is {age}")

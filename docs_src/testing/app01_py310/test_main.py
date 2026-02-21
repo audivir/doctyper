@@ -1,4 +1,4 @@
-from doctyper.testing import CliRunner
+from typer.testing import CliRunner
 
 from .main import app
 

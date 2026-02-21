@@ -1,11 +1,11 @@
-import doctyper
+import typer
 
 
 def callback():
     print("Running a command")
 
 
-app = doctyper.Typer(callback=callback)
+app = typer.Typer(callback=callback)
 
 
 @app.callback()

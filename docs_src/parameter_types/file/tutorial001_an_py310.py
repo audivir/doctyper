@@ -1,12 +1,12 @@
 from typing import Annotated
 
-import doctyper
+import typer
 
-app = doctyper.Typer()
+app = typer.Typer()
 
 
 @app.command()
-def main(config: Annotated[doctyper.FileText, doctyper.Option()]):
+def main(config: Annotated[typer.FileText, typer.Option()]):
     for line in config:
         print(f"Config line: {line}")
 

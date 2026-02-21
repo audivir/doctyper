@@ -1,13 +1,13 @@
 from datetime import datetime
 
-import doctyper
+import typer
 
-app = doctyper.Typer()
+app = typer.Typer()
 
 
 @app.command()
 def main(
-    launch_date: datetime = doctyper.Argument(
+    launch_date: datetime = typer.Argument(
         ..., formats=["%Y-%m-%d", "%Y-%m-%dT%H:%M:%S", "%Y-%m-%d %H:%M:%S", "%m/%d/%Y"]
     ),
 ):

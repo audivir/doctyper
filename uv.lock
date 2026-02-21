@@ -491,7 +491,7 @@ wheels = [
 ]
 
 [[package]]
-name = "doctyper"
+name = "typer"
 source = { editable = "." }
 dependencies = [
     { name = "annotated-doc" },

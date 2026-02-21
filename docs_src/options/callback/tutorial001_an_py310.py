@@ -1,18 +1,18 @@
 from typing import Annotated
 
-import doctyper
+import typer
 
-app = doctyper.Typer()
+app = typer.Typer()
 
 
 def name_callback(value: str):
     if value != "Camila":
-        raise doctyper.BadParameter("Only Camila is allowed")
+        raise typer.BadParameter("Only Camila is allowed")
     return value
 
 
 @app.command()
-def main(name: Annotated[str | None, doctyper.Option(callback=name_callback)] = None):
+def main(name: Annotated[str | None, typer.Option(callback=name_callback)] = None):
     print(f"Hello {name}")
 
 

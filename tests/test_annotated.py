@@ -2,17 +2,17 @@ import sys
 from pathlib import Path
 from typing import Annotated
 
-import doctyper
-from doctyper.testing import CliRunner
+import typer
+from typer.testing import CliRunner
 
 runner = CliRunner()
 
 
 def test_annotated_argument_with_default():
-    app = doctyper.Typer()
+    app = typer.Typer()
 
     @app.command()
-    def cmd(val: Annotated[int, doctyper.Argument()] = 0):
+    def cmd(val: Annotated[int, typer.Argument()] = 0):
         print(f"hello {val}")
 
     result = runner.invoke(app)
@@ -25,10 +25,10 @@ def test_annotated_argument_with_default():
 
 
 def test_annotated_argument_in_string_type_with_default():
-    app = doctyper.Typer()
+    app = typer.Typer()
 
     @app.command()
-    def cmd(val: "Annotated[int, doctyper.Argument()]" = 0):
+    def cmd(val: "Annotated[int, typer.Argument()]" = 0):
         print(f"hello {val}")
 
     result = runner.invoke(app)
@@ -41,13 +41,13 @@ def test_annotated_argument_in_string_type_with_default():
 
 
 def test_annotated_argument_with_default_factory():
-    app = doctyper.Typer()
+    app = typer.Typer()
 
     def make_string():
         return "I made it"
 
     @app.command()
-    def cmd(val: Annotated[str, doctyper.Argument(default_factory=make_string)]):
+    def cmd(val: Annotated[str, typer.Argument(default_factory=make_string)]):
         print(val)
 
     result = runner.invoke(app)
@@ -60,10 +60,10 @@ def test_annotated_argument_with_default_factory():
 
 
 def test_annotated_option_with_argname_doesnt_mutate_multiple_calls():
-    app = doctyper.Typer()
+    app = typer.Typer()
 
     @app.command()
-    def cmd(force: Annotated[bool, doctyper.Option("--force")] = False):
+    def cmd(force: Annotated[bool, typer.Option("--force")] = False):
         if force:
             print("Forcing operation")
         else:
@@ -79,7 +79,7 @@ def test_annotated_option_with_argname_doesnt_mutate_multiple_calls():
 
 
 def test_annotated_custom_path():
-    app = doctyper.Typer()
+    app = typer.Typer()
 
     class CustomPath(Path):
         # Subclassing Path was not fully supported before 3.12
@@ -89,7 +89,7 @@ def test_annotated_custom_path():
 
     @app.command()
     def custom_parser(
-        my_path: Annotated[CustomPath, doctyper.Argument(parser=CustomPath)],
+        my_path: Annotated[CustomPath, typer.Argument(parser=CustomPath)],
     ):
         assert isinstance(my_path, CustomPath)
 

@@ -1,13 +1,13 @@
-import doctyper
+import typer
 
-app = doctyper.Typer()
+app = typer.Typer()
 
 
 @app.command()
 def main(username: str):
     if username == "root":
         print("The root user is reserved")
-        raise doctyper.Exit(code=1)
+        raise typer.Exit(code=1)
     print(f"New user created: {username}")
 
 

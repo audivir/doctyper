@@ -1,15 +1,15 @@
-import doctyper
+import typer
 
-app = doctyper.Typer()
+app = typer.Typer()
 
 
 @app.command()
 def main(
-    name: str = doctyper.Argument(..., help="Who to greet"),
-    lastname: str = doctyper.Argument(
+    name: str = typer.Argument(..., help="Who to greet"),
+    lastname: str = typer.Argument(
         "", help="The last name", rich_help_panel="Secondary Arguments"
     ),
-    age: str = doctyper.Argument(
+    age: str = typer.Argument(
         "", help="The user's age", rich_help_panel="Secondary Arguments"
     ),
 ):

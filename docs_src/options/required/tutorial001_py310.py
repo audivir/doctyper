@@ -1,10 +1,10 @@
-import doctyper
+import typer
 
-app = doctyper.Typer()
+app = typer.Typer()
 
 
 @app.command()
-def main(name: str, lastname: str = doctyper.Option()):
+def main(name: str, lastname: str = typer.Option()):
     print(f"Hello {name} {lastname}")
 
 

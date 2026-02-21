@@ -1,11 +1,11 @@
 from typing import Annotated
 
-import doctyper
+import typer
 
 
-def main(name: Annotated[str, doctyper.Argument()]):
+def main(name: Annotated[str, typer.Argument()]):
     print(f"Hello {name}")
 
 
 if __name__ == "__main__":
-    doctyper.run(main)
+    typer.run(main)

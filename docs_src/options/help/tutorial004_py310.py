@@ -1,11 +1,11 @@
-import doctyper
+import typer
 
-app = doctyper.Typer()
+app = typer.Typer()
 
 
 @app.command()
 def main(
-    fullname: str = doctyper.Option(
+    fullname: str = typer.Option(
         "Wade Wilson", show_default="Deadpoolio the amazing's name"
     ),
 ):

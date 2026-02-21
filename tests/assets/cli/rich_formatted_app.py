@@ -1,8 +1,8 @@
 from typing import Annotated
 
-import doctyper
+import typer
 
-app = doctyper.Typer(
+app = typer.Typer(
     rich_markup_mode="rich",
 )
 
@@ -11,11 +11,11 @@ app = doctyper.Typer(
 def hello(
     user_1: Annotated[
         str,
-        doctyper.Argument(help="The [bold]cool[/bold] name of the [green]user[/green]"),
+        typer.Argument(help="The [bold]cool[/bold] name of the [green]user[/green]"),
     ],
-    user_2: Annotated[str, doctyper.Argument(help="The world")] = "The World",
+    user_2: Annotated[str, typer.Argument(help="The world")] = "The World",
     force: Annotated[
-        bool, doctyper.Option(help="Force the welcome [red]message[/red]")
+        bool, typer.Option(help="Force the welcome [red]message[/red]")
     ] = False,
 ):
     print(f"Hello {user_1} and {user_2}")  # pragma: no cover

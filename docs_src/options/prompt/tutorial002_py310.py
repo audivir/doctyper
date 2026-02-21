@@ -1,12 +1,12 @@
-import doctyper
+import typer
 
-app = doctyper.Typer()
+app = typer.Typer()
 
 
 @app.command()
 def main(
     name: str,
-    lastname: str = doctyper.Option(..., prompt="Please tell me your last name"),
+    lastname: str = typer.Option(..., prompt="Please tell me your last name"),
 ):
     print(f"Hello {name} {lastname}")
 

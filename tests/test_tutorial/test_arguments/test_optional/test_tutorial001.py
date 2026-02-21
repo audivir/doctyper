@@ -3,9 +3,9 @@ import subprocess
 import sys
 from types import ModuleType
 
-import doctyper
 import pytest
-from doctyper.testing import CliRunner
+import typer
+from typer.testing import CliRunner
 
 runner = CliRunner()
 
@@ -37,7 +37,7 @@ def test_call_no_arg_standalone(mod: ModuleType):
 
 def test_call_no_arg_no_rich(monkeypatch: pytest.MonkeyPatch, mod: ModuleType):
     # Mainly for coverage
-    monkeypatch.setattr(doctyper.core, "HAS_RICH", False)
+    monkeypatch.setattr(typer.core, "HAS_RICH", False)
     result = runner.invoke(mod.app)
     assert result.exit_code != 0
     assert "Error: Missing argument 'NAME'" in result.output

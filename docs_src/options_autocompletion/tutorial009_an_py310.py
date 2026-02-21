@@ -1,6 +1,6 @@
 from typing import Annotated
 
-import doctyper
+import typer
 from rich.console import Console
 
 valid_completion_items = [
@@ -12,7 +12,7 @@ valid_completion_items = [
 err_console = Console(stderr=True)
 
 
-def complete_name(ctx: doctyper.Context, args: list[str], incomplete: str):
+def complete_name(ctx: typer.Context, args: list[str], incomplete: str):
     err_console.print(f"{args}")
     names = ctx.params.get("name") or []
     for name, help_text in valid_completion_items:
@@ -20,14 +20,14 @@ def complete_name(ctx: doctyper.Context, args: list[str], incomplete: str):
             yield (name, help_text)
 
 
-app = doctyper.Typer()
+app = typer.Typer()
 
 
 @app.command()
 def main(
     name: Annotated[
         list[str],
-        doctyper.Option(help="The name to say hi to.", autocompletion=complete_name),
+        typer.Option(help="The name to say hi to.", autocompletion=complete_name),
     ] = ["World"],
 ):
     for n in name:

@@ -1,13 +1,13 @@
-import doctyper
+import typer
 
-app = doctyper.Typer()
+app = typer.Typer()
 
 
 def users_callback():
     print("Running a users command")
 
 
-users_app = doctyper.Typer(callback=users_callback)
+users_app = typer.Typer(callback=users_callback)
 app.add_typer(users_app, name="users")
 
 

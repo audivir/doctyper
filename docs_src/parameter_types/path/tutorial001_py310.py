@@ -1,15 +1,15 @@
 from pathlib import Path
 
-import doctyper
+import typer
 
-app = doctyper.Typer()
+app = typer.Typer()
 
 
 @app.command()
-def main(config: Path | None = doctyper.Option(None)):
+def main(config: Path | None = typer.Option(None)):
     if config is None:
         print("No config file")
-        raise doctyper.Abort()
+        raise typer.Abort()
     if config.is_file():
         text = config.read_text()
         print(f"Config file contents: {text}")

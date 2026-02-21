@@ -1,28 +1,26 @@
-import doctyper
+import typer
 
 __version__ = "0.1.0"
 
-app = doctyper.Typer()
+app = typer.Typer()
 
 
 def version_callback(value: bool):
     if value:
         print(f"Awesome CLI Version: {__version__}")
-        raise doctyper.Exit()
+        raise typer.Exit()
 
 
 def name_callback(name: str):
     if name != "Camila":
-        raise doctyper.BadParameter("Only Camila is allowed")
+        raise typer.BadParameter("Only Camila is allowed")
     return name
 
 
 @app.command()
 def main(
-    name: str = doctyper.Option(..., callback=name_callback),
-    version: bool | None = doctyper.Option(
-        None, "--version", callback=version_callback
-    ),
+    name: str = typer.Option(..., callback=name_callback),
+    version: bool | None = typer.Option(None, "--version", callback=version_callback),
 ):
     print(f"Hello {name}")
 

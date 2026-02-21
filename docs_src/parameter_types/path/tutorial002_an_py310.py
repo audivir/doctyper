@@ -1,16 +1,16 @@
 from pathlib import Path
 from typing import Annotated
 
-import doctyper
+import typer
 
-app = doctyper.Typer()
+app = typer.Typer()
 
 
 @app.command()
 def main(
     config: Annotated[
         Path,
-        doctyper.Option(
+        typer.Option(
             exists=True,
             file_okay=True,
             dir_okay=False,

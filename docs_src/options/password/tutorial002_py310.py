@@ -1,12 +1,12 @@
-import doctyper
+import typer
 
-app = doctyper.Typer()
+app = typer.Typer()
 
 
 @app.command()
 def main(
     name: str,
-    password: str = doctyper.Option(
+    password: str = typer.Option(
         ..., prompt=True, confirmation_prompt=True, hide_input=True
     ),
 ):

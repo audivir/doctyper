@@ -1,10 +1,10 @@
-import doctyper
+import typer
 
-app = doctyper.Typer()
+app = typer.Typer()
 
 
 @app.command()
-def main(name: str = doctyper.Argument("Wade Wilson")):
+def main(name: str = typer.Argument("Wade Wilson")):
     print(f"Hello {name}")
 
 

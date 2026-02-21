@@ -1,16 +1,16 @@
-import doctyper
+import typer
 
 
 def complete_name():
     return ["Camila", "Carlos", "Sebastian"]
 
 
-app = doctyper.Typer()
+app = typer.Typer()
 
 
 @app.command()
 def main(
-    name: str = doctyper.Option(
+    name: str = typer.Option(
         "World", help="The name to say hi to.", autocompletion=complete_name
     ),
 ):

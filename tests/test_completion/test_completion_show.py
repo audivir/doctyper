@@ -3,9 +3,9 @@ import subprocess
 import sys
 from unittest import mock
 
-import doctyper
-import doctyper.completion
-from doctyper.testing import CliRunner
+import typer
+import typer.completion
+from typer.testing import CliRunner
 
 from docs_src.typer_app import tutorial001_py310 as mod
 
@@ -143,8 +143,6 @@ def test_completion_source_pwsh():
 
 
 def test_completion_show_invalid_shell():
-    with mock.patch.object(
-        doctyper.completion, "_get_shell_name", return_value="xshell"
-    ):
+    with mock.patch.object(typer.completion, "_get_shell_name", return_value="xshell"):
         result = runner.invoke(app, ["--show-completion"])
     assert "Shell xshell not supported" in result.output

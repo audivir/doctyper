@@ -1,19 +1,19 @@
-import doctyper
+import typer
 
-app = doctyper.Typer(rich_markup_mode="rich")
+app = typer.Typer(rich_markup_mode="rich")
 
 
 @app.command()
 def create(
-    username: str = doctyper.Argument(..., help="The username to create"),
-    lastname: str = doctyper.Argument(
+    username: str = typer.Argument(..., help="The username to create"),
+    lastname: str = typer.Argument(
         "", help="The last name of the new user", rich_help_panel="Secondary Arguments"
     ),
-    force: bool = doctyper.Option(False, help="Force the creation of the user"),
-    age: int | None = doctyper.Option(
+    force: bool = typer.Option(False, help="Force the creation of the user"),
+    age: int | None = typer.Option(
         None, help="The age of the new user", rich_help_panel="Additional Data"
     ),
-    favorite_color: str | None = doctyper.Option(
+    favorite_color: str | None = typer.Option(
         None,
         help="The favorite color of the new user",
         rich_help_panel="Additional Data",

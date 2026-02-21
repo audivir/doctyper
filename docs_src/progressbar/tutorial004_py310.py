@@ -1,6 +1,6 @@
 import time
 
-import doctyper
+import typer
 
 
 def iterate_user_ids():
@@ -9,13 +9,13 @@ def iterate_user_ids():
         yield i
 
 
-app = doctyper.Typer()
+app = typer.Typer()
 
 
 @app.command()
 def main():
     total = 0
-    with doctyper.progressbar(iterate_user_ids(), length=100) as progress:
+    with typer.progressbar(iterate_user_ids(), length=100) as progress:
         for value in progress:
             # Fake processing time
             time.sleep(0.01)

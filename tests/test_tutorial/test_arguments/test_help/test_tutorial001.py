@@ -3,9 +3,9 @@ import subprocess
 import sys
 from types import ModuleType
 
-import doctyper
 import pytest
-from doctyper.testing import CliRunner
+import typer
+from typer.testing import CliRunner
 
 runner = CliRunner()
 
@@ -34,7 +34,7 @@ def test_help(mod: ModuleType):
 
 
 def test_help_no_rich(monkeypatch: pytest.MonkeyPatch, mod: ModuleType):
-    monkeypatch.setattr(doctyper.core, "HAS_RICH", False)
+    monkeypatch.setattr(typer.core, "HAS_RICH", False)
     result = runner.invoke(mod.app, ["--help"])
     assert result.exit_code == 0
     assert "[OPTIONS] NAME" in result.output

@@ -86,7 +86,7 @@ tests = [
 ]
 
 [tool.pdm]
-version = { source = "file", path = "doctyper/__init__.py" }
+version = { source = "file", path = "typer/__init__.py" }
 distribution = true
 
 [tool.pdm.build]
@@ -95,7 +95,7 @@ source-includes = ["tests/", "docs_src/", "scripts/"]
 [tool.tiangolo._internal-slim-build.packages.typer-slim.project]
 name = "typer-slim"
 readme = "typer-slim/README.md"
-dependencies = ["doctyper"]
+dependencies = ["typer"]
 optional-dependencies = {}
 scripts = {}
 
@@ -119,7 +119,7 @@ source-includes = [""]
 [tool.tiangolo._internal-slim-build.packages.typer-cli.project]
 name = "typer-cli"
 readme = "typer-cli/README.md"
-dependencies = ["doctyper"]
+dependencies = ["typer"]
 optional-dependencies = {}
 scripts = {}
 
@@ -133,7 +133,7 @@ scripts = {}
 # than the one for a default included file.
 # By not using "*" and explicitly excluding the top level packages, they get a higher
 # score than the default inclusion
-excludes = ["doctyper", "tests", "pdm_build.py"]
+excludes = ["typer", "tests", "pdm_build.py"]
 # source-includes needs to explicitly define some value because PDM will check the
 # truthy value of the list, and if empty, will include some defaults, including "tests",
 # an empty string doesn't match anything, but makes the list truthy, so that PDM
@@ -152,10 +152,10 @@ filterwarnings = [
 
 [tool.coverage.run]
 
-omit = ["doctyper/_typing.py"]
+omit = ["typer/_typing.py"]
 parallel = true
 data_file = "coverage/.coverage"
-source = ["docs_src", "tests", "doctyper"]
+source = ["docs_src", "tests", "typer"]
 context = '${CONTEXT}'
 relative_files = true
 
@@ -202,7 +202,7 @@ ignore = [
 [tool.ruff.lint.per-file-ignores]
 # "__init__.py" = ["F401"]
 # rich_utils is allowed to use rich imports
-"doctyper/rich_utils.py" = ["TID251"]
+"typer/rich_utils.py" = ["TID251"]
 # This file is more readable without yield from
 "docs_src/progressbar/tutorial004_py310.py" = ["UP028", "B007"]
 # Default mutable data structure
@@ -223,7 +223,7 @@ ignore = [
 "docs_src/*" = ["TID"]
 
 [tool.ruff.lint.isort]
-known-third-party = ["doctyper", "click"]
+known-third-party = ["typer", "click"]
 # For docs_src/subcommands/tutorial003/
 known-first-party = ["reigns", "towns", "lands", "items", "users"]
 

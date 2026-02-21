@@ -1,6 +1,6 @@
 from enum import Enum
 
-import doctyper
+import typer
 
 
 class Food(str, Enum):
@@ -9,11 +9,11 @@ class Food(str, Enum):
     food_3 = "Cheese"
 
 
-app = doctyper.Typer()
+app = typer.Typer()
 
 
 @app.command()
-def main(groceries: list[Food] = doctyper.Option([Food.food_1, Food.food_3])):
+def main(groceries: list[Food] = typer.Option([Food.food_1, Food.food_3])):
     print(f"Buying groceries: {', '.join([f.value for f in groceries])}")
 
 

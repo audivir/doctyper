@@ -1,11 +1,11 @@
-import doctyper
+import typer
 
-app = doctyper.Typer()
+app = typer.Typer()
 
 
 @app.command()
 def main(
-    name: str = doctyper.Argument("World", help="Who to greet", show_default=False),
+    name: str = typer.Argument("World", help="Who to greet", show_default=False),
 ):
     """
     Say hi to NAME very gently, like Dirk.

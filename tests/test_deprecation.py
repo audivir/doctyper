@@ -1,17 +1,17 @@
-import doctyper
 import pytest
-from doctyper.testing import CliRunner
+import typer
+from typer.testing import CliRunner
 
 runner = CliRunner()
 
 
 def test_deprecation():
-    app = doctyper.Typer()
+    app = typer.Typer()
 
     def add_command():
         @app.command()
         def cmd(
-            opt: float | None = doctyper.Option(
+            opt: float | None = typer.Option(
                 3.14,
                 is_flag=True,
                 flag_value="42",

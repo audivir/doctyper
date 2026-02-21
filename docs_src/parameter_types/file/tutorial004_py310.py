@@ -1,10 +1,10 @@
-import doctyper
+import typer
 
-app = doctyper.Typer()
+app = typer.Typer()
 
 
 @app.command()
-def main(file: doctyper.FileBinaryWrite = doctyper.Option(...)):
+def main(file: typer.FileBinaryWrite = typer.Option(...)):
     first_line_str = "some settings\n"
     # You cannot write str directly to a binary file, you have to encode it to get bytes
     first_line_bytes = first_line_str.encode("utf-8")

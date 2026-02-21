@@ -2,14 +2,14 @@ from __future__ import annotations
 
 import re
 
-import doctyper
-from doctyper.testing import CliRunner
+import typer
+from typer.testing import CliRunner
 
 runner = CliRunner()
 
 
 def test_future_annotations():
-    app = doctyper.Typer()
+    app = typer.Typer()
 
     @app.command()
     def main(opt: str | None = None): ...

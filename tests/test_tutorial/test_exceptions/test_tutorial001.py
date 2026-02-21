@@ -4,7 +4,7 @@ import sys
 from pathlib import Path
 
 import pytest
-from doctyper.testing import CliRunner
+from typer.testing import CliRunner
 
 from docs_src.exceptions import tutorial001_py310 as mod
 

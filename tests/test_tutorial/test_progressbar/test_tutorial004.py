@@ -2,7 +2,7 @@ import subprocess
 import sys
 from unittest.mock import patch
 
-from doctyper.testing import CliRunner
+from typer.testing import CliRunner
 
 import docs_src.progressbar.tutorial004_py310 as mod
 from tests.utils import normalize_rich_output

@@ -6,7 +6,7 @@ import subprocess
 from http.server import HTTPServer, SimpleHTTPRequestHandler
 from pathlib import Path
 
-import doctyper
+import typer
 from ruff.__main__ import find_ruff_bin
 
 logging.basicConfig(level=logging.INFO)
@@ -15,7 +15,7 @@ mkdocs_name = "mkdocs.yml"
 docs_path = Path("docs")
 en_docs_path = Path("")
 
-app = doctyper.Typer()
+app = typer.Typer()
 
 
 @app.callback()
@@ -47,7 +47,7 @@ def generate_readme() -> None:
     """
     Generate README.md content from main index.md
     """
-    doctyper.echo("Generating README")
+    typer.echo("Generating README")
     readme_path = Path("README.md")
     new_content = generate_readme_content()
     readme_path.write_text(new_content, encoding="utf-8")
@@ -58,16 +58,16 @@ def verify_readme() -> None:
     """
     Verify README.md content from main index.md
     """
-    doctyper.echo("Verifying README")
+    typer.echo("Verifying README")
     readme_path = Path("README.md")
     generated_content = generate_readme_content()
     readme_content = readme_path.read_text("utf-8")
     if generated_content != readme_content:
-        doctyper.secho(
-            "README.md outdated from the latest index.md", color=doctyper.colors.RED
+        typer.secho(
+            "README.md outdated from the latest index.md", color=typer.colors.RED
         )
-        raise doctyper.Abort()
-    doctyper.echo("Valid README ✅")
+        raise typer.Abort()
+    typer.echo("Valid README ✅")
 
 
 @app.command()
@@ -95,7 +95,7 @@ def build() -> None:
     """
     print("Building docs")
     subprocess.run(["mkdocs", "build"], check=True)
-    doctyper.secho("Successfully built docs", color=doctyper.colors.GREEN)
+    typer.secho("Successfully built docs", color=typer.colors.GREEN)
 
 
 @app.command()
@@ -109,14 +109,14 @@ def serve() -> None:
 
     Make sure you run the build command first.
     """
-    doctyper.echo("Warning: this is a very simple server.")
-    doctyper.echo("For development, use the command live instead.")
-    doctyper.echo("This is here only to preview the documentation site.")
-    doctyper.echo("Make sure you run the build command first.")
+    typer.echo("Warning: this is a very simple server.")
+    typer.echo("For development, use the command live instead.")
+    typer.echo("This is here only to preview the documentation site.")
+    typer.echo("Make sure you run the build command first.")
     os.chdir("site")
     server_address = ("", 8008)
     server = HTTPServer(server_address, SimpleHTTPRequestHandler)
-    doctyper.echo("Serving at: http://127.0.0.1:8008")
+    typer.echo("Serving at: http://127.0.0.1:8008")
     server.serve_forever()
 
 

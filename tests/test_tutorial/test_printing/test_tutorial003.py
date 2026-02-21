@@ -1,7 +1,7 @@
 import subprocess
 import sys
 
-from doctyper.testing import CliRunner
+from typer.testing import CliRunner
 
 import docs_src.printing.tutorial003_py310 as mod
 from tests.utils import normalize_rich_output

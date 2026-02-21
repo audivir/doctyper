@@ -1,12 +1,12 @@
-import doctyper
+import typer
 
-app = doctyper.Typer()
+app = typer.Typer()
 
 
 @app.command()
 def main(
-    name: str = doctyper.Option(..., "--name", "-n"),
-    formal: bool = doctyper.Option(False, "--formal", "-f"),
+    name: str = typer.Option(..., "--name", "-n"),
+    formal: bool = typer.Option(False, "--formal", "-f"),
 ):
     if formal:
         print(f"Good day Ms. {name}.")

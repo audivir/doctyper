@@ -1,9 +1,9 @@
 import time
 
-import doctyper
+import typer
 from rich.progress import Progress, SpinnerColumn, TextColumn
 
-app = doctyper.Typer()
+app = typer.Typer()
 
 
 @app.command()

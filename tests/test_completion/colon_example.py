@@ -1,4 +1,4 @@
-import doctyper
+import typer
 
 image_desc = [
     ("alpine:latest", "latest alpine image"),
@@ -13,12 +13,12 @@ def _complete(incomplete: str) -> str:
             yield image, desc
 
 
-app = doctyper.Typer()
+app = typer.Typer()
 
 
 @app.command()
-def image(name: str = doctyper.Option(autocompletion=_complete)):
-    doctyper.echo(name)
+def image(name: str = typer.Option(autocompletion=_complete)):
+    typer.echo(name)
 
 
 if __name__ == "__main__":

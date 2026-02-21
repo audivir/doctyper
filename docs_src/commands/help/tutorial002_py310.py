@@ -1,6 +1,6 @@
-import doctyper
+import typer
 
-app = doctyper.Typer()
+app = typer.Typer()
 
 
 @app.command(help="Create a new user with USERNAME.")

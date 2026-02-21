@@ -3,9 +3,9 @@ import sys
 from pathlib import Path
 from unittest.mock import patch
 
-import doctyper
 import pytest
-from doctyper.testing import CliRunner
+import typer
+from typer.testing import CliRunner
 
 from docs_src.launch import tutorial002_py310 as mod
 
@@ -14,7 +14,7 @@ runner = CliRunner()
 
 @pytest.fixture(name="app_dir")
 def app_dir():
-    app_dir = Path(doctyper.get_app_dir("my-super-cli-app"))
+    app_dir = Path(typer.get_app_dir("my-super-cli-app"))
     if app_dir.exists():  # pragma: no cover
         for item in app_dir.iterdir():
             if item.is_file():
@@ -30,7 +30,7 @@ def app_dir():
 
 
 def test_cli(app_dir: Path):
-    with patch("doctyper.launch") as launch_mock:
+    with patch("typer.launch") as launch_mock:
         result = runner.invoke(mod.app)
 
     assert result.exit_code == 0

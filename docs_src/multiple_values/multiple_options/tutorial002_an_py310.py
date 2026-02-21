@@ -1,12 +1,12 @@
 from typing import Annotated
 
-import doctyper
+import typer
 
-app = doctyper.Typer()
+app = typer.Typer()
 
 
 @app.command()
-def main(number: Annotated[list[float], doctyper.Option()] = []):
+def main(number: Annotated[list[float], typer.Option()] = []):
     print(f"The sum is {sum(number)}")
 
 

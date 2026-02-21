@@ -1,9 +1,9 @@
 import random
 from typing import Annotated
 
-import doctyper
+import typer
 
-app = doctyper.Typer()
+app = typer.Typer()
 
 
 def get_name():
@@ -11,7 +11,7 @@ def get_name():
 
 
 @app.command()
-def main(name: Annotated[str, doctyper.Argument(default_factory=get_name)]):
+def main(name: Annotated[str, typer.Argument(default_factory=get_name)]):
     print(f"Hello {name}")
 
 

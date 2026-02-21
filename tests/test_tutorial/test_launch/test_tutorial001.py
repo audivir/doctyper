@@ -2,7 +2,7 @@ import subprocess
 import sys
 from unittest.mock import patch
 
-from doctyper.testing import CliRunner
+from typer.testing import CliRunner
 
 from docs_src.launch import tutorial001_py310 as mod
 
@@ -10,7 +10,7 @@ runner = CliRunner()
 
 
 def test_cli():
-    with patch("doctyper.launch") as launch_mock:
+    with patch("typer.launch") as launch_mock:
         result = runner.invoke(mod.app)
 
     assert result.exit_code == 0

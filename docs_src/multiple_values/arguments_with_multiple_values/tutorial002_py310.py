@@ -1,11 +1,11 @@
-import doctyper
+import typer
 
-app = doctyper.Typer()
+app = typer.Typer()
 
 
 @app.command()
 def main(
-    names: tuple[str, str, str] = doctyper.Argument(
+    names: tuple[str, str, str] = typer.Argument(
         ("Harry", "Hermione", "Ron"), help="Select 3 characters to play with"
     ),
 ):

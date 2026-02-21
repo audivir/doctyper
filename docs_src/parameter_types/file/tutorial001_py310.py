@@ -1,10 +1,10 @@
-import doctyper
+import typer
 
-app = doctyper.Typer()
+app = typer.Typer()
 
 
 @app.command()
-def main(config: doctyper.FileText = doctyper.Option(...)):
+def main(config: typer.FileText = typer.Option(...)):
     for line in config:
         print(f"Config line: {line}")
 

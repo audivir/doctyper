@@ -1,7 +1,7 @@
 from enum import Enum
 from typing import Annotated
 
-import doctyper
+import typer
 
 
 class Food(str, Enum):
@@ -10,12 +10,12 @@ class Food(str, Enum):
     food_3 = "Cheese"
 
 
-app = doctyper.Typer()
+app = typer.Typer()
 
 
 @app.command()
 def main(
-    groceries: Annotated[list[Food], doctyper.Option()] = [Food.food_1, Food.food_3],
+    groceries: Annotated[list[Food], typer.Option()] = [Food.food_1, Food.food_3],
 ):
     print(f"Buying groceries: {', '.join([f.value for f in groceries])}")
 

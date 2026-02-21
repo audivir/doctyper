@@ -1,12 +1,12 @@
-import doctyper
+import typer
 
-app = doctyper.Typer()
+app = typer.Typer()
 
 
 @app.command()
 def main():
     print("Opening Typer's docs")
-    doctyper.launch("https://typer.tiangolo.com")
+    typer.launch("https://typer.tiangolo.com")
 
 
 if __name__ == "__main__":

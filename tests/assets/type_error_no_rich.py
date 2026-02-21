@@ -1,8 +1,8 @@
-import doctyper
+import typer
 
-doctyper.main.HAS_RICH = False
+typer.main.HAS_RICH = False
 
-app = doctyper.Typer()
+app = typer.Typer()
 
 
 @app.command()

@@ -1,10 +1,10 @@
-import doctyper
+import typer
 
-app = doctyper.Typer()
+app = typer.Typer()
 
 
 @app.command()
-def main(name: str = doctyper.Argument("World", hidden=True)):
+def main(name: str = typer.Argument("World", hidden=True)):
     """
     Say hi to NAME very gently, like Dirk.
     """

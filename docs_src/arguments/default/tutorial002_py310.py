@@ -1,8 +1,8 @@
 import random
 
-import doctyper
+import typer
 
-app = doctyper.Typer()
+app = typer.Typer()
 
 
 def get_name():
@@ -10,7 +10,7 @@ def get_name():
 
 
 @app.command()
-def main(name: str = doctyper.Argument(default_factory=get_name)):
+def main(name: str = typer.Argument(default_factory=get_name)):
     print(f"Hello {name}")
 
 

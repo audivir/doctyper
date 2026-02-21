@@ -3,8 +3,8 @@ from typing import IO, Any
 
 from click.testing import CliRunner as ClickCliRunner  # noqa
 from click.testing import Result
-from doctyper.main import Typer
-from doctyper.main import get_command as _get_command
+from typer.main import Typer
+from typer.main import get_command as _get_command
 
 
 class CliRunner(ClickCliRunner):

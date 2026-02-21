@@ -3,15 +3,15 @@ from pathlib import Path
 from typing import Any
 
 import click
-import doctyper
 import pytest
-from doctyper.testing import CliRunner
+import typer
+from typer.testing import CliRunner
 
 runner = CliRunner()
 
 
 def test_optional():
-    app = doctyper.Typer()
+    app = typer.Typer()
 
     @app.command()
     def opt(user: str | None = None):
@@ -30,7 +30,7 @@ def test_optional():
 
 
 def test_union_type_optional():
-    app = doctyper.Typer()
+    app = typer.Typer()
 
     @app.command()
     def opt(user: str | None = None):
@@ -49,7 +49,7 @@ def test_union_type_optional():
 
 
 def test_optional_tuple():
-    app = doctyper.Typer()
+    app = typer.Typer()
 
     @app.command()
     def opt(number: tuple[int, int] | None = None):
@@ -68,7 +68,7 @@ def test_optional_tuple():
 
 
 def test_no_type():
-    app = doctyper.Typer()
+    app = typer.Typer()
 
     @app.command()
     def no_type(user):
@@ -93,7 +93,7 @@ def test_list_parameters_convert_to_lists(type_annotation):
     # Lists containing objects that are converted by Click (i.e. not Path or Enum)
     # should not be inadvertently converted to tuples
     expected_element_type = type_annotation.__args__[0]
-    app = doctyper.Typer()
+    app = typer.Typer()
 
     @app.command()
     def list_conversion(container: type_annotation):
@@ -119,7 +119,7 @@ def test_tuple_parameter_elements_are_converted_recursively(type_annotation):
     # Tuple elements that aren't converted by Click (i.e. Path or Enum)
     # should be recursively converted by Typer
     expected_element_types = type_annotation.__args__
-    app = doctyper.Typer()
+    app = typer.Typer()
 
     @app.command()
     def tuple_recursive_conversion(container: type_annotation):
@@ -134,11 +134,11 @@ def test_tuple_parameter_elements_are_converted_recursively(type_annotation):
 
 
 def test_custom_parse():
-    app = doctyper.Typer()
+    app = typer.Typer()
 
     @app.command()
     def custom_parser(
-        hex_value: int = doctyper.Argument(None, parser=lambda x: int(x, 0)),
+        hex_value: int = typer.Argument(None, parser=lambda x: int(x, 0)),
     ):
         assert hex_value == 0x56
 
@@ -158,11 +158,11 @@ def test_custom_click_type():
         ) -> Any:
             return int(value, 0)
 
-    app = doctyper.Typer()
+    app = typer.Typer()
 
     @app.command()
     def custom_click_type(
-        hex_value: int = doctyper.Argument(None, click_type=BaseNumberParamType()),
+        hex_value: int = typer.Argument(None, click_type=BaseNumberParamType()),
     ):
         assert hex_value == 0x56
 

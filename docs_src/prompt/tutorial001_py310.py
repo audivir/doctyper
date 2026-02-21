@@ -1,11 +1,11 @@
-import doctyper
+import typer
 
-app = doctyper.Typer()
+app = typer.Typer()
 
 
 @app.command()
 def main():
-    person_name = doctyper.prompt("What's your name?")
+    person_name = typer.prompt("What's your name?")
     print(f"Hello {person_name}")
 
 

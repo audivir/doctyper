@@ -3,9 +3,9 @@ import subprocess
 import sys
 from types import ModuleType
 
-import doctyper
 import pytest
-from doctyper.testing import CliRunner
+import typer
+from typer.testing import CliRunner
 
 runner = CliRunner()
 
@@ -24,19 +24,19 @@ def get_mod(request: pytest.FixtureRequest) -> ModuleType:
 
 
 @pytest.fixture(name="app")
-def get_app(mod: ModuleType) -> doctyper.Typer:
-    app = doctyper.Typer()
+def get_app(mod: ModuleType) -> typer.Typer:
+    app = typer.Typer()
     app.command()(mod.main)
     return app
 
 
-def test_cli(app: doctyper.Typer):
+def test_cli(app: typer.Typer):
     result = runner.invoke(app, ["World"])
     assert result.exit_code == 0
     assert "Hello World" in result.output
 
 
-def test_cli_missing_argument(app: doctyper.Typer):
+def test_cli_missing_argument(app: typer.Typer):
     result = runner.invoke(app)
     assert result.exit_code == 2
     assert "Missing argument 'NAME'" in result.output

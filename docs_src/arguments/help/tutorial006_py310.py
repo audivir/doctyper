@@ -1,10 +1,10 @@
-import doctyper
+import typer
 
-app = doctyper.Typer()
+app = typer.Typer()
 
 
 @app.command()
-def main(name: str = doctyper.Argument("World", metavar="✨username✨")):
+def main(name: str = typer.Argument("World", metavar="✨username✨")):
     print(f"Hello {name}")
 
 

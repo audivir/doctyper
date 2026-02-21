@@ -1,8 +1,8 @@
-import doctyper
+import typer
 
-application = doctyper.Typer()
+application = typer.Typer()
 
 
 @application.command()
 def callback(name: str = "World"):
-    doctyper.echo(f"Hello {name}")
+    typer.echo(f"Hello {name}")

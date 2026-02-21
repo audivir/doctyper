@@ -1,7 +1,7 @@
-import doctyper
+import typer
 from rich.prompt import Prompt
 
-app = doctyper.Typer()
+app = typer.Typer()
 
 
 @app.command()

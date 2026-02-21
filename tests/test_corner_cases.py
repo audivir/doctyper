@@ -1,6 +1,6 @@
-import doctyper.core
 import pytest
-from doctyper.testing import CliRunner
+import typer.core
+from typer.testing import CliRunner
 
 from tests.assets import corner_cases as mod
 
@@ -18,7 +18,7 @@ def test_hidden_option():
 
 
 def test_hidden_option_no_rich(monkeypatch: pytest.MonkeyPatch):
-    monkeypatch.setattr(doctyper.core, "HAS_RICH", False)
+    monkeypatch.setattr(typer.core, "HAS_RICH", False)
 
     result = runner.invoke(mod.app, ["--help"])
     assert result.exit_code == 0

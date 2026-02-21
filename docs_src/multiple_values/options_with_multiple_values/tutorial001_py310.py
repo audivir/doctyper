@@ -1,14 +1,14 @@
-import doctyper
+import typer
 
-app = doctyper.Typer()
+app = typer.Typer()
 
 
 @app.command()
-def main(user: tuple[str, int, bool] = doctyper.Option((None, None, None))):
+def main(user: tuple[str, int, bool] = typer.Option((None, None, None))):
     username, coins, is_wizard = user
     if not username:
         print("No user provided")
-        raise doctyper.Abort()
+        raise typer.Abort()
     print(f"The username {username} has {coins} coins")
     if is_wizard:
         print("And this user is a wizard!")

@@ -1,4 +1,4 @@
-from doctyper.testing import CliRunner
+from typer.testing import CliRunner
 
 from docs_src.commands.index import tutorial005_py310 as mod
 

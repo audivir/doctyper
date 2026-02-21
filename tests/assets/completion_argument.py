@@ -1,18 +1,18 @@
 import click
-import doctyper
+import typer
 
-app = doctyper.Typer()
+app = typer.Typer()
 
 
 def shell_complete(ctx: click.Context, param: click.Parameter, incomplete: str):
-    doctyper.echo(f"ctx: {ctx.info_name}", err=True)
-    doctyper.echo(f"arg is: {param.name}", err=True)
-    doctyper.echo(f"incomplete is: {incomplete}", err=True)
+    typer.echo(f"ctx: {ctx.info_name}", err=True)
+    typer.echo(f"arg is: {param.name}", err=True)
+    typer.echo(f"incomplete is: {incomplete}", err=True)
     return ["Emma"]
 
 
 @app.command(context_settings={"auto_envvar_prefix": "TEST"})
-def main(name: str = doctyper.Argument(shell_complete=shell_complete)):
+def main(name: str = typer.Argument(shell_complete=shell_complete)):
     """
     Say hello.
     """

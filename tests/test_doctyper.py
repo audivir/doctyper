@@ -4,11 +4,11 @@ from collections.abc import Sequence
 from enum import Enum
 from typing import TYPE_CHECKING, Any
 
-import doctyper
 import pytest
+import typer
 import typing_extensions
-from doctyper._typing import Annotated, Callable, Literal
-from doctyper.testing import CliRunner
+from typer._typing import Annotated, Callable, Literal
+from typer.testing import CliRunner
 
 if TYPE_CHECKING:
     from typing import Literal
@@ -24,7 +24,7 @@ def assert_run(
     regex: bool = True,
     stderr: bool = False,
 ) -> None:
-    app = doctyper.SlimTyper()
+    app = typer.SlimTyper()
     app.command()(func)
     result = runner.invoke(app, args)
     output = result.output
@@ -41,9 +41,9 @@ def assert_help(expected: str, func: Callable[..., None]) -> None:
 
 
 def test_slim_typer():
-    app = doctyper.SlimTyper()
+    app = typer.SlimTyper()
 
-    assert isinstance(app, doctyper.Typer)
+    assert isinstance(app, typer.Typer)
     assert not app.pretty_exceptions_enable
     assert not app._add_completion
 
@@ -110,7 +110,7 @@ def test_choices_other_type():
 
 
 def test_choices_invalid_value():
-    app = doctyper.SlimTyper()
+    app = typer.SlimTyper()
 
     @app.command()
     def main(choice: Literal["a", "b"]): ...
@@ -193,7 +193,7 @@ def test_choices_non_unique_case_dependent():
     assert_help(r"choice\s+CHOICE:\{a\|A\}", main)
 
     def main(
-        choice: Annotated[Literal["a", "A"], doctyper.Option(case_sensitive=False)],
+        choice: Annotated[Literal["a", "A"], typer.Option(case_sensitive=False)],
     ): ...
 
     with pytest.raises(ValueError, match="Literal values must be unique"):
@@ -208,7 +208,7 @@ def test_choices_non_unique_case_dependent():
     assert_help(r"choice\s+CHOICE:\{a\|A\}", main)
 
     def main(
-        choice: Annotated[CaseEnum, doctyper.Option(case_sensitive=False)],
+        choice: Annotated[CaseEnum, typer.Option(case_sensitive=False)],
     ): ...
 
     with pytest.raises(ValueError, match="Enum values must be unique"):
@@ -238,9 +238,9 @@ def test_future_annotations_with_docstring():
 
 def test_help_preference():
     def main(
-        doc_opt: Annotated[str, doctyper.Option()] = "string",
+        doc_opt: Annotated[str, typer.Option()] = "string",
         ann_opt: Annotated[
-            str, doctyper.Option(help="String Option with Annotated Help.")
+            str, typer.Option(help="String Option with Annotated Help.")
         ] = "string",
     ):  # future annotation would convert str | None to "str | None"
         """Docstring.
@@ -262,7 +262,7 @@ def test_help_preference():
 
 def test_custom_annotated():
     def main(
-        opt: Annotated["str | None", doctyper.Option(show_default="Custom")] = None,
+        opt: Annotated["str | None", typer.Option(show_default="Custom")] = None,
     ):  # future annotation would convert str | None to "str | None"
         """Docstring.
 
@@ -307,7 +307,7 @@ def test_typing_type_alias(type_: type[Any]):
 
 def test_typing_annotated():
     def main(
-        ann_arg: Annotated[str, doctyper.Argument(help="Annotated Argument.")],
+        ann_arg: Annotated[str, typer.Argument(help="Annotated Argument.")],
     ): ...
 
     assert_help(

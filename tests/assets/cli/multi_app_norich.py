@@ -1,21 +1,19 @@
-import doctyper
+import typer
 
-sub_app = doctyper.Typer()
+sub_app = typer.Typer()
 
 variable = "Some text"
 
 
 @sub_app.command()
-def hello(
-    name: str = "World", age: int = doctyper.Option(0, help="The age of the user")
-):
+def hello(name: str = "World", age: int = typer.Option(0, help="The age of the user")):
     """
     Say Hello
     """
 
 
 @sub_app.command()
-def hi(user: str = doctyper.Argument("World", help="The name of the user to greet")):
+def hi(user: str = typer.Argument("World", help="The name of the user to greet")):
     """
     Say Hi
     """
@@ -28,7 +26,7 @@ def bye():
     """
 
 
-app = doctyper.Typer(help="Demo App", epilog="The end", rich_markup_mode=None)
+app = typer.Typer(help="Demo App", epilog="The end", rich_markup_mode=None)
 app.add_typer(sub_app, name="sub")
 
 

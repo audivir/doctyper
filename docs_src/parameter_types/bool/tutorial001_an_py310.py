@@ -1,12 +1,12 @@
 from typing import Annotated
 
-import doctyper
+import typer
 
-app = doctyper.Typer()
+app = typer.Typer()
 
 
 @app.command()
-def main(force: Annotated[bool, doctyper.Option("--force")] = False):
+def main(force: Annotated[bool, typer.Option("--force")] = False):
     if force:
         print("Forcing operation")
     else:

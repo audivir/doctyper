@@ -59,6 +59,6 @@ def test_unmodified_traceback():
         "calling outside of Typer should show the normal traceback, "
         "even after the hook is installed"
     )
-    assert "doctyper.main.get_command(broken_app)()" in result.stderr
+    assert "typer.main.get_command(broken_app)()" in result.stderr
     assert "print(name + 3)" in result.stderr
     assert 'TypeError: can only concatenate str (not "int") to str' in result.stderr

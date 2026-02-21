@@ -1,10 +1,10 @@
 import subprocess
 import sys
 
-import doctyper
-import doctyper.core
 import pytest
-from doctyper.testing import CliRunner
+import typer
+import typer.core
+from typer.testing import CliRunner
 
 from docs_src.terminating import tutorial003_py310 as mod
 
@@ -33,7 +33,7 @@ def test_root_no_standalone():
 
 def test_root_no_rich(monkeypatch: pytest.MonkeyPatch):
     # Mainly for coverage
-    monkeypatch.setattr(doctyper.core, "HAS_RICH", False)
+    monkeypatch.setattr(typer.core, "HAS_RICH", False)
     result = runner.invoke(app, ["root"])
     assert result.exit_code == 1
     assert "The root user is reserved" in result.output

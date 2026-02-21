@@ -1,6 +1,6 @@
-import doctyper
+import typer
 
-app = doctyper.Typer(no_args_is_help=True)
+app = typer.Typer(no_args_is_help=True)
 
 
 @app.command()

@@ -1,16 +1,16 @@
 from datetime import datetime
 from typing import Annotated
 
-import doctyper
+import typer
 
-app = doctyper.Typer()
+app = typer.Typer()
 
 
 @app.command()
 def main(
     launch_date: Annotated[
         datetime,
-        doctyper.Argument(
+        typer.Argument(
             formats=["%Y-%m-%d", "%Y-%m-%dT%H:%M:%S", "%Y-%m-%d %H:%M:%S", "%m/%d/%Y"]
         ),
     ],

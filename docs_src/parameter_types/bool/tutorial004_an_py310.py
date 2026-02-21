@@ -1,12 +1,12 @@
 from typing import Annotated
 
-import doctyper
+import typer
 
-app = doctyper.Typer()
+app = typer.Typer()
 
 
 @app.command()
-def main(in_prod: Annotated[bool, doctyper.Option(" /--demo", " /-d")] = True):
+def main(in_prod: Annotated[bool, typer.Option(" /--demo", " /-d")] = True):
     if in_prod:
         print("Running in production")
     else:

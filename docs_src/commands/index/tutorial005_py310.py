@@ -1,16 +1,16 @@
-import doctyper
+import typer
 
-app = doctyper.Typer(suggest_commands=True)
+app = typer.Typer(suggest_commands=True)
 
 
 @app.command()
 def create():
-    doctyper.echo("Creating...")
+    typer.echo("Creating...")
 
 
 @app.command()
 def delete():
-    doctyper.echo("Deleting...")
+    typer.echo("Deleting...")
 
 
 if __name__ == "__main__":

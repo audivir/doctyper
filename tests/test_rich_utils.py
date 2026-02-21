@@ -1,9 +1,9 @@
 import sys
 
-import doctyper
-import doctyper.completion
 import pytest
-from doctyper.testing import CliRunner
+import typer
+import typer.completion
+from typer.testing import CliRunner
 
 from tests.utils import needs_rich
 
@@ -11,7 +11,7 @@ runner = CliRunner()
 
 
 def test_rich_utils_click_rewrapp():
-    app = doctyper.Typer(rich_markup_mode="markdown")
+    app = typer.Typer(rich_markup_mode="markdown")
 
     @app.command()
     def main():
@@ -45,7 +45,7 @@ def test_rich_utils_click_rewrapp():
 
 def test_rich_help_no_commands():
     """Ensure that the help still works for a Typer instance with no commands, but with a callback."""
-    app = doctyper.Typer(help="My cool Typer app")
+    app = typer.Typer(help="My cool Typer app")
 
     @app.callback(invoke_without_command=True, no_args_is_help=True)
     def main() -> None:
@@ -58,15 +58,15 @@ def test_rich_help_no_commands():
 
 
 def test_rich_doesnt_print_None_default():
-    app = doctyper.Typer(rich_markup_mode="rich")
+    app = typer.Typer(rich_markup_mode="rich")
 
     @app.command()
     def main(
         name: str,
-        option_1: str = doctyper.Option(
+        option_1: str = typer.Option(
             "option_1_default",
         ),
-        option_2: str = doctyper.Option(
+        option_2: str = typer.Option(
             ...,
         ),
     ):
@@ -93,7 +93,7 @@ def test_rich_markup_import_regression():
         if hasattr(rich_module, "markup"):
             delattr(rich_module, "markup")
 
-    app = doctyper.Typer(rich_markup_mode=None)
+    app = typer.Typer(rich_markup_mode=None)
 
     @app.command()
     def main(bar: str):
@@ -111,7 +111,7 @@ def test_metavar_highlighter(input_text: str):
     Test that the MetavarHighlighter works correctly.
     cf PR 1508
     """
-    from doctyper.rich_utils import (
+    from typer.rich_utils import (
         STYLE_METAVAR_SEPARATOR,
         Text,
         _get_rich_console,
@@ -136,7 +136,7 @@ def test_metavar_highlighter(input_text: str):
 
 
 def test_make_rich_text_with_ansi_escape_sequences():
-    from doctyper.rich_utils import Text, _make_rich_text
+    from typer.rich_utils import Text, _make_rich_text
 
     ansi_text = "This is \x1b[4munderlined\x1b[0m text"
     result = _make_rich_text(text=ansi_text, markup_mode="rich")
@@ -160,12 +160,12 @@ def test_make_rich_text_with_ansi_escape_sequences():
 
 
 def test_make_rich_text_with_typer_style_in_help():
-    app = doctyper.Typer()
+    app = typer.Typer()
 
     @app.command()
     def example(
-        a: str = doctyper.Option(help="This is A"),
-        b: str = doctyper.Option(help=f"This is {doctyper.style('B', underline=True)}"),
+        a: str = typer.Option(help="This is A"),
+        b: str = typer.Option(help=f"This is {typer.style('B', underline=True)}"),
     ):
         """Example command with styled help text."""
         pass  # pragma: no cover
@@ -179,13 +179,13 @@ def test_make_rich_text_with_typer_style_in_help():
 
 
 def test_help_table_alignment_with_styled_text():
-    app = doctyper.Typer()
+    app = typer.Typer()
 
     @app.command()
     def example(
-        a: str = doctyper.Option(help="This is A"),
-        b: str = doctyper.Option(help=f"This is {doctyper.style('B', underline=True)}"),
-        c: str = doctyper.Option(help="This is C"),
+        a: str = typer.Option(help="This is A"),
+        b: str = typer.Option(help=f"This is {typer.style('B', underline=True)}"),
+        c: str = typer.Option(help="This is C"),
     ):
         """Example command with styled help text."""
         pass  # pragma: no cover

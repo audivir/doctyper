@@ -1,15 +1,15 @@
 from typing import Annotated
 
-import doctyper
+import typer
 
-app = doctyper.Typer()
+app = typer.Typer()
 
 
 @app.command()
 def main(
-    id: Annotated[int, doctyper.Argument(min=0, max=1000)],
-    rank: Annotated[int, doctyper.Option(max=10, clamp=True)] = 0,
-    score: Annotated[float, doctyper.Option(min=0, max=100, clamp=True)] = 0,
+    id: Annotated[int, typer.Argument(min=0, max=1000)],
+    rank: Annotated[int, typer.Option(max=10, clamp=True)] = 0,
+    score: Annotated[float, typer.Option(min=0, max=100, clamp=True)] = 0,
 ):
     print(f"ID is {id}")
     print(f"--rank is {rank}")

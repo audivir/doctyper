@@ -1,6 +1,6 @@
 from typing import Annotated
 
-import doctyper
+import typer
 
 
 class CustomClass:
@@ -15,15 +15,13 @@ def parse_custom_class(value: str):
     return CustomClass(value * 2)
 
 
-app = doctyper.Typer()
+app = typer.Typer()
 
 
 @app.command()
 def main(
-    custom_arg: Annotated[CustomClass, doctyper.Argument(parser=parse_custom_class)],
-    custom_opt: Annotated[
-        CustomClass, doctyper.Option(parser=parse_custom_class)
-    ] = "Foo",
+    custom_arg: Annotated[CustomClass, typer.Argument(parser=parse_custom_class)],
+    custom_opt: Annotated[CustomClass, typer.Option(parser=parse_custom_class)] = "Foo",
 ):
     print(f"custom_arg is {custom_arg}")
     print(f"--custom-opt is {custom_opt}")

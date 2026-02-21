@@ -1,10 +1,10 @@
-import doctyper
+import typer
 
-app = doctyper.Typer()
+app = typer.Typer()
 
 
 @app.command()
-def main(verbose: int = doctyper.Option(0, "--verbose", "-v", count=True)):
+def main(verbose: int = typer.Option(0, "--verbose", "-v", count=True)):
     print(f"Verbose level is {verbose}")
 
 

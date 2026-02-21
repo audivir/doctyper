@@ -1,10 +1,10 @@
-import doctyper
+import typer
 from rich.console import Console
 from rich.table import Table
 
 console = Console()
 
-app = doctyper.Typer()
+app = typer.Typer()
 
 
 @app.command()

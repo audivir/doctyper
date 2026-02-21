@@ -1,11 +1,11 @@
-import doctyper
+import typer
 
-app = doctyper.Typer(rich_markup_mode="rich")
+app = typer.Typer(rich_markup_mode="rich")
 
 
 @app.command()
 def create(
-    username: str = doctyper.Argument(
+    username: str = typer.Argument(
         ..., help="The username to be [green]created[/green]"
     ),
 ):
@@ -19,10 +19,8 @@ def create(
 
 @app.command(help="[bold red]Delete[/bold red] a user with [italic]USERNAME[/italic].")
 def delete(
-    username: str = doctyper.Argument(
-        ..., help="The username to be [red]deleted[/red]"
-    ),
-    force: bool = doctyper.Option(
+    username: str = typer.Argument(..., help="The username to be [red]deleted[/red]"),
+    force: bool = typer.Option(
         False, help="Force the [bold red]deletion[/bold red] :boom:"
     ),
 ):

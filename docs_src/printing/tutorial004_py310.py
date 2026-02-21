@@ -1,9 +1,9 @@
-import doctyper
+import typer
 from rich.console import Console
 
 err_console = Console(stderr=True)
 
-app = doctyper.Typer()
+app = typer.Typer()
 
 
 @app.command()

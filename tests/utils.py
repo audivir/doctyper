@@ -3,8 +3,8 @@ import sys
 from os import getenv
 
 import pytest
-from doctyper._completion_shared import _get_shell_name
-from doctyper.core import HAS_RICH
+from typer._completion_shared import _get_shell_name
+from typer.core import HAS_RICH
 
 needs_linux = pytest.mark.skipif(
     not sys.platform.startswith("linux"), reason="Test requires Linux"

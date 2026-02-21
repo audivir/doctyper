@@ -1,8 +1,8 @@
 from typing import Annotated
 
-import doctyper
+import typer
 
-app = doctyper.Typer()
+app = typer.Typer()
 
 
 @app.command()
@@ -14,7 +14,7 @@ def create(username: str):
 def delete(
     username: str,
     force: Annotated[
-        bool, doctyper.Option(prompt="Are you sure you want to delete the user?")
+        bool, typer.Option(prompt="Are you sure you want to delete the user?")
     ],
 ):
     if force:
@@ -26,7 +26,7 @@ def delete(
 @app.command()
 def delete_all(
     force: Annotated[
-        bool, doctyper.Option(prompt="Are you sure you want to delete ALL users?")
+        bool, typer.Option(prompt="Are you sure you want to delete ALL users?")
     ],
 ):
     if force:

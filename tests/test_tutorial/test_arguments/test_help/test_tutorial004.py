@@ -4,7 +4,7 @@ import sys
 from types import ModuleType
 
 import pytest
-from doctyper.testing import CliRunner
+from typer.testing import CliRunner
 
 runner = CliRunner()
 

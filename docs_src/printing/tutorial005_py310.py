@@ -1,17 +1,17 @@
-import doctyper
+import typer
 
-app = doctyper.Typer()
+app = typer.Typer()
 
 
 @app.command()
 def main(good: bool = True):
     message_start = "everything is "
     if good:
-        ending = doctyper.style("good", fg=doctyper.colors.GREEN, bold=True)
+        ending = typer.style("good", fg=typer.colors.GREEN, bold=True)
     else:
-        ending = doctyper.style("bad", fg=doctyper.colors.WHITE, bg=doctyper.colors.RED)
+        ending = typer.style("bad", fg=typer.colors.WHITE, bg=typer.colors.RED)
     message = message_start + ending
-    doctyper.echo(message)
+    typer.echo(message)
 
 
 if __name__ == "__main__":

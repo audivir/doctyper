@@ -1,6 +1,6 @@
-import doctyper
+import typer
 
-app = doctyper.Typer(help="Awesome CLI user manager.")
+app = typer.Typer(help="Awesome CLI user manager.")
 
 
 @app.command()
@@ -14,7 +14,7 @@ def create(username: str):
 @app.command()
 def delete(
     username: str,
-    force: bool = doctyper.Option(
+    force: bool = typer.Option(
         ...,
         prompt="Are you sure you want to delete the user?",
         help="Force deletion without confirmation.",
@@ -33,7 +33,7 @@ def delete(
 
 @app.command()
 def delete_all(
-    force: bool = doctyper.Option(
+    force: bool = typer.Option(
         ...,
         prompt="Are you sure you want to delete ALL users?",
         help="Force deletion without confirmation.",

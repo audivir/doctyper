@@ -1,16 +1,16 @@
-import doctyper
+import typer
 
-app = doctyper.Typer()
+app = typer.Typer()
 
 
 @app.command()
 def main(
     name: str,
-    lastname: str = doctyper.Option("", help="Last name of person to greet."),
-    formal: bool = doctyper.Option(
+    lastname: str = typer.Option("", help="Last name of person to greet."),
+    formal: bool = typer.Option(
         False, help="Say hi formally.", rich_help_panel="Customization and Utils"
     ),
-    debug: bool = doctyper.Option(
+    debug: bool = typer.Option(
         False, help="Enable debugging.", rich_help_panel="Customization and Utils"
     ),
 ):

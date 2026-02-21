@@ -18,7 +18,7 @@ from uuid import UUID
 import click
 import docstring_parser
 from annotated_doc import Doc
-from doctyper._types import TyperChoice
+from typer._types import TyperChoice
 
 from ._typing import (
     Literal,
@@ -1283,7 +1283,7 @@ def solve_typer_info_defaults(typer_info: TyperInfo) -> TyperInfo:
                 continue
         except AttributeError:
             pass
-        # Priority 3: Value set in subapp = doctyper.Typer()
+        # Priority 3: Value set in subapp = typer.Typer()
         try:
             instance_value = getattr(
                 typer_info.typer_instance.info,  # type: ignore
@@ -2037,15 +2037,15 @@ def launch(
 
     ## Examples
     ```python
-        import doctyper
+        import typer
 
-        doctyper.launch("https://typer.tiangolo.com/")
+        typer.launch("https://typer.tiangolo.com/")
     ```
 
     ```python
-        import doctyper
+        import typer
 
-        doctyper.launch("/my/downloaded/file", locate=True)
+        typer.launch("/my/downloaded/file", locate=True)
     ```
     """
 

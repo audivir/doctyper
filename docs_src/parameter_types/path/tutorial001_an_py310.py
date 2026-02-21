@@ -1,16 +1,16 @@
 from pathlib import Path
 from typing import Annotated
 
-import doctyper
+import typer
 
-app = doctyper.Typer()
+app = typer.Typer()
 
 
 @app.command()
-def main(config: Annotated[Path | None, doctyper.Option()] = None):
+def main(config: Annotated[Path | None, typer.Option()] = None):
     if config is None:
         print("No config file")
-        raise doctyper.Abort()
+        raise typer.Abort()
     if config.is_file():
         text = config.read_text()
         print(f"Config file contents: {text}")

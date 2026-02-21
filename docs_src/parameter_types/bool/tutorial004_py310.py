@@ -1,10 +1,10 @@
-import doctyper
+import typer
 
-app = doctyper.Typer()
+app = typer.Typer()
 
 
 @app.command()
-def main(in_prod: bool = doctyper.Option(True, " /--demo", " /-d")):
+def main(in_prod: bool = typer.Option(True, " /--demo", " /-d")):
     if in_prod:
         print("Running in production")
     else:

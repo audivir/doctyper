@@ -1,7 +1,7 @@
 import subprocess
 import sys
 
-from doctyper.testing import CliRunner
+from typer.testing import CliRunner
 
 import docs_src.printing.tutorial004_py310 as mod
 

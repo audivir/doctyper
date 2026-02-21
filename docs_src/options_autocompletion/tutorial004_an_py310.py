@@ -1,6 +1,6 @@
 from typing import Annotated
 
-import doctyper
+import typer
 
 valid_completion_items = [
     ("Camila", "The reader of books."),
@@ -18,14 +18,14 @@ def complete_name(incomplete: str):
     return completion
 
 
-app = doctyper.Typer()
+app = typer.Typer()
 
 
 @app.command()
 def main(
     name: Annotated[
         str,
-        doctyper.Option(help="The name to say hi to.", autocompletion=complete_name),
+        typer.Option(help="The name to say hi to.", autocompletion=complete_name),
     ] = "World",
 ):
     print(f"Hello {name}")

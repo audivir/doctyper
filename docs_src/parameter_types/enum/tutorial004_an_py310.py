@@ -1,13 +1,13 @@
 from typing import Annotated, Literal
 
-import doctyper
+import typer
 
-app = doctyper.Typer()
+app = typer.Typer()
 
 
 @app.command()
 def main(
-    network: Annotated[Literal["simple", "conv", "lstm"], doctyper.Option()] = "simple",
+    network: Annotated[Literal["simple", "conv", "lstm"], typer.Option()] = "simple",
 ):
     print(f"Training neural network of type: {network}")
 

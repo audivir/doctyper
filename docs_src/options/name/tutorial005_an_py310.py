@@ -1,14 +1,14 @@
 from typing import Annotated
 
-import doctyper
+import typer
 
-app = doctyper.Typer()
+app = typer.Typer()
 
 
 @app.command()
 def main(
-    name: Annotated[str, doctyper.Option("--name", "-n")],
-    formal: Annotated[bool, doctyper.Option("--formal", "-f")] = False,
+    name: Annotated[str, typer.Option("--name", "-n")],
+    formal: Annotated[bool, typer.Option("--formal", "-f")] = False,
 ):
     if formal:
         print(f"Good day Ms. {name}.")

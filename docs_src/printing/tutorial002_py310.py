@@ -1,7 +1,7 @@
-import doctyper
+import typer
 from rich import print
 
-app = doctyper.Typer()
+app = typer.Typer()
 
 
 @app.command()

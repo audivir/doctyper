@@ -1,10 +1,10 @@
-import doctyper
+import typer
 
-app = doctyper.Typer()
+app = typer.Typer()
 
 
 @app.command()
-def main(accept: bool | None = doctyper.Option(None, "--accept/--reject")):
+def main(accept: bool | None = typer.Option(None, "--accept/--reject")):
     if accept is None:
         print("I don't know what you want yet")
     elif accept:

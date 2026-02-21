@@ -1,15 +1,15 @@
 from typing import Annotated
 
-import doctyper
+import typer
 
-app = doctyper.Typer()
+app = typer.Typer()
 
 
 @app.command()
 def main(
     name: Annotated[
         str,
-        doctyper.Argument(
+        typer.Argument(
             help="Who to greet", show_default="Deadpoolio the amazing's name"
         ),
     ] = "Wade Wilson",

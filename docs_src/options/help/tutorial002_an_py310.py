@@ -1,25 +1,23 @@
 from typing import Annotated
 
-import doctyper
+import typer
 
-app = doctyper.Typer()
+app = typer.Typer()
 
 
 @app.command()
 def main(
     name: str,
-    lastname: Annotated[
-        str, doctyper.Option(help="Last name of person to greet.")
-    ] = "",
+    lastname: Annotated[str, typer.Option(help="Last name of person to greet.")] = "",
     formal: Annotated[
         bool,
-        doctyper.Option(
+        typer.Option(
             help="Say hi formally.", rich_help_panel="Customization and Utils"
         ),
     ] = False,
     debug: Annotated[
         bool,
-        doctyper.Option(
+        typer.Option(
             help="Enable debugging.", rich_help_panel="Customization and Utils"
         ),
     ] = False,

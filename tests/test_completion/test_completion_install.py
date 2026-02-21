@@ -5,7 +5,7 @@ from pathlib import Path
 from unittest import mock
 
 import shellingham
-from doctyper.testing import CliRunner
+from typer.testing import CliRunner
 
 from docs_src.typer_app import tutorial001_py310 as mod
 

@@ -1,13 +1,13 @@
-import doctyper
+import typer
 
-app = doctyper.Typer()
+app = typer.Typer()
 
 
 @app.command(context_settings={"auto_envvar_prefix": "TEST"})
 def main(
-    name: str = doctyper.Option("John", hidden=True),
-    lastname: str = doctyper.Option("Doe", "/lastname", show_default="Mr. Doe"),
-    age: int = doctyper.Option(lambda: 42, show_default=True),
+    name: str = typer.Option("John", hidden=True),
+    lastname: str = typer.Option("Doe", "/lastname", show_default="Mr. Doe"),
+    age: int = typer.Option(lambda: 42, show_default=True),
 ):
     """
     Say hello.

@@ -1,11 +1,11 @@
-import doctyper
+import typer
 
-app = doctyper.Typer()
+app = typer.Typer()
 
 
 @app.command()
 def main(
-    name: str = doctyper.Argument(
+    name: str = typer.Argument(
         "Wade Wilson", help="Who to greet", show_default="Deadpoolio the amazing's name"
     ),
 ):

@@ -1,13 +1,13 @@
 from pathlib import Path
 
-import doctyper
+import typer
 
-app = doctyper.Typer()
+app = typer.Typer()
 
 
 @app.command()
 def main(
-    config: Path = doctyper.Option(
+    config: Path = typer.Option(
         ...,
         exists=True,
         file_okay=True,

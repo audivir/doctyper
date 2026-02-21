@@ -1,14 +1,14 @@
 from typing import Annotated
 
-import doctyper
+import typer
 
-app = doctyper.Typer()
+app = typer.Typer()
 
 
 @app.command()
 def main(
     name: Annotated[
-        str, doctyper.Argument(help="Who to greet", show_default=False)
+        str, typer.Argument(help="Who to greet", show_default=False)
     ] = "World",
 ):
     """

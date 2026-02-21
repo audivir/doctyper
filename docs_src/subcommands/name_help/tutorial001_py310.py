@@ -1,8 +1,8 @@
-import doctyper
+import typer
 
-app = doctyper.Typer()
+app = typer.Typer()
 
-users_app = doctyper.Typer()
+users_app = typer.Typer()
 app.add_typer(users_app, name="users", help="Manage users in the app.")
 
 

@@ -1,12 +1,12 @@
 from typing import Annotated
 
-import doctyper
+import typer
 
-app = doctyper.Typer()
+app = typer.Typer()
 
 
 @app.command()
-def main(config: Annotated[doctyper.FileText, doctyper.Option(mode="a")]):
+def main(config: Annotated[typer.FileText, typer.Option(mode="a")]):
     config.write("This is a single line\n")
     print("Config line written")
 

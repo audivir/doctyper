@@ -2,16 +2,16 @@ import os
 import subprocess
 import sys
 
-import doctyper
 import pytest
-from doctyper.testing import CliRunner
+import typer
+from typer.testing import CliRunner
 
 runner = CliRunner()
 rounded = ["╭", "─", "┬", "╮", "│", "├", "┼", "┤", "╰", "┴", "╯"]
 
 
 def test_rich_markup_mode_none():
-    app = doctyper.Typer(rich_markup_mode=None)
+    app = typer.Typer(rich_markup_mode=None)
 
     @app.command()
     def main(arg: str):
@@ -29,7 +29,7 @@ def test_rich_markup_mode_none():
 
 
 def test_rich_markup_mode_rich():
-    app = doctyper.Typer(rich_markup_mode="rich")
+    app = typer.Typer(rich_markup_mode="rich")
 
     @app.command()
     def main(arg: str):
@@ -67,7 +67,7 @@ def test_rich_markup_mode_envvar(env_var_value: str, expected_result: bool):
             "coverage",
             "run",
             "-m",
-            "doctyper",
+            "typer",
             "tests/assets/cli/sample.py",
             "--help",
         ],
@@ -98,7 +98,7 @@ def test_rich_markup_mode_envvar(env_var_value: str, expected_result: bool):
     ],
 )
 def test_markup_mode_newline_pr815(mode: str, lines: list[str]):
-    app = doctyper.Typer(rich_markup_mode=mode)
+    app = typer.Typer(rich_markup_mode=mode)
 
     @app.command()
     def main(arg: str):
@@ -136,7 +136,7 @@ def test_markup_mode_newline_pr815(mode: str, lines: list[str]):
     ],
 )
 def test_markup_mode_newline_issue447(mode: str, lines: list[str]):
-    app = doctyper.Typer(rich_markup_mode=mode)
+    app = typer.Typer(rich_markup_mode=mode)
 
     @app.command()
     def main(arg: str):
@@ -209,7 +209,7 @@ def test_markup_mode_newline_issue447(mode: str, lines: list[str]):
     ],
 )
 def test_markup_mode_newline_mixed(mode: str, lines: list[str]):
-    app = doctyper.Typer(rich_markup_mode=mode)
+    app = typer.Typer(rich_markup_mode=mode)
 
     @app.command()
     def main(arg: str):
@@ -253,7 +253,7 @@ def test_markup_mode_newline_mixed(mode: str, lines: list[str]):
     ],
 )
 def test_markup_mode_bullets_single_newline(mode: str, lines: list[str]):
-    app = doctyper.Typer(rich_markup_mode=mode)
+    app = typer.Typer(rich_markup_mode=mode)
 
     @app.command()
     def main(arg: str):
@@ -296,7 +296,7 @@ def test_markup_mode_bullets_single_newline(mode: str, lines: list[str]):
     ],
 )
 def test_markup_mode_bullets_double_newline(mode: str, lines: list[str]):
-    app = doctyper.Typer(rich_markup_mode=mode)
+    app = typer.Typer(rich_markup_mode=mode)
 
     @app.command()
     def main(arg: str):
@@ -327,5 +327,5 @@ def test_markup_mode_bullets_double_newline(mode: str, lines: list[str]):
 
 def test_markup_mode_default():
     # We're assuming the test suite is run with rich installed
-    app = doctyper.Typer()
+    app = typer.Typer()
     assert app.rich_markup_mode == "rich"

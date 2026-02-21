@@ -1,9 +1,9 @@
 import subprocess
 import sys
 
-import doctyper.core
 import pytest
-from doctyper.testing import CliRunner
+import typer.core
+from typer.testing import CliRunner
 
 from docs_src.commands.callback import tutorial001_py310 as mod
 
@@ -21,7 +21,7 @@ def test_help():
 
 
 def test_help_no_rich(monkeypatch: pytest.MonkeyPatch):
-    monkeypatch.setattr(doctyper.core, "HAS_RICH", False)
+    monkeypatch.setattr(typer.core, "HAS_RICH", False)
     result = runner.invoke(app, ["--help"])
     assert result.exit_code == 0
     assert "Manage users in the awesome CLI app." in result.output

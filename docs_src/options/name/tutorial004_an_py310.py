@@ -1,12 +1,12 @@
 from typing import Annotated
 
-import doctyper
+import typer
 
-app = doctyper.Typer()
+app = typer.Typer()
 
 
 @app.command()
-def main(user_name: Annotated[str, doctyper.Option("--user-name", "-n")]):
+def main(user_name: Annotated[str, typer.Option("--user-name", "-n")]):
     print(f"Hello {user_name}")
 
 

@@ -2,8 +2,8 @@ import subprocess
 import sys
 from unittest.mock import patch
 
-import doctyper
-from doctyper.testing import CliRunner
+import typer
+from typer.testing import CliRunner
 
 import docs_src.progressbar.tutorial001_py310 as mod
 from tests.utils import normalize_rich_output
@@ -15,7 +15,7 @@ runner = CliRunner()
 
 def test_cli_one_step():
     with patch("time.sleep") as sleep_mock:
-        sleep_mock.side_effect = doctyper.Exit()  # Exit on first `time.sleep()` call
+        sleep_mock.side_effect = typer.Exit()  # Exit on first `time.sleep()` call
         result = runner.invoke(app)
 
     # Replace all Rich formatting with `*` characters

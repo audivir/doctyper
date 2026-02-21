@@ -1,13 +1,13 @@
-import doctyper
+import typer
 
-app = doctyper.Typer()
+app = typer.Typer()
 
 
 @app.command()
 def main(
     name: str,
-    lastname: str = doctyper.Option("", help="Last name of person to greet."),
-    formal: bool = doctyper.Option(False, help="Say hi formally."),
+    lastname: str = typer.Option("", help="Last name of person to greet."),
+    formal: bool = typer.Option(False, help="Say hi formally."),
 ):
     """
     Say hi to NAME, optionally with a --lastname.

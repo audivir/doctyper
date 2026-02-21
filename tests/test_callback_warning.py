@@ -1,14 +1,14 @@
-import doctyper
 import pytest
-from doctyper.testing import CliRunner
+import typer
+from typer.testing import CliRunner
 
 runner = CliRunner()
 
 
 def test_warns_when_callback_is_not_supported():
-    app = doctyper.Typer()
+    app = typer.Typer()
 
-    sub_app = doctyper.Typer()
+    sub_app = typer.Typer()
 
     @sub_app.callback()
     def callback():
@@ -26,9 +26,9 @@ def test_warns_when_callback_is_not_supported():
 
 
 def test_warns_when_callback_is_not_supported_added_after_add_typer():
-    app = doctyper.Typer()
+    app = typer.Typer()
 
-    sub_app = doctyper.Typer()
+    sub_app = typer.Typer()
     app.add_typer(sub_app)
 
     @sub_app.callback()

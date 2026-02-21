@@ -1,14 +1,14 @@
 from typing import Annotated
 
-import doctyper
+import typer
 
-app = doctyper.Typer()
+app = typer.Typer()
 
 
 @app.command()
 def main(
     fullname: Annotated[
-        str, doctyper.Option(show_default="Deadpoolio the amazing's name")
+        str, typer.Option(show_default="Deadpoolio the amazing's name")
     ] = "Wade Wilson",
 ):
     print(f"Hello {fullname}")

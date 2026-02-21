@@ -1,15 +1,15 @@
-import doctyper
+import typer
 
-cli = doctyper.Typer()
-sub_app = doctyper.Typer()
+cli = typer.Typer()
+sub_app = typer.Typer()
 cli.add_typer(sub_app)
 
 
 @sub_app.command()
 def hello():
-    doctyper.echo("hello there")
+    typer.echo("hello there")
 
 
 @sub_app.command()
 def bye():
-    doctyper.echo("bye bye")
+    typer.echo("bye bye")

@@ -1,41 +1,39 @@
 # doctyper
 
-A wrapper around [Typer](https://typer.tiangolo.com) to simplify the creation of command-line interfaces (CLIs).
-It use parsed docstrings to extract the arguments and options for the CLI commands.
+> Also uses the namespace `typer`, thus do not use `typer` and `doctyper` in the same environment.
+> It is fully backward compatible with `typer`; all specific features are activated via keyword arguments.
 
-- Features:
-    - Use Google-style docstrings to create help strings for arguments and options.
-    - Use type-aliased identifiers
-    - Interpret Literals (for choices) (meanwhile added to upstream typer)
-        - Interpret unions, lists or tuples of Literals (not yet added to upstream typer)
-        - Raise error on non-string literal values for python3 <= 3.10
-        - Checks for uniqueness in Literals/Enums as `Literal["1", 1]` would interrupt type safety
-    - `SlimTyper` disables completion and pretty traceback
-    - Enable "str | None" type hints (and `__future__ import annotations` for python <= 3.10)
-    - Disables show_default for required arguments
+A wrapper around [Typer](https://typer.tiangolo.com) to simplify the creation of command-line interfaces (CLIs).
+It uses parsed docstrings to extract arguments and options for CLI commands.
+
+## Features
+
+* Use Google-style docstrings to generate help text for arguments and options.
+* Support type-aliased identifiers.
+* Interpret `Literal` types (for choices) (now partially available in upstream Typer):
+  * Interpret unions, lists, or tuples of `Literal`s (not yet available upstream).
+  * Check for uniqueness in `Literal`s/Enums (e.g. `Literal["1", 1]` would break type safety).
+* Disable completion and pretty tracebacks by default.
+* Enable `str | None` type hints.
+* Show `[default: None]` for clarity.
 
 ```python
-from __future__ import annotations  # for python < 3.10
+from typing import Annotated, Literal
 
-import doctyper
-from typing_extensions import (  # or from typing import ... in newer versions
-    Annotated,
-    Literal,
-    TypeAliasType,
-)
+import typer
+from typing_extensions import TypeAliasType
 
 Alias = TypeAliasType("Alias", int)  # in >=3.12: type Alias = int
 
 
 def main(
-    arg: str, # disabled [default: None] in output
-    ann_arg: Annotated[str, doctyper.Argument(help="Supersedes help from docstring.")],
+    arg: str,  # disables [default: None] in output
+    ann_arg: Annotated[str, typer.Argument(help="Supersedes help from docstring.")],
     alias_arg: Alias,  # output original name
     lit_arg: Literal["arg", "other"],  # only strings allowed for literals
-    lit_opt: Literal["opt"] | Literal["other"] = "opt", # literal only unions are supported
-    ann_opt: Annotated[
-        int, doctyper.Option(help="Supersedes help from docstring.")
-    ] = 1,
+    lit_opt: Literal["opt"]
+    | Literal["other"] = "opt",  # only unions of literals are supported
+    ann_opt: Annotated[int, typer.Option(help="Supersedes help from docstring.")] = 1,
     other: int = 1,
     str_or_none: str | None = None,  # enable "str | None" type hints
     flag: bool = False,
@@ -45,11 +43,10 @@ def main(
     Args:
         arg: String argument.
         ann_arg: This will not be used.
-        alias_arg: Argument using a aliased identifier.
-        other: Integer argument with default.
+        alias_arg: Argument using an aliased identifier.
+        other: Integer argument with a default.
         lit_arg: Argument with choices.
         lit_opt: Option with choices and a default.
-        list_li
         ann_opt: This will not be used.
         str_or_none: String argument with a default of None.
         flag: Boolean flag.
@@ -57,7 +54,7 @@ def main(
 
 
 if __name__ == "__main__":
-    app = doctyper.SlimTyper()
+    app = typer.DocTyper()
     app.command()(main)
     app()
 ```
@@ -71,17 +68,17 @@ if __name__ == "__main__":
 ╭─ Arguments ──────────────────────────────────────────────────────────────────────────────────────╮
 │ *    arg            TEXT                 String argument. [required]                             │
 │ *    ann_arg        TEXT                 Supersedes help from docstring. [required]              │
-│ *    alias_arg      INTEGER              Argument using a aliased identifier. [required]         │
-│ *    lit_arg        LIT_ARG:{arg|other}  Argument with choices. [required]                       │
+│ *    alias_arg      INTEGER              Argument using an aliased identifier. [required]       │
+│ *    lit_arg        LIT_ARG:{arg|other}  Argument with choices. [required]                      │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --lit-opt                     [opt|other]  Option with choices and a default. [default: opt]     │
-│ --ann-opt                     INTEGER      Supersedes help from docstring. [default: 1]          │
-│ --other                       INTEGER      Integer argument with default. [default: 1]           │
-│ --str-or-none                 TEXT         String argument with a default of None.               │
-│                                            [default: None]                                       │
-│ --flag           --no-flag                 Boolean flag. [default: no-flag]                      │
-│ --help                                     Show this message and exit.                           │
+│ --lit-opt                     [opt|other]  Option with choices and a default. [default: opt]    │
+│ --ann-opt                     INTEGER      Supersedes help from docstring. [default: 1]         │
+│ --other                       INTEGER      Integer argument with a default. [default: 1]        │
+│ --str-or-none                 TEXT         String argument with a default of None.              │
+│                                            [default: None]                                      │
+│ --flag           --no-flag                 Boolean flag. [default: no-flag]                     │
+│ --help                                     Show this message and exit.                          │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ```
 

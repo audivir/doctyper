@@ -2,9 +2,9 @@ import subprocess
 import sys
 from pathlib import Path
 
-import doctyper
 import pytest
-from doctyper.testing import CliRunner
+import typer
+from typer.testing import CliRunner
 
 from docs_src.app_dir import tutorial001_py310 as mod
 
@@ -13,7 +13,7 @@ runner = CliRunner()
 
 @pytest.fixture(name="config_file")
 def create_config_file():
-    app_dir = Path(doctyper.get_app_dir("my-super-cli-app"))
+    app_dir = Path(typer.get_app_dir("my-super-cli-app"))
     app_dir.mkdir(parents=True, exist_ok=True)
     config_path = app_dir / "config.json"
     config_path.touch(exist_ok=True)

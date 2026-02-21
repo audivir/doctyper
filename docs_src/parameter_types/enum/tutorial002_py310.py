@@ -1,6 +1,6 @@
 from enum import Enum
 
-import doctyper
+import typer
 
 
 class NeuralNetwork(str, Enum):
@@ -9,14 +9,12 @@ class NeuralNetwork(str, Enum):
     lstm = "lstm"
 
 
-app = doctyper.Typer()
+app = typer.Typer()
 
 
 @app.command()
 def main(
-    network: NeuralNetwork = doctyper.Option(
-        NeuralNetwork.simple, case_sensitive=False
-    ),
+    network: NeuralNetwork = typer.Option(NeuralNetwork.simple, case_sensitive=False),
 ):
     print(f"Training neural network of type: {network.value}")
 

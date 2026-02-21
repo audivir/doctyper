@@ -2,17 +2,17 @@ from __future__ import annotations
 
 from typing import Annotated
 
-import doctyper
-from doctyper.testing import CliRunner
+import typer
+from typer.testing import CliRunner
 
 runner = CliRunner()
 
 
 def test_annotated():
-    app = doctyper.Typer()
+    app = typer.Typer()
 
     @app.command()
-    def cmd(force: Annotated[bool, doctyper.Option("--force")] = False):
+    def cmd(force: Annotated[bool, typer.Option("--force")] = False):
         if force:
             print("Forcing operation")
         else:

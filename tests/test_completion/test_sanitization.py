@@ -2,7 +2,7 @@ from importlib.machinery import ModuleSpec
 from unittest.mock import patch
 
 import pytest
-from doctyper._completion_classes import _sanitize_help_text
+from typer._completion_classes import _sanitize_help_text
 
 
 @pytest.mark.parametrize(

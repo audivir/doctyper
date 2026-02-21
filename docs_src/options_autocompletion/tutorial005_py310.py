@@ -1,4 +1,4 @@
-import doctyper
+import typer
 
 valid_completion_items = [
     ("Camila", "The reader of books."),
@@ -13,12 +13,12 @@ def complete_name(incomplete: str):
             yield (name, help_text)
 
 
-app = doctyper.Typer()
+app = typer.Typer()
 
 
 @app.command()
 def main(
-    name: str = doctyper.Option(
+    name: str = typer.Option(
         "World", help="The name to say hi to.", autocompletion=complete_name
     ),
 ):

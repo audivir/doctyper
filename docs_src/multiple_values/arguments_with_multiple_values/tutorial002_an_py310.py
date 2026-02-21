@@ -1,15 +1,15 @@
 from typing import Annotated
 
-import doctyper
+import typer
 
-app = doctyper.Typer()
+app = typer.Typer()
 
 
 @app.command()
 def main(
     names: Annotated[
         tuple[str, str, str],
-        doctyper.Argument(help="Select 3 characters to play with"),
+        typer.Argument(help="Select 3 characters to play with"),
     ] = ("Harry", "Hermione", "Ron"),
 ):
     for name in names:

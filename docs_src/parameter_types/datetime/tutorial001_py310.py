@@ -1,8 +1,8 @@
 from datetime import datetime
 
-import doctyper
+import typer
 
-app = doctyper.Typer()
+app = typer.Typer()
 
 
 @app.command()

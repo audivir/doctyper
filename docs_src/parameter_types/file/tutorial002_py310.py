@@ -1,10 +1,10 @@
-import doctyper
+import typer
 
-app = doctyper.Typer()
+app = typer.Typer()
 
 
 @app.command()
-def main(config: doctyper.FileTextWrite = doctyper.Option(...)):
+def main(config: typer.FileTextWrite = typer.Option(...)):
     config.write("Some config written by the app")
     print("Config written")
 

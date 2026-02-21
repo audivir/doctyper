@@ -1,10 +1,10 @@
-import doctyper
+import typer
 
-app = doctyper.Typer()
+app = typer.Typer()
 
 
 @app.command()
-def main(file: doctyper.FileBinaryRead = doctyper.Option(...)):
+def main(file: typer.FileBinaryRead = typer.Option(...)):
     processed_total = 0
     for bytes_chunk in file:
         # Process the bytes in bytes_chunk

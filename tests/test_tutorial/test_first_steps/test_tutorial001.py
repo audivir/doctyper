@@ -1,8 +1,8 @@
 import subprocess
 import sys
 
-import doctyper
-from doctyper.testing import CliRunner
+import typer
+from typer.testing import CliRunner
 
 from docs_src.first_steps import tutorial001_py310 as mod
 
@@ -10,7 +10,7 @@ runner = CliRunner()
 
 
 def test_cli():
-    app = doctyper.Typer()
+    app = typer.Typer()
     app.command()(mod.main)
     result = runner.invoke(app, [])
     assert result.output == "Hello World\n"

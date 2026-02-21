@@ -1,10 +1,10 @@
-import doctyper
+import typer
 
-app = doctyper.Typer()
+app = typer.Typer()
 
 
 @app.command()
-def main(name: str = doctyper.Option("World", help="The name to say hi to.")):
+def main(name: str = typer.Option("World", help="The name to say hi to.")):
     print(f"Hello {name}")
 
 
