@@ -17,6 +17,8 @@ It uses parsed docstrings to extract arguments and options for CLI commands.
 * Enable `str | None` type hints.
 * Show `[default: None]` for clarity.
 
+## Example
+
 ```python
 from typing import Annotated, Literal
 
@@ -81,6 +83,13 @@ if __name__ == "__main__":
 │ --help                                     Show this message and exit.                          │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ```
+
+## Configuration
+
+| Keyword Argument        | Description                                                                 |
+|--------------------------|-----------------------------------------------------------------------------|
+| `parse_docstrings`       | Parse Google-style docstrings to generate help text for arguments/options. |
+| `show_none_defaults`     | Explicitly show `[default: None]` for parameters with a default of `None`. |
 
 <p align="center">
   <a href="https://typer.tiangolo.com"><img src="https://typer.tiangolo.com/img/logo-margin/logo-margin-vector.svg#only-light" alt="Typer"></a>
