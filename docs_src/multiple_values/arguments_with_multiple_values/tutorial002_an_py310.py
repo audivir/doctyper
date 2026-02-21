@@ -8,8 +8,7 @@ app = typer.Typer()
 @app.command()
 def main(
     names: Annotated[
-        tuple[str, str, str],
-        typer.Argument(help="Select 3 characters to play with"),
+        tuple[str, str, str], typer.Argument(help="Select 3 characters to play with")
     ] = ("Harry", "Hermione", "Ron"),
 ):
     for name in names:

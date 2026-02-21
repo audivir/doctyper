@@ -14,9 +14,7 @@ app = typer.Typer()
 
 
 @app.command()
-def main(
-    groceries: Annotated[list[Food], typer.Option()] = [Food.food_1, Food.food_3],
-):
+def main(groceries: Annotated[list[Food], typer.Option()] = [Food.food_1, Food.food_3]):
     print(f"Buying groceries: {', '.join([f.value for f in groceries])}")
 
 

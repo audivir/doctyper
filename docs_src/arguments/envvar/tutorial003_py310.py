@@ -4,9 +4,7 @@ app = typer.Typer()
 
 
 @app.command()
-def main(
-    name: str = typer.Argument("World", envvar="AWESOME_NAME", show_envvar=False),
-):
+def main(name: str = typer.Argument("World", envvar="AWESOME_NAME", show_envvar=False)):
     print(f"Hello Mr. {name}")
 
 

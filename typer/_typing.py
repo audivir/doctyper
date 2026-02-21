@@ -22,25 +22,6 @@ def is_union(tp: type[Any] | None) -> bool:
     return tp is Union or tp is types.UnionType  # noqa: E721
 
 
-# from python version 3.13 on a DeprecationWarning is raised
-# if no type_params are passed to _eval_type, so we need to pass an empty tuple
-# as we don't need eval_type_backport anymore
-if sys.version_info < (3, 13):
-    from eval_type_backport import eval_type_backport as eval_type
-
-else:
-    from typing import _eval_type
-
-    def eval_type(
-        value: Any,
-        globalns: Mapping[str, Any] | None = None,
-        localns: Mapping[str, Any] | None = None,
-        try_default: bool = True,
-    ) -> type[Any]:
-        del try_default  # Unused.
-        return _eval_type(value, globalns, localns, type_params=())
-
-
 __all__ = (
     "NoneType",
     "is_none_type",
@@ -64,25 +45,11 @@ NoneType = None.__class__
 NONE_TYPES: tuple[Any, Any, Any] = (None, NoneType, Literal[None])
 
 
-if sys.version_info[:2] == (3, 8):
-    # We can use the fast implementation for 3.8 but there is a very weird bug
-    # where it can fail for `Literal[None]`.
-    # We just need to redefine a useless `Literal[None]` inside the function body to fix this
-
-    def is_none_type(type_: Any) -> bool:
-        Literal[None]  # fix edge case
-        for none_type in NONE_TYPES:
-            if type_ is none_type:
-                return True
-        return False
-
-else:
-
-    def is_none_type(type_: Any) -> bool:
-        for none_type in NONE_TYPES:
-            if type_ is none_type:
-                return True
-        return False
+def is_none_type(type_: Any) -> bool:
+    for none_type in NONE_TYPES:
+        if type_ is none_type:
+            return True
+    return False
 
 
 def is_callable_type(type_: type[Any]) -> bool:
@@ -90,9 +57,7 @@ def is_callable_type(type_: type[Any]) -> bool:
 
 
 def is_literal_type(type_: type[Any]) -> bool:
-    import typing_extensions
-
-    return get_origin(type_) in (Literal, typing_extensions.Literal)
+    return get_origin(type_) is Literal
 
 
 def literal_values(type_: type[Any]) -> tuple[Any, ...]:
@@ -123,6 +88,25 @@ def is_type_alias_type(type_: type[Any]) -> bool:
         if type_ is _TypeAliasType:
             return True
     return False
+
+
+# from python version 3.13 on a DeprecationWarning is raised
+# if no type_params are passed to _eval_type, so we need to pass an empty tuple
+# as we don't need eval_type_backport anymore
+if sys.version_info < (3, 13):
+    from eval_type_backport import eval_type_backport as eval_type
+
+else:
+    from typing import _eval_type
+
+    def eval_type(
+        value: Any,
+        globalns: Mapping[str, Any] | None = None,
+        localns: Mapping[str, Any] | None = None,
+        try_default: bool = True,
+    ) -> type[Any]:
+        del try_default  # Unused.
+        return _eval_type(value, globalns, localns, type_params=())
 
 
 def get_type_hints(

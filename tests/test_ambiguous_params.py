@@ -30,9 +30,7 @@ def test_forbid_default_value_in_annotated_argument():
     # This test case only works with `typer.Argument`. `typer.Option` uses positionals
     # for param_decls too.
     @app.command()
-    def cmd(
-        my_param: Annotated[str, typer.Argument("foo")],
-    ): ...  # pragma: no cover
+    def cmd(my_param: Annotated[str, typer.Argument("foo")]): ...  # pragma: no cover
 
     with pytest.raises(AnnotatedParamWithDefaultValueError) as excinfo:
         runner.invoke(app)

@@ -21,8 +21,7 @@ app = typer.Typer()
 @app.command()
 def main(
     name: Annotated[
-        str,
-        typer.Option(help="The name to say hi to.", autocompletion=complete_name),
+        str, typer.Option(help="The name to say hi to.", autocompletion=complete_name)
     ] = "World",
 ):
     print(f"Hello {name}")

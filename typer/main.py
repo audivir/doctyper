@@ -12,16 +12,15 @@ from functools import update_wrapper
 from pathlib import Path
 from traceback import FrameSummary, StackSummary
 from types import TracebackType
-from typing import Annotated, Any
+from typing import Annotated, Any, Literal
 from uuid import UUID
 
 import click
-import docstring_parser
 from annotated_doc import Doc
 from typer._types import TyperChoice
 
 from ._typing import (
-    Literal,
+    all_literal_values,
     get_args,
     get_origin,
     is_literal_type,
@@ -47,6 +46,7 @@ from .models import (
     Default,
     DefaultPlaceholder,
     DeveloperExceptionConfig,
+    DocTyperOptions,
     FileBinaryRead,
     FileBinaryWrite,
     FileText,
@@ -116,10 +116,15 @@ def except_hook(
     return
 
 
-def get_install_completion_arguments() -> tuple[click.Parameter, click.Parameter]:
-    install_param, show_param = get_completion_inspect_parameters()
-    click_install_param, _ = get_click_param(install_param)
-    click_show_param, _ = get_click_param(show_param)
+def get_install_completion_arguments(
+    *,
+    doctyper_opts: DocTyperOptions = DocTyperOptions(),
+) -> tuple[click.Parameter, click.Parameter]:
+    install_param, show_param = get_completion_inspect_parameters(
+        doctyper_opts=doctyper_opts
+    )
+    click_install_param, _ = get_click_param(install_param, doctyper_opts=doctyper_opts)
+    click_show_param, _ = get_click_param(show_param, doctyper_opts=doctyper_opts)
     return click_install_param, click_show_param
 
 
@@ -523,6 +528,8 @@ class Typer:
                 """
             ),
         ] = True,
+        parse_docstrings: bool = False,
+        show_none_defaults: bool = False,
     ):
         self._add_completion = add_completion
         self.rich_markup_mode: MarkupMode = rich_markup_mode
@@ -531,6 +538,10 @@ class Typer:
         self.pretty_exceptions_enable = pretty_exceptions_enable
         self.pretty_exceptions_show_locals = pretty_exceptions_show_locals
         self.pretty_exceptions_short = pretty_exceptions_short
+        self.doctyper_opts = DocTyperOptions(
+            parse_docstrings=parse_docstrings,
+            show_none_defaults=show_none_defaults,
+        )
         self.info = TyperInfo(
             name=name,
             cls=cls,
@@ -1167,15 +1178,24 @@ class Typer:
         return val_str
 
 
-class SlimTyper(Typer):
-    """Disables completions and pretty traceback per default."""
+class DocTyper(Typer):
+    """Typer class with all doctyper-specific features activated.
+
+    These features are:
+    - parse_docstrings: Parse docstrings to generate command help.
+    - show_none_defaults: Do not hide None default values for optional arguments.
+    """
 
     def __init__(self, **kwargs: Any):
         add_completion = kwargs.pop("add_completion", False)
         pretty_exceptions_enable = kwargs.pop("pretty_exceptions_enable", False)
+        parse_docstrings = kwargs.pop("parse_docstrings", True)
+        show_none_defaults = kwargs.pop("show_none_defaults", True)
         super().__init__(
             add_completion=add_completion,
             pretty_exceptions_enable=pretty_exceptions_enable,
+            parse_docstrings=parse_docstrings,
+            show_none_defaults=show_none_defaults,
             **kwargs,
         )
 
@@ -1186,13 +1206,16 @@ def get_group(typer_instance: Typer) -> TyperGroup:
         pretty_exceptions_short=typer_instance.pretty_exceptions_short,
         rich_markup_mode=typer_instance.rich_markup_mode,
         suggest_commands=typer_instance.suggest_commands,
+        doctyper_opts=typer_instance.doctyper_opts,
     )
     return group
 
 
 def get_command(typer_instance: Typer) -> click.Command:
     if typer_instance._add_completion:
-        click_install_param, click_show_param = get_install_completion_arguments()
+        click_install_param, click_show_param = get_install_completion_arguments(
+            doctyper_opts=typer_instance.doctyper_opts
+        )
     if (
         typer_instance.registered_callback
         or typer_instance.info.callback
@@ -1218,6 +1241,7 @@ def get_command(typer_instance: Typer) -> click.Command:
             single_command,
             pretty_exceptions_short=typer_instance.pretty_exceptions_short,
             rich_markup_mode=typer_instance.rich_markup_mode,
+            doctyper_opts=typer_instance.doctyper_opts,
         )
         if typer_instance._add_completion:
             click_command.params.append(click_install_param)
@@ -1306,6 +1330,7 @@ def get_group_from_info(
     pretty_exceptions_short: bool,
     suggest_commands: bool,
     rich_markup_mode: MarkupMode,
+    doctyper_opts: DocTyperOptions = DocTyperOptions(),
 ) -> TyperGroup:
     assert group_info.typer_instance, (
         "A Typer instance is needed to generate a Click Group"
@@ -1316,6 +1341,7 @@ def get_group_from_info(
             command_info=command_info,
             pretty_exceptions_short=pretty_exceptions_short,
             rich_markup_mode=rich_markup_mode,
+            doctyper_opts=doctyper_opts,
         )
         if command.name:
             commands[command.name] = command
@@ -1325,6 +1351,7 @@ def get_group_from_info(
             pretty_exceptions_short=pretty_exceptions_short,
             rich_markup_mode=rich_markup_mode,
             suggest_commands=suggest_commands,
+            doctyper_opts=doctyper_opts,
         )
         if sub_group.name:
             commands[sub_group.name] = sub_group
@@ -1343,7 +1370,9 @@ def get_group_from_info(
         params,
         convertors,
         context_param_name,
-    ) = get_params_convertors_ctx_param_name_from_function(solved_info.callback)
+    ) = get_params_convertors_ctx_param_name_from_function(
+        solved_info.callback, doctyper_opts=doctyper_opts
+    )
     cls = solved_info.cls or TyperGroup
     assert issubclass(cls, TyperGroup), f"{cls} should be a subclass of {TyperGroup}"
     group = cls(
@@ -1361,6 +1390,7 @@ def get_group_from_info(
             convertors=convertors,
             context_param_name=context_param_name,
             pretty_exceptions_short=pretty_exceptions_short,
+            doctyper_opts=doctyper_opts,
         ),
         params=params,
         help=solved_info.help,
@@ -1384,17 +1414,19 @@ def get_command_name(name: str) -> str:
 
 def get_params_convertors_ctx_param_name_from_function(
     callback: Callable[..., Any] | None,
+    *,
+    doctyper_opts: DocTyperOptions = DocTyperOptions(),
 ) -> tuple[list[click.Argument | click.Option], dict[str, Any], str | None]:
     params = []
     convertors = {}
     context_param_name = None
     if callback:
-        parameters = get_params_from_function(callback)
+        parameters = get_params_from_function(callback, doctyper_opts=doctyper_opts)
         for param_name, param in parameters.items():
             if lenient_issubclass(param.annotation, click.Context):
                 context_param_name = param_name
                 continue
-            click_param, convertor = get_click_param(param)
+            click_param, convertor = get_click_param(param, doctyper_opts=doctyper_opts)
             if convertor:
                 convertors[param_name] = convertor
             params.append(click_param)
@@ -1406,13 +1438,17 @@ def get_command_from_info(
     *,
     pretty_exceptions_short: bool,
     rich_markup_mode: MarkupMode,
+    doctyper_opts: DocTyperOptions = DocTyperOptions(),
 ) -> click.Command:
     assert command_info.callback, "A command must have a callback function"
     name = command_info.name or get_command_name(command_info.callback.__name__)  # ty:ignore[unresolved-attribute]
     use_help = command_info.help
     if use_help is None:
         use_help = inspect.getdoc(command_info.callback)
-        if use_help:
+
+        if use_help and doctyper_opts.parse_docstrings:
+            import docstring_parser
+
             parsed_help = docstring_parser.parse(use_help)
             # only if there is meta data in the docstring use parsing
             if parsed_help.meta:
@@ -1428,7 +1464,9 @@ def get_command_from_info(
         params,
         convertors,
         context_param_name,
-    ) = get_params_convertors_ctx_param_name_from_function(command_info.callback)
+    ) = get_params_convertors_ctx_param_name_from_function(
+        command_info.callback, doctyper_opts=doctyper_opts
+    )
     cls = command_info.cls or TyperCommand
     command = cls(
         name=name,
@@ -1439,6 +1477,7 @@ def get_command_from_info(
             convertors=convertors,
             context_param_name=context_param_name,
             pretty_exceptions_short=pretty_exceptions_short,
+            doctyper_opts=doctyper_opts,
         ),
         params=params,  # type: ignore
         help=use_help,
@@ -1522,11 +1561,12 @@ def get_callback(
     convertors: dict[str, Callable[[str], Any]] | None = None,
     context_param_name: str | None = None,
     pretty_exceptions_short: bool,
+    doctyper_opts: DocTyperOptions = DocTyperOptions(),
 ) -> Callable[..., Any] | None:
     use_convertors = convertors or {}
     if not callback:
         return None
-    parameters = get_params_from_function(callback)
+    parameters = get_params_from_function(callback, doctyper_opts=doctyper_opts)
     use_params: dict[str, Any] = {}
     for param_name in parameters:
         use_params[param_name] = None
@@ -1550,6 +1590,7 @@ def get_callback(
 
 
 def are_unique_values(values: Sequence[str], case_sensitive: bool) -> bool:
+    """Check if stringified values are unique."""
     values = [str(value) for value in values]  # stringify values
     if not case_sensitive:
         values = [value.lower() for value in values]
@@ -1654,7 +1695,7 @@ def get_click_type(
         if not are_unique_values(enum_values, parameter_info.case_sensitive):
             raise ValueError("Enum values must be unique")
         return TyperChoice(
-            enum_values,
+            [item.value for item in annotation],
             case_sensitive=parameter_info.case_sensitive,
         )
     elif is_literal_type(annotation):
@@ -1662,7 +1703,7 @@ def get_click_type(
         if not are_unique_values(lit_values, parameter_info.case_sensitive):
             raise ValueError("Literal values must be unique")
         return click.Choice(
-            lit_values,
+            literal_values(annotation),
             case_sensitive=parameter_info.case_sensitive,
         )
     raise RuntimeError(f"Type not yet supported: {annotation}")  # pragma: no cover
@@ -1672,8 +1713,30 @@ def lenient_issubclass(cls: Any, class_or_tuple: AnyType | tuple[AnyType, ...]) 
     return isinstance(cls, type) and issubclass(cls, class_or_tuple)
 
 
+def combine_literals(types: Sequence[Any]) -> list[Any]:
+    # Literal[1, 2, 3], Literal[4, 5, 6] -> Literal[1, 2, 3, 4, 5, 6]
+    # if any non-literal types it returns the original list
+    if any(not is_literal_type(typ) for typ in types):
+        return list(types)
+    combined_args = dict.fromkeys(
+        arg for typ in types for arg in all_literal_values(typ)
+    )
+    return [Literal[tuple(combined_args)]]
+
+
+def combine_literals_union(type_: Any) -> Any:
+    # Literal[1, 2, 3] | Literal[4, 5, 6] -> Literal[1, 2, 3, 4, 5, 6]
+    if is_literal_type(type_):
+        return Literal[all_literal_values(type_)]
+    if is_union(type_):
+        types = combine_literals(get_args(type_))
+        assert len(types) == 1, "Typer Currently doesn't support Union types"
+        return types[0]
+    return type_
+
+
 def get_click_param(
-    param: ParamMeta,
+    param: ParamMeta, *, doctyper_opts: DocTyperOptions = DocTyperOptions()
 ) -> tuple[click.Argument | click.Option, Any]:
     # First, find out what will be:
     # * ParamInfo (ArgumentInfo or OptionInfo)
@@ -1717,17 +1780,14 @@ def get_click_param(
                 if type_ is NoneType:
                     continue
                 types.append(type_)
-            if all(is_literal_type(typ) for typ in types):
-                combined_args = dict.fromkeys(
-                    arg for typ in types for arg in get_args(typ)
-                )
-                types = [Literal[tuple(combined_args)]]
+            types = combine_literals(types)
             assert len(types) == 1, "Typer Currently doesn't support Union types"
             main_type = types[0]
             origin = get_origin(main_type)
         # Handle Tuples and Lists
         if lenient_issubclass(origin, list):
             main_type = get_args(main_type)[0]
+            main_type = combine_literals_union(main_type)
             if not is_literal_type(main_type):
                 assert not get_origin(main_type), (
                     "List types with complex sub-types are not currently supported"
@@ -1736,6 +1796,7 @@ def get_click_param(
         elif lenient_issubclass(origin, tuple):
             types = []
             for type_ in get_args(main_type):
+                type_ = combine_literals_union(type_)
                 if not is_literal_type(type_):
                     assert not get_origin(type_), (
                         "Tuple types with complex sub-types are not currently supported"
@@ -1796,16 +1857,22 @@ def get_click_param(
                 required=required,
                 default=default_value,
                 callback=get_param_callback(
-                    callback=parameter_info.callback, convertor=convertor
+                    callback=parameter_info.callback,
+                    convertor=convertor,
+                    doctyper_opts=doctyper_opts,
                 ),
                 metavar=parameter_info.metavar,
                 expose_value=parameter_info.expose_value,
                 is_eager=parameter_info.is_eager,
                 envvar=parameter_info.envvar,
                 shell_complete=parameter_info.shell_complete,
-                autocompletion=get_param_completion(parameter_info.autocompletion),
+                autocompletion=get_param_completion(
+                    parameter_info.autocompletion,
+                    doctyper_opts=doctyper_opts,
+                ),
                 # Rich settings
                 rich_help_panel=parameter_info.rich_help_panel,
+                show_none_defaults=doctyper_opts.show_none_defaults,
             ),
             convertor,
         )
@@ -1830,16 +1897,22 @@ def get_click_param(
                 # Parameter
                 default=default_value,
                 callback=get_param_callback(
-                    callback=parameter_info.callback, convertor=convertor
+                    callback=parameter_info.callback,
+                    convertor=convertor,
+                    doctyper_opts=doctyper_opts,
                 ),
                 metavar=parameter_info.metavar,
                 expose_value=parameter_info.expose_value,
                 is_eager=parameter_info.is_eager,
                 envvar=parameter_info.envvar,
                 shell_complete=parameter_info.shell_complete,
-                autocompletion=get_param_completion(parameter_info.autocompletion),
+                autocompletion=get_param_completion(
+                    parameter_info.autocompletion,
+                    doctyper_opts=doctyper_opts,
+                ),
                 # Rich settings
                 rich_help_panel=parameter_info.rich_help_panel,
+                show_none_defaults=doctyper_opts.show_none_defaults,
             ),
             convertor,
         )
@@ -1850,10 +1923,11 @@ def get_param_callback(
     *,
     callback: Callable[..., Any] | None = None,
     convertor: Callable[..., Any] | None = None,
+    doctyper_opts: DocTyperOptions = DocTyperOptions(),
 ) -> Callable[..., Any] | None:
     if not callback:
         return None
-    parameters = get_params_from_function(callback)
+    parameters = get_params_from_function(callback, doctyper_opts=doctyper_opts)
     ctx_name = None
     click_param_name = None
     value_name = None
@@ -1900,10 +1974,12 @@ def get_param_callback(
 
 def get_param_completion(
     callback: Callable[..., Any] | None = None,
+    *,
+    doctyper_opts: DocTyperOptions = DocTyperOptions(),
 ) -> Callable[..., Any] | None:
     if not callback:
         return None
-    parameters = get_params_from_function(callback)
+    parameters = get_params_from_function(callback, doctyper_opts=doctyper_opts)
     ctx_name = None
     args_name = None
     incomplete_name = None

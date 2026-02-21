@@ -9,8 +9,7 @@ app = typer.Typer()
 def main(
     name: Annotated[str, typer.Argument(help="Who to greet")],
     lastname: Annotated[
-        str,
-        typer.Argument(help="The last name", rich_help_panel="Secondary Arguments"),
+        str, typer.Argument(help="The last name", rich_help_panel="Secondary Arguments")
     ] = "",
     age: Annotated[
         str,

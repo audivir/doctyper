@@ -11,7 +11,7 @@ def test_script_completion_run():
         env={
             **os.environ,
             "___MAIN__.PY_COMPLETE": "complete_bash",
-            "_PYTHON _M typer_COMPLETE": "complete_bash",
+            "_PYTHON _M TYPER_COMPLETE": "complete_bash",
             "COMP_WORDS": "typer tests/assets/cli/sample.py",
             "COMP_CWORD": "2",
         },

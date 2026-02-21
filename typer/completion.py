@@ -7,21 +7,27 @@ import click
 
 from ._completion_classes import completion_init
 from ._completion_shared import Shells, _get_shell_name, get_completion_script, install
-from .models import ParamMeta
+from .models import DocTyperOptions, ParamMeta
 from .params import Option
 from .utils import get_params_from_function
 
 _click_patched = False
 
 
-def get_completion_inspect_parameters() -> tuple[ParamMeta, ParamMeta]:
+def get_completion_inspect_parameters(
+    *,
+    doctyper_opts: DocTyperOptions,
+) -> tuple[ParamMeta, ParamMeta]:
     completion_init()
     test_disable_detection = os.getenv("_TYPER_COMPLETE_TEST_DISABLE_SHELL_DETECTION")
     if not test_disable_detection:
-        parameters = get_params_from_function(_install_completion_placeholder_function)
+        parameters = get_params_from_function(
+            _install_completion_placeholder_function, doctyper_opts=doctyper_opts
+        )
     else:
         parameters = get_params_from_function(
-            _install_completion_no_auto_placeholder_function
+            _install_completion_no_auto_placeholder_function,
+            doctyper_opts=doctyper_opts,
         )
     install_param, show_param = parameters.values()
     return install_param, show_param

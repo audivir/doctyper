@@ -9,7 +9,7 @@ runner = CliRunner()
 
 
 def test_future_annotations():
-    app = typer.Typer()
+    app = typer.Typer(show_none_defaults=True)
 
     @app.command()
     def main(opt: str | None = None): ...

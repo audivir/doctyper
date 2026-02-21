@@ -6,9 +6,7 @@ app = typer.Typer()
 
 
 @app.command()
-def main(
-    user: Annotated[tuple[str, int, bool], typer.Option()] = (None, None, None),
-):
+def main(user: Annotated[tuple[str, int, bool], typer.Option()] = (None, None, None)):
     username, coins, is_wizard = user
     if not username:
         print("No user provided")

@@ -4,6 +4,7 @@ import sys
 
 import pytest
 import typer
+import typer.completion
 from typer.testing import CliRunner
 
 runner = CliRunner()

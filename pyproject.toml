@@ -7,8 +7,10 @@ name = "doctyper"
 license = "MIT"
 license-files = ["LICENSE"]
 dynamic = ["version"]
-description = "Wrapper around Typer using Google-Doc strings for CLI descriptions."
-authors = [{ name = "Sebastián Ramírez", email = "tiangolo@gmail.com" }]
+description = "Typer, build great CLIs. Easy to code. Based on Python type hints."
+authors = [
+    {name = "Sebastián Ramírez", email = "tiangolo@gmail.com"},
+]
 maintainers = [{ name = "Tim Hörmann", email = "pypi@audivir.de" }]
 requires-python = ">=3.10"
 classifiers = [
@@ -46,12 +48,17 @@ Homepage = "https://github.com/audivir/doctyper"
 Documentation = "https://typer.tiangolo.com"
 Repository = "https://github.com/audivir/doctyper"
 Issues = "https://github.com/audivir/doctyper/issues"
+Changelog = "https://typer.tiangolo.com/release-notes/"
 
 [project.scripts]
 doctyper = "doctyper.cli:main"
 
 [dependency-groups]
-dev = [{ include-group = "tests" }, { include-group = "docs" }, "prek >=0.3.2"]
+dev = [
+    { include-group = "tests" },
+    { include-group = "docs" },
+    "prek >=0.3.2",
+]
 docs = [
     "cairosvg >=2.8.2",
     "griffe-typingdoc >=0.3.0",
@@ -90,58 +97,17 @@ version = { source = "file", path = "typer/__init__.py" }
 distribution = true
 
 [tool.pdm.build]
-source-includes = ["tests/", "docs_src/", "scripts/"]
-
-[tool.tiangolo._internal-slim-build.packages.typer-slim.project]
-name = "typer-slim"
-readme = "typer-slim/README.md"
-dependencies = ["typer"]
-optional-dependencies = {}
-scripts = {}
-
-[tool.tiangolo._internal-slim-build.packages.typer-slim.tool.pdm.build]
-# excludes needs to explicitly exclude the top level python packages,
-# otherwise PDM includes them by default
-# A "*" glob pattern can't be used here because in PDM internals, the patterns are put
-# in a set (unordered, order varies) and each excluded file is assigned one of the
-# glob patterns that matches, as the set is unordered, the matched pattern could be "*"
-# independent of the order here. And then the internal code would give it a lower score
-# than the one for a default included file.
-# By not using "*" and explicitly excluding the top level packages, they get a higher
-# score than the default inclusion
-excludes = ["typer", "tests", "pdm_build.py"]
-# source-includes needs to explicitly define some value because PDM will check the
-# truthy value of the list, and if empty, will include some defaults, including "tests",
-# an empty string doesn't match anything, but makes the list truthy, so that PDM
-# doesn't override it during the build.
-source-includes = [""]
-
-[tool.tiangolo._internal-slim-build.packages.typer-cli.project]
-name = "typer-cli"
-readme = "typer-cli/README.md"
-dependencies = ["typer"]
-optional-dependencies = {}
-scripts = {}
-
-[tool.tiangolo._internal-slim-build.packages.typer-cli.tool.pdm.build]
-# excludes needs to explicitly exclude the top level python packages,
-# otherwise PDM includes them by default
-# A "*" glob pattern can't be used here because in PDM internals, the patterns are put
-# in a set (unordered, order varies) and each excluded file is assigned one of the
-# glob patterns that matches, as the set is unordered, the matched pattern could be "*"
-# independent of the order here. And then the internal code would give it a lower score
-# than the one for a default included file.
-# By not using "*" and explicitly excluding the top level packages, they get a higher
-# score than the default inclusion
-excludes = ["typer", "tests", "pdm_build.py"]
-# source-includes needs to explicitly define some value because PDM will check the
-# truthy value of the list, and if empty, will include some defaults, including "tests",
-# an empty string doesn't match anything, but makes the list truthy, so that PDM
-# doesn't override it during the build.
-source-includes = [""]
+source-includes = [
+    "tests/",
+    "docs_src/",
+    "scripts/",
+]
 
 [tool.pytest.ini_options]
-addopts = ["--strict-config", "--strict-markers"]
+addopts = [
+  "--strict-config",
+  "--strict-markers",
+]
 xfail_strict = true
 junit_family = "xunit2"
 filterwarnings = [
@@ -151,11 +117,16 @@ filterwarnings = [
 ]
 
 [tool.coverage.run]
-
-omit = ["typer/_typing.py"]
 parallel = true
 data_file = "coverage/.coverage"
-source = ["docs_src", "tests", "typer"]
+source = [
+    "docs_src",
+    "tests",
+    "typer"
+]
+omit = [
+    "typer/_typing.py",
+]
 context = '${CONTEXT}'
 relative_files = true
 
@@ -182,20 +153,20 @@ ignore_missing_imports = true
 
 [tool.ruff.lint]
 select = [
-    "E",   # pycodestyle errors
-    "W",   # pycodestyle warnings
-    "F",   # pyflakes
-    "I",   # isort
-    "B",   # flake8-bugbear
+    "E",  # pycodestyle errors
+    "W",  # pycodestyle warnings
+    "F",  # pyflakes
+    "I",  # isort
+    "B",  # flake8-bugbear
     "C4",  # flake8-comprehensions
-    "UP",  # pyupgrade
+    "UP", # pyupgrade
     "TID", # flake8-tidy-imports
 ]
 ignore = [
-    "E501",   # line too long, handled by black
-    "B008",   # do not perform function calls in argument defaults
-    "C901",   # too complex
-    "W191",   # indentation contains tabs
+    "E501",  # line too long, handled by black
+    "B008",  # do not perform function calls in argument defaults
+    "C901",  # too complex
+    "W191", # indentation contains tabs
     "TID252", # relative imports okay
 ]
 

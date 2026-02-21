@@ -1,17 +1,10 @@
 import inspect
 from collections.abc import Callable
 from copy import copy
-from typing import Annotated, Any, ForwardRef, cast
+from typing import Any, ForwardRef, cast
 
-import docstring_parser
-
-from ._typing import (
-    eval_type,
-    get_args,
-    get_origin,
-    get_type_hints,
-)
-from .models import ArgumentInfo, OptionInfo, ParameterInfo, ParamMeta
+from ._typing import Annotated, eval_type, get_args, get_origin, get_type_hints
+from .models import ArgumentInfo, DocTyperOptions, OptionInfo, ParameterInfo, ParamMeta
 
 
 def _param_type_to_user_string(param_type: type[ParameterInfo]) -> str:
@@ -111,7 +104,9 @@ def _split_annotation_from_typer_annotations(
     ]
 
 
-def _get_param_help_from_docstring(func: Callable[..., Any]) -> dict[str, str]:
+def get_param_help_from_docstring(func: Callable[..., Any]) -> dict[str, str]:
+    import docstring_parser
+
     doc = inspect.getdoc(func)
     if not doc:
         return {}
@@ -124,12 +119,14 @@ def _get_param_help_from_docstring(func: Callable[..., Any]) -> dict[str, str]:
     }
 
 
-def get_params_from_function(func: Callable[..., Any]) -> dict[str, ParamMeta]:
+def get_params_from_function(
+    func: Callable[..., Any], *, doctyper_opts: DocTyperOptions = DocTyperOptions()
+) -> dict[str, ParamMeta]:
     signature = inspect.signature(func, eval_str=True)
     annotations = {
         param.name: param.annotation for param in signature.parameters.values()
     }
-    doc_param_help = _get_param_help_from_docstring(func)
+    doc_param_help = get_param_help_from_docstring(func)
 
     type_hints = get_type_hints(func)
 
@@ -210,9 +207,9 @@ def get_params_from_function(func: Callable[..., Any]) -> dict[str, ParamMeta]:
                 )
             default = parameter_info
 
-            if not default.help:
+            if not default.help and doctyper_opts.parse_docstrings:
                 default.help = doc_param_help.get(param.name)
-        else:
+        elif doctyper_opts.parse_docstrings:
             param_help = doc_param_help.get(param.name)
             if param_help:
                 if default is param.empty:

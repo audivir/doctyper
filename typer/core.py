@@ -278,6 +278,7 @@ class TyperArgument(click.core.Argument):
         hidden: bool = False,
         # Rich settings
         rich_help_panel: str | None = None,
+        show_none_defaults: bool = False,
     ):
         self.help = help
         self.show_default = show_default
@@ -285,6 +286,7 @@ class TyperArgument(click.core.Argument):
         self.show_envvar = show_envvar
         self.hidden = hidden
         self.rich_help_panel = rich_help_panel
+        self.show_none_defaults = show_none_defaults
 
         super().__init__(
             param_decls=param_decls,
@@ -438,6 +440,7 @@ class TyperOption(click.core.Option):
         show_envvar: bool = False,
         # Rich settings
         rich_help_panel: str | None = None,
+        show_none_defaults: bool = False,
     ):
         super().__init__(
             param_decls=param_decls,
@@ -467,6 +470,7 @@ class TyperOption(click.core.Option):
         )
         _typer_param_setup_autocompletion_compat(self, autocompletion=autocompletion)
         self.rich_help_panel = rich_help_panel
+        self.show_none_defaults = show_none_defaults
 
     def _get_default_string(
         self,

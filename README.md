@@ -91,6 +91,8 @@ if __name__ == "__main__":
 | `parse_docstrings`       | Parse Google-style docstrings to generate help text for arguments/options. |
 | `show_none_defaults`     | Explicitly show `[default: None]` for parameters with a default of `None`. |
 
+---
+
 <p align="center">
   <a href="https://typer.tiangolo.com"><img src="https://typer.tiangolo.com/img/logo-margin/logo-margin-vector.svg#only-light" alt="Typer"></a>
 

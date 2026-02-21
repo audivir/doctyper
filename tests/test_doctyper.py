@@ -1,13 +1,13 @@
 import re
 import typing
-from collections.abc import Sequence
+from collections.abc import Callable, Sequence
 from enum import Enum
 from typing import TYPE_CHECKING, Any
 
 import pytest
 import typer
 import typing_extensions
-from typer._typing import Annotated, Callable, Literal
+from typer._typing import Annotated, Literal
 from typer.testing import CliRunner
 
 if TYPE_CHECKING:
@@ -24,7 +24,7 @@ def assert_run(
     regex: bool = True,
     stderr: bool = False,
 ) -> None:
-    app = typer.SlimTyper()
+    app = typer.DocTyper()
     app.command()(func)
     result = runner.invoke(app, args)
     output = result.output
@@ -40,12 +40,24 @@ def assert_help(expected: str, func: Callable[..., None]) -> None:
     assert_run(["--help"], 0, expected, func)
 
 
-def test_slim_typer():
-    app = typer.SlimTyper()
+def test_doc_typer():
+    app = typer.DocTyper()
 
     assert isinstance(app, typer.Typer)
     assert not app.pretty_exceptions_enable
     assert not app._add_completion
+    assert app.doctyper_opts.parse_docstrings
+    assert app.doctyper_opts.show_none_defaults
+
+
+def test_show_none_defaults():
+    def main(opt: str | None = None) -> None:
+        pass
+
+    app = typer.DocTyper()
+    app.command()(main)
+
+    assert_help(r"opt\s+TEXT\s+\[default: None\]", main)
 
 
 def test_doc_argument():
@@ -85,14 +97,9 @@ def test_doc_flag():
 
 
 def test_choices_help():
-    def main(choice: Literal["a", "b"]):
-        """Docstring.
+    def main(choice: Literal["a", "b"]): ...
 
-        Args:
-            choice: The valid choices.
-        """
-
-    assert_help(r"choice\s+CHOICE:\{a\|b\}\s+The valid choices\. \[required\]", main)
+    assert_help(r"choice\s+CHOICE:\{a\|b\}\s+\[required\]", main)
 
 
 def test_choices_valid_value():
@@ -110,7 +117,7 @@ def test_choices_other_type():
 
 
 def test_choices_invalid_value():
-    app = typer.SlimTyper()
+    app = typer.DocTyper()
 
     @app.command()
     def main(choice: Literal["a", "b"]): ...
@@ -126,40 +133,21 @@ def test_choices_invalid_value():
 
 
 def test_choices_help_list():
-    def main(choice: list[Literal["a", "b"]]):
-        """Docstring.
+    def main(choice: list[Literal["a", "b"]]): ...
 
-        Args:
-            choice: The valid choices.
-        """
-
-    assert_help(
-        r"choice\s+CHOICE:\{a\|b\}\.\.\.\s+The valid choices\. \[required\]", main
-    )
+    assert_help(r"choice\s+CHOICE:\{a\|b\}\.\.\.\s+\[required\]", main)
 
 
 def test_choices_help_tuple():
-    def main(choice: tuple[Literal["a", "b"], int]):
-        """Docstring.
+    def main(choice: tuple[Literal["a", "b"], int]): ...
 
-        Args:
-            choice: Tuple with 'a'/'b' and an int.
-        """
-
-    assert_help(
-        r"choice\s+CHOICE\.\.\.\s+Tuple with 'a'/'b' and an int\. \[required\]", main
-    )
+    assert_help(r"choice\s+CHOICE\.\.\.\s+\[required\]", main)
 
 
 def test_choices_union():
-    def main(choice: 'Literal["a"] | Literal["b"]'):
-        """Docstring.
+    def main(choice: 'Literal["a"] | Literal["b"]'): ...
 
-        Args:
-            choice: The valid choices.
-        """
-
-    assert_help(r"choice\s+CHOICE:\{a\|b\}\s+The valid choices\. \[required\]", main)
+    assert_help(r"choice\s+CHOICE:\{a\|b\}\s+\[required\]", main)
 
 
 def test_choices_union_error():
@@ -171,7 +159,7 @@ def test_choices_union_error():
         assert_help("", main)
 
 
-def test_non_unique():
+def test_choices_non_unique():
     def main(choice: Literal["1", 1]): ...
 
     with pytest.raises(ValueError, match="Literal values must be unique"):
@@ -188,31 +176,31 @@ def test_non_unique():
 
 
 def test_choices_non_unique_case_dependent():
-    def main(choice: Literal["a", "A"]): ...
+    def case_sensitive(choice: Literal["a", "A"]): ...
 
-    assert_help(r"choice\s+CHOICE:\{a\|A\}", main)
+    assert_help(r"choice\s+CHOICE:\{a\|A\}", case_sensitive)
 
-    def main(
+    def case_insensitive(
         choice: Annotated[Literal["a", "A"], typer.Option(case_sensitive=False)],
     ): ...
 
     with pytest.raises(ValueError, match="Literal values must be unique"):
-        assert_help("", main)
+        assert_help("", case_insensitive)
 
     class CaseEnum(Enum):
         A = "a"
         B = "A"
 
-    def main(choice: CaseEnum): ...
+    def enum_case_sensitive(choice: CaseEnum): ...
 
-    assert_help(r"choice\s+CHOICE:\{a\|A\}", main)
+    assert_help(r"choice\s+CHOICE:\{a\|A\}", enum_case_sensitive)
 
-    def main(
+    def enum_case_insensitive(
         choice: Annotated[CaseEnum, typer.Option(case_sensitive=False)],
     ): ...
 
     with pytest.raises(ValueError, match="Enum values must be unique"):
-        assert_help("", main)
+        assert_help("", enum_case_insensitive)
 
 
 def test_future_annotations():
@@ -295,14 +283,9 @@ def test_custom_annotated():
 def test_typing_type_alias(type_: type[Any]):
     Alias = type_("Alias", Literal["a", "b"])
 
-    def main(arg: Alias):
-        """Docstring.
+    def main(arg: Alias): ...
 
-        Args:
-            arg: Aliased argument.
-        """
-
-    assert_help(r"arg\s+ARG:{a\|b}\s+Aliased argument\. \[required\]", main)
+    assert_help(r"arg\s+ARG:{a\|b}\s+\[required\]", main)
 
 
 def test_typing_annotated():
@@ -317,6 +300,6 @@ def test_typing_annotated():
 
 
 def test_typing_literal():
-    def main(choice: Literal["a", "b"]): ...  # noqa: F821
+    def main(choice: Literal["a", "b"]): ...
 
     assert_help(r"choice\s+CHOICE:\{a\|b\}\s+\[required\]", main)

@@ -5,8 +5,7 @@ app = typer.Typer()
 
 @app.command()
 def main(
-    name: str,
-    lastname: str = typer.Option(..., prompt="Please tell me your last name"),
+    name: str, lastname: str = typer.Option(..., prompt="Please tell me your last name")
 ):
     print(f"Hello {name} {lastname}")
 

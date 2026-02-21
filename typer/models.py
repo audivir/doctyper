@@ -649,3 +649,13 @@ class TyperPath(click.Path):
         will work properly from the commandline.
         """
         return []
+
+
+class DocTyperOptions:
+    def __init__(
+        self,
+        parse_docstrings: bool = False,
+        show_none_defaults: bool = False,
+    ):
+        self.parse_docstrings = parse_docstrings
+        self.show_none_defaults = show_none_defaults

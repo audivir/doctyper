@@ -2,9 +2,7 @@ from typing import Annotated
 
 import typer
 
-app = typer.Typer(
-    rich_markup_mode="rich",
-)
+app = typer.Typer(rich_markup_mode="rich")
 
 
 @app.command(help="Say [bold red]hello[/bold red] to the user.")

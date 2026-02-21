@@ -1,4 +1,5 @@
 import typer
+import typer.main
 
 typer.main.HAS_RICH = False
 
