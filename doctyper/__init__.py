@@ -23,8 +23,8 @@ from click.utils import get_binary_stream as get_binary_stream
 from click.utils import get_text_stream as get_text_stream
 from click.utils import open_file as open_file
 from typer import __version__ as __version__
-from typer import _typing as _typing # export for backwards compatibility
 from typer import colors as colors
+from typer._typing import get_type_hints as get_type_hints
 from typer.main import DocTyper as DocTyper
 from typer.main import Typer as Typer
 from typer.main import launch as launch

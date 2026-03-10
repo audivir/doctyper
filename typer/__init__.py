@@ -1,6 +1,6 @@
 """Typer, build great CLIs. Easy to code. Based on Python type hints."""
 
-__version__ = "0.24.1.post3"
+__version__ = "0.24.1.post4"
 
 from shutil import get_terminal_size as get_terminal_size
 
@@ -26,6 +26,7 @@ from click.utils import get_text_stream as get_text_stream
 from click.utils import open_file as open_file
 
 from . import colors as colors
+from ._typing import get_type_hints as get_type_hints
 from .main import DocTyper as DocTyper
 from .main import Typer as Typer
 from .main import launch as launch

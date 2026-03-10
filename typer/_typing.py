@@ -12,7 +12,7 @@ from typing import (
     ForwardRef,
     Literal,
     Union,
-    _strip_annotations,
+    _strip_annotations,  # ty: ignore[unresolved-import]
     get_args,
     get_origin,
 )

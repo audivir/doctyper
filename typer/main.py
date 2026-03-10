@@ -82,7 +82,7 @@ def except_hook(
         _original_except_hook(exc_type, exc_value, tb)
         return
     typer_path = os.path.dirname(__file__)
-    click_path = os.path.dirname(click.__file__)  # ty: ignore
+    click_path = os.path.dirname(click.__file__)
     internal_dir_names = [typer_path, click_path]
     exc = exc_value
     if HAS_RICH:
@@ -1721,13 +1721,13 @@ def combine_literals(types: Sequence[Any]) -> list[Any]:
     combined_args = dict.fromkeys(
         arg for typ in types for arg in all_literal_values(typ)
     )
-    return [Literal[tuple(combined_args)]]
+    return [Literal[tuple(combined_args)]]  # ty: ignore[invalid-type-form]
 
 
 def combine_literals_union(type_: Any) -> Any:
     # Literal[1, 2, 3] | Literal[4, 5, 6] -> Literal[1, 2, 3, 4, 5, 6]
     if is_literal_type(type_):
-        return Literal[all_literal_values(type_)]
+        return Literal[all_literal_values(type_)]  # ty: ignore[invalid-type-form]
     if is_union(type_):
         types = combine_literals(get_args(type_))
         assert len(types) == 1, "Typer Currently doesn't support Union types"
