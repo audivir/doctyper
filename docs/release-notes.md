@@ -2,6 +2,10 @@
 
 ## Latest Changes
 
+### Refactors
+
+* 🎨 Ensure `ty` runs without errors. PR [#1628](https://github.com/fastapi/typer/pull/1628) by [@svlandeg](https://github.com/svlandeg).
+
 ### Docs
 
 * 🔨 Handle external links `target=_blank` and CSS automatically in JS and CSS. PR [#1622](https://github.com/fastapi/typer/pull/1622) by [@tiangolo](https://github.com/tiangolo).
@@ -10,6 +14,7 @@
 
 ### Internal
 
+* ⬆ Bump prek from 0.3.4 to 0.3.5. PR [#1627](https://github.com/fastapi/typer/pull/1627) by [@dependabot[bot]](https://github.com/apps/dependabot).
 * ⬆ Bump ty from 0.0.20 to 0.0.21. PR [#1624](https://github.com/fastapi/typer/pull/1624) by [@dependabot[bot]](https://github.com/apps/dependabot).
 * ⬆ Bump ruff from 0.15.4 to 0.15.5. PR [#1625](https://github.com/fastapi/typer/pull/1625) by [@dependabot[bot]](https://github.com/apps/dependabot).
 * ⬆ Bump mkdocs-material from 9.7.3 to 9.7.4. PR [#1621](https://github.com/fastapi/typer/pull/1621) by [@dependabot[bot]](https://github.com/apps/dependabot).
