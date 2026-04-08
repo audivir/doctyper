@@ -30,7 +30,7 @@ def app_dir():
 
 
 def test_cli(app_dir: Path):
-    with patch("typer.launch") as launch_mock:
+    with patch("doctyper.launch") as launch_mock:
         result = runner.invoke(mod.app)
 
     assert result.exit_code == 0

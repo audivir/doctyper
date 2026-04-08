@@ -1,5 +1,5 @@
 [build-system]
-requires = ["pdm-backend"]
+requires = ["pdm-backend", "libcst"]
 build-backend = "pdm.backend"
 
 [project]
@@ -7,7 +7,7 @@ name = "doctyper"
 license = "MIT"
 license-files = ["LICENSE"]
 dynamic = ["version"]
-description = "Typer, build great CLIs. Easy to code. Based on Python type hints."
+description = "Wrapper around Typer using Google-Doc strings for CLI descriptions."
 authors = [
     {name = "Sebastián Ramírez", email = "tiangolo@gmail.com"},
 ]
@@ -52,7 +52,6 @@ Issues = "https://github.com/audivir/doctyper/issues"
 Changelog = "https://typer.tiangolo.com/release-notes/"
 
 [project.scripts]
-typer = "typer.cli:main"
 doctyper = "doctyper.cli:main"
 
 [dependency-groups]
@@ -95,11 +94,14 @@ tests = [
 ]
 
 [tool.pdm]
+setup-script = "pdm_build.py"
 version = { source = "file", path = "typer/__init__.py" }
 distribution = true
 
 [tool.pdm.build]
+includes = ["doctyper/"]
 source-includes = [
+    "typer/",
     "tests/",
     "docs_src/",
     "scripts/",
@@ -124,10 +126,10 @@ data_file = "coverage/.coverage"
 source = [
     "docs_src",
     "tests",
-    "typer"
+    "doctyper"
 ]
 omit = [
-    "typer/_typing.py",
+    "doctyper/_typing.py",
 ]
 context = '${CONTEXT}'
 relative_files = true

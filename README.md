@@ -1,7 +1,7 @@
 # doctyper
 
-> Also uses the namespace `typer`, thus do not use `typer` and `doctyper` in the same environment.
-> It is fully backward compatible with `typer`; all specific features are activated via keyword arguments.
+> It is fully compatible with `typer`'s API (use with `import doctyper as typer`)
+> all specific features are activated via keyword arguments.
 
 A wrapper around [Typer](https://typer.tiangolo.com) to simplify the creation of command-line interfaces (CLIs).
 It uses parsed docstrings to extract arguments and options for CLI commands.
@@ -22,7 +22,7 @@ It uses parsed docstrings to extract arguments and options for CLI commands.
 ```python
 from typing import Annotated, Literal
 
-import typer
+import doctyper
 from typing_extensions import TypeAliasType
 
 Alias = TypeAliasType("Alias", int)  # in >=3.12: type Alias = int
@@ -56,7 +56,7 @@ def main(
 
 
 if __name__ == "__main__":
-    app = typer.DocTyper()
+    app = doctyper.DocTyper()
     app.command()(main)
     app()
 ```
@@ -90,6 +90,10 @@ if __name__ == "__main__":
 |--------------------------|-----------------------------------------------------------------------------|
 | `parse_docstrings`       | Parse Google-style docstrings to generate help text for arguments/options. |
 | `show_none_defaults`     | Explicitly show `[default: None]` for parameters with a default of `None`. |
+
+## Testing
+
+To run `typer`'s test suite including extra tests for `doctyper` run `python test_doctyper.py`.
 
 ---
 

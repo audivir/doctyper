@@ -10,7 +10,7 @@ runner = CliRunner()
 
 
 def test_cli():
-    with patch("typer.launch") as launch_mock:
+    with patch("doctyper.launch") as launch_mock:
         result = runner.invoke(mod.app)
 
     assert result.exit_code == 0
