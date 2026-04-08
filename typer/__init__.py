@@ -1,6 +1,6 @@
 """Typer, build great CLIs. Easy to code. Based on Python type hints."""
 
-__version__ = "0.24.1.post5"
+__version__ = "0.24.1.post6"
 
 from shutil import get_terminal_size as get_terminal_size
 
@@ -39,3 +39,5 @@ from .models import FileText as FileText
 from .models import FileTextWrite as FileTextWrite
 from .params import Argument as Argument
 from .params import Option as Option
+
+SlimTyper = DocTyper
