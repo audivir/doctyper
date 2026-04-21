@@ -4,10 +4,14 @@ from typing import TYPE_CHECKING, Annotated, Any, overload
 import click
 from annotated_doc import Doc
 
-from .models import ArgumentInfo, OptionInfo
+from .models import ArgumentInfo, IgnoreInfo, OptionInfo
 
 if TYPE_CHECKING:  # pragma: no cover
     import click.shell_completion
+
+
+def Ignore() -> IgnoreInfo:
+    return IgnoreInfo(default=...)
 
 
 # Overload for Option created with custom type 'parser'

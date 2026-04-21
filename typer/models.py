@@ -612,6 +612,9 @@ class ArgumentInfo(ParameterInfo):
         )
 
 
+class IgnoreInfo(ParameterInfo): ...
+
+
 class ParamMeta:
     empty = inspect.Parameter.empty
 

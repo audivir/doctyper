@@ -16,6 +16,7 @@ It uses parsed docstrings to extract arguments and options for CLI commands.
 * Disable completion and pretty tracebacks by default.
 * Enable `str | None` type hints.
 * Show `[default: None]` for clarity.
+* Add arguments hidden from the CLI with `doctyper.Ignore()`
 
 ## Example
 
@@ -30,15 +31,16 @@ Alias = TypeAliasType("Alias", int)  # in >=3.12: type Alias = int
 
 def main(
     arg: str,  # disables [default: None] in output
-    ann_arg: Annotated[str, typer.Argument(help="Supersedes help from docstring.")],
+    ann_arg: Annotated[str, doctyper.Argument(help="Supersedes help from docstring.")],
     alias_arg: Alias,  # output original name
     lit_arg: Literal["arg", "other"],  # only strings allowed for literals
     lit_opt: Literal["opt"]
     | Literal["other"] = "opt",  # only unions of literals are supported
-    ann_opt: Annotated[int, typer.Option(help="Supersedes help from docstring.")] = 1,
+    ann_opt: Annotated[int, doctyper.Option(help="Supersedes help from docstring.")] = 1,
     other: int = 1,
     str_or_none: str | None = None,  # enable "str | None" type hints
     flag: bool = False,
+    hidden: Annotated[bool, doctyper.Ignore()] = True
 ) -> None:
     """Run the main application.
 
@@ -52,6 +54,7 @@ def main(
         ann_opt: This will not be used.
         str_or_none: String argument with a default of None.
         flag: Boolean flag.
+        hidden: This is a python-only argument and this docstring is hidden.
     """
 
 

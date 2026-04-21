@@ -23,7 +23,7 @@ def assert_run(
     func: Callable[..., None],
     regex: bool = True,
     stderr: bool = False,
-) -> None:
+) -> str:
     app = typer.DocTyper()
     app.command()(func)
     result = runner.invoke(app, args)
@@ -34,10 +34,11 @@ def assert_run(
         assert re.search(expected, output)
     else:
         assert expected in output
+    return output
 
 
-def assert_help(expected: str, func: Callable[..., None]) -> None:
-    assert_run(["--help"], 0, expected, func)
+def assert_help(expected: str, func: Callable[..., None]) -> str:
+    return assert_run(["--help"], 0, expected, func)
 
 
 def test_doc_typer():
@@ -72,14 +73,16 @@ def test_doc_argument():
 
 
 def test_doc_option():
-    def main(opt: str = 1):
+    def main(opt: str = "default"):
         """Docstring.
 
         Args:
             opt: String Option with Default.
         """
 
-    assert_help(r"--opt\s+TEXT\s+String Option with Default\. \[default: 1\]", main)
+    assert_help(
+        r"--opt\s+TEXT\s+String Option with Default\. \[default: default\]", main
+    )
 
 
 def test_doc_flag():
@@ -303,3 +306,37 @@ def test_typing_literal():
     def main(choice: Literal["a", "b"]): ...
 
     assert_help(r"choice\s+CHOICE:\{a\|b\}\s+\[required\]", main)
+
+
+def test_ignore():
+    def main(
+        visible: str, invisible: Annotated[dict[str, str] | None, typer.Ignore()] = None
+    ): ...
+
+    assert_run(["vis", "--invisible", "123"], 2, "No such option: --invisible", main)
+
+
+def test_test_ignore_doc():
+    def main(
+        visible: str, invisible: Annotated[dict[str, str] | None, typer.Ignore()] = None
+    ):
+        """Main function.
+
+        Args:
+            visible: This argument is visible.
+            invisibile: This argument isn't.
+        """
+
+    output = assert_help(
+        r"visible\s+TEXT\s+This argument is visible\.\s+\[required\]", main
+    )
+    assert "invisible" not in output
+
+
+def test_ignore_no_default() -> None:
+    def main(invisible: Annotated[dict[str, str] | None, typer.Ignore()]): ...
+
+    with pytest.raises(
+        ValueError, match="Default missing for ignored argument: invisible"
+    ):
+        assert_help("", main)

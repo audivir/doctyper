@@ -51,6 +51,7 @@ from .models import (
     FileBinaryWrite,
     FileText,
     FileTextWrite,
+    IgnoreInfo,
     NoneType,
     OptionInfo,
     ParameterInfo,
@@ -1423,6 +1424,12 @@ def get_params_convertors_ctx_param_name_from_function(
     if callback:
         parameters = get_params_from_function(callback, doctyper_opts=doctyper_opts)
         for param_name, param in parameters.items():
+            if isinstance(param.default, IgnoreInfo):
+                if param.default.default == Required:
+                    raise ValueError(
+                        f"Default missing for ignored argument: {param_name}"
+                    )
+                continue
             if lenient_issubclass(param.annotation, click.Context):
                 context_param_name = param_name
                 continue

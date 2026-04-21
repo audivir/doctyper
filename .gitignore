@@ -15,3 +15,4 @@ coverage.xml
 .pdm-build
 doctyper
 .DS_Store
+.pdm-python
