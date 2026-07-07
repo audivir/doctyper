@@ -90,6 +90,8 @@ tests = [
     "rich >=12.3.0",
     "ruff >=0.15.0",
     "shellingham >=1.3.0",
+    "tqdm",
+    "libcst",
 ]
 
 [tool.pdm]

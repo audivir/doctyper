@@ -1416,30 +1416,22 @@ def get_command_name(name: str) -> str:
 
 def get_params_convertors_ctx_param_name_from_function(
     callback: Callable[..., Any] | None,
-<<<<<<< HEAD
     *,
     doctyper_opts: DocTyperOptions = DocTyperOptions(),
-) -> tuple[list[click.Argument | click.Option], dict[str, Any], str | None]:
-=======
 ) -> tuple[list[TyperArgument | TyperOption], dict[str, Any], str | None]:
->>>>>>> upstream/master
     params = []
     convertors = {}
     context_param_name = None
     if callback:
         parameters = get_params_from_function(callback, doctyper_opts=doctyper_opts)
         for param_name, param in parameters.items():
-<<<<<<< HEAD
             if isinstance(param.default, IgnoreInfo):
                 if param.default.default == Required:
                     raise ValueError(
                         f"Default missing for ignored argument: {param_name}"
                     )
                 continue
-            if lenient_issubclass(param.annotation, click.Context):
-=======
             if lenient_issubclass(param.annotation, _click.Context):
->>>>>>> upstream/master
                 context_param_name = param_name
                 continue
             click_param, convertor = get_click_param(param, doctyper_opts=doctyper_opts)
@@ -1454,12 +1446,8 @@ def get_command_from_info(
     *,
     pretty_exceptions_short: bool,
     rich_markup_mode: MarkupMode,
-<<<<<<< HEAD
     doctyper_opts: DocTyperOptions = DocTyperOptions(),
-) -> click.Command:
-=======
 ) -> _click.Command:
->>>>>>> upstream/master
     assert command_info.callback, "A command must have a callback function"
     name = command_info.name or get_command_name(command_info.callback.__name__)  # ty: ignore
     use_help = command_info.help
@@ -1619,14 +1607,10 @@ def are_unique_values(values: Sequence[str], case_sensitive: bool) -> bool:
 
 def get_click_type(
     *, annotation: Any, parameter_info: ParameterInfo
-<<<<<<< HEAD
-) -> click.ParamType:
+) -> _click.types.ParamType:
     if is_type_alias_type(type(annotation)):
         annotation = annotation.__value__
 
-=======
-) -> types.ParamType:
->>>>>>> upstream/master
     if parameter_info.click_type is not None:
         return parameter_info.click_type
 
@@ -1710,7 +1694,6 @@ def get_click_type(
             atomic=parameter_info.atomic,
         )
     elif lenient_issubclass(annotation, Enum):
-<<<<<<< HEAD
         # The custom TyperChoice is only needed for Click < 8.2.0, to parse the
         # command line values matching them to the enum values. Click 8.2.0 added
         # support for enum values but reading enum names.
@@ -1719,21 +1702,15 @@ def get_click_type(
         enum_values = [item.value for item in annotation]
         if not are_unique_values(enum_values, parameter_info.case_sensitive):
             raise ValueError("Enum values must be unique")
-=======
->>>>>>> upstream/master
         return TyperChoice(
             [item.value for item in annotation],
             case_sensitive=parameter_info.case_sensitive,
         )
     elif is_literal_type(annotation):
-<<<<<<< HEAD
         lit_values = literal_values(annotation)
         if not are_unique_values(lit_values, parameter_info.case_sensitive):
             raise ValueError("Literal values must be unique")
-        return click.Choice(
-=======
         return TyperChoice(
->>>>>>> upstream/master
             literal_values(annotation),
             case_sensitive=parameter_info.case_sensitive,
         )
@@ -1767,13 +1744,8 @@ def combine_literals_union(type_: Any) -> Any:
 
 
 def get_click_param(
-<<<<<<< HEAD
     param: ParamMeta, *, doctyper_opts: DocTyperOptions = DocTyperOptions()
-) -> tuple[click.Argument | click.Option, Any]:
-=======
-    param: ParamMeta,
 ) -> tuple[TyperArgument | TyperOption, Any]:
->>>>>>> upstream/master
     # First, find out what will be:
     # * ParamInfo (ArgumentInfo or OptionInfo)
     # * default_value

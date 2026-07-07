@@ -7,7 +7,7 @@ from tqdm import tqdm
 from pdm_build import adjust_file
 
 if __name__ == "__main__":
-    test_directories = ("docs_src", "tests")
+    test_directories = ("docs_src", "scripts", "tests")
     files = [f for d in test_directories for f in Path(d).rglob("*.py*")]
     try:
         for f in tqdm(files, desc="Fixing names"):

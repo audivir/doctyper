@@ -102,7 +102,7 @@ def test_doc_flag():
 def test_choices_help():
     def main(choice: Literal["a", "b"]): ...
 
-    assert_help(r"choice\s+CHOICE:\{a\|b\}\s+\[required\]", main)
+    assert_help(r"choice:\{a\|b\}\s+CHOICE\s+\[required\]", main)
 
 
 def test_choices_valid_value():
@@ -138,19 +138,19 @@ def test_choices_invalid_value():
 def test_choices_help_list():
     def main(choice: list[Literal["a", "b"]]): ...
 
-    assert_help(r"choice\s+CHOICE:\{a\|b\}\.\.\.\s+\[required\]", main)
+    assert_help(r"choice:\{a\|b\}\.\.\.\s+CHOICE\s+\[required\]", main)
 
 
 def test_choices_help_tuple():
     def main(choice: tuple[Literal["a", "b"], int]): ...
 
-    assert_help(r"choice\s+CHOICE\.\.\.\s+\[required\]", main)
+    assert_help(r"choice\.\.\.\s+<CHOICE INTEGER>\s+\[required\]", main)
 
 
 def test_choices_union():
     def main(choice: 'Literal["a"] | Literal["b"]'): ...
 
-    assert_help(r"choice\s+CHOICE:\{a\|b\}\s+\[required\]", main)
+    assert_help(r"choice:\{a\|b\}\s+CHOICE\s+\[required\]", main)
 
 
 def test_choices_union_error():
@@ -181,7 +181,7 @@ def test_choices_non_unique():
 def test_choices_non_unique_case_dependent():
     def case_sensitive(choice: Literal["a", "A"]): ...
 
-    assert_help(r"choice\s+CHOICE:\{a\|A\}", case_sensitive)
+    assert_help(r"choice:\{a\|A\}\s+CHOICE", case_sensitive)
 
     def case_insensitive(
         choice: Annotated[Literal["a", "A"], typer.Option(case_sensitive=False)],
@@ -196,7 +196,7 @@ def test_choices_non_unique_case_dependent():
 
     def enum_case_sensitive(choice: CaseEnum): ...
 
-    assert_help(r"choice\s+CHOICE:\{a\|A\}", enum_case_sensitive)
+    assert_help(r"choice:\{a\|A\}\s+CHOICE", enum_case_sensitive)
 
     def enum_case_insensitive(
         choice: Annotated[CaseEnum, typer.Option(case_sensitive=False)],
@@ -288,7 +288,7 @@ def test_typing_type_alias(type_: type[Any]):
 
     def main(arg: Alias): ...
 
-    assert_help(r"arg\s+ARG:{a\|b}\s+\[required\]", main)
+    assert_help(r"arg:{a\|b}\s+CHOICE\s+\[required\]", main)
 
 
 def test_typing_annotated():
@@ -305,7 +305,7 @@ def test_typing_annotated():
 def test_typing_literal():
     def main(choice: Literal["a", "b"]): ...
 
-    assert_help(r"choice\s+CHOICE:\{a\|b\}\s+\[required\]", main)
+    assert_help(r"choice:\{a\|b\}\s+CHOICE\s+\[required\]", main)
 
 
 def test_ignore():
