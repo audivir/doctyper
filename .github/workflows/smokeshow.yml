@@ -11,6 +11,7 @@ permissions: {}
 
 jobs:
   smokeshow:
+    if: github.repository_owner == 'fastapi'
     runs-on: ubuntu-latest
     permissions:
       statuses: write
