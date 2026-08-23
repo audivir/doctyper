@@ -362,7 +362,7 @@ def test_echo_windows_color_none(
             return True
 
     stream = TtyStream()
-    monkeypatch.setattr("typer._click.utils.auto_wrap_for_ansi", None)
+    monkeypatch.setattr(f"{typer.__name__}._click.utils.auto_wrap_for_ansi", None)
     typer.echo("\x1b[31mred\x1b[0m", file=stream, nl=False, color=None)
     assert stream.getvalue() == "red"
 

@@ -172,9 +172,9 @@ def test_open_url_linux_locate(monkeypatch):
 @needs_windows
 def test_launch_file():
     with (
-        patch("typer._click._termui_impl.sys.platform", "win32"),
-        patch("typer._click._termui_impl.WIN", True),
-        patch("typer._click._termui_impl.CYGWIN", False),
+        patch(f"{typer.__name__}._click._termui_impl.sys.platform", "win32"),
+        patch(f"{typer.__name__}._click._termui_impl.WIN", True),
+        patch(f"{typer.__name__}._click._termui_impl.CYGWIN", False),
         patch("subprocess.call", return_value=0) as call_mock,
     ):
         result = typer.launch("C:/tmp/file.txt", locate=True)
