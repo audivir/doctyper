@@ -33,19 +33,19 @@ jobs:
       - name: Decompress source distribution
         run: |
           cd dist
-          tar xvf typer*.tar.gz
+          tar xvf doctyper*.tar.gz
       - name: Install test dependencies
         run: |
-          cd dist/typer*/
+          cd dist/doctyper*/
           pip install --group tests --editable .
       - name: Run source distribution tests
         run: |
-          cd dist/typer*/
-          bash scripts/test.sh
+          cd dist/doctyper*/
+          python run_doctyper_tests.py
       - name: Build wheel distribution
         run: |
           cd dist
-          pip wheel --no-deps typer*.tar.gz
+          pip wheel --no-deps doctyper*.tar.gz
 
   # https://github.com/marketplace/actions/alls-green#why
   test-redistribute-alls-green:  # This job does nothing and is only used for the branch protection

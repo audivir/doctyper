@@ -95,7 +95,7 @@ if __name__ == "__main__":
 
 ## Testing
 
-To run `typer`'s test suite including extra tests for `doctyper` run `python test_doctyper.py`.
+To run `typer`'s test suite including extra tests for `doctyper` run `python run_doctyper_tests.py`.
 
 ---
 

@@ -68,7 +68,7 @@ jobs:
       - run: mkdir coverage
       - run: uv run bash scripts/test-files.sh
       - name: Test
-        run: uv run bash scripts/test.sh
+        run: uv run python run_doctyper_tests.py
         env:
           COVERAGE_FILE: coverage/.coverage.${{ runner.os }}-py${{ matrix.python-version }}
           CONTEXT: ${{ runner.os }}-py${{ matrix.python-version }}
