@@ -65,21 +65,21 @@ if __name__ == "__main__":
 ```
 
 ```console
- Usage: t.py [OPTIONS] ARG ANN_ARG ALIAS_ARG LIT_ARG:{arg|other}
+ Usage: t.py [OPTIONS] {arg} {ann_arg} {alias_arg} {lit_arg}:<arg|other>
 
  Run the main application.
 
 ╭─ Arguments ──────────────────────────────────────────────────────────────────────────────────────╮
-│ *    arg                      TEXT     String argument. [required]                               │
-│ *    ann_arg                  TEXT     Supersedes help from docstring. [required]                │
-│ *    alias_arg                INTEGER  Argument using an aliased identifier. [required]          │
-│ *    lit_arg:{arg|other}      CHOICE   Argument with choices. [required]                         │
+│ *    arg            <str>        String argument. [required]                                     │
+│ *    ann_arg        <str>        Supersedes help from docstring. [required]                      │
+│ *    alias_arg      <int>        Argument using an aliased identifier. [required]                │
+│ *    lit_arg        <arg|other>  Argument with choices. [required]                               │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --lit-opt                     [opt|other]  Option with choices and a default. [default: opt]     │
-│ --ann-opt                     INTEGER      Supersedes help from docstring. [default: 1]          │
-│ --other                       INTEGER      Integer argument with a default. [default: 1]         │
-│ --str-or-none                 TEXT         String argument with a default of None.               │
+│ --lit-opt                     <opt|other>  Option with choices and a default. [default: opt]     │
+│ --ann-opt                     <int>        Supersedes help from docstring. [default: 1]          │
+│ --other                       <int>        Integer argument with a default. [default: 1]         │
+│ --str-or-none                 <str>        String argument with a default of None.               │
 │                                            [default: None]                                       │
 │ --flag           --no-flag                 Boolean flag. [default: no-flag]                      │
 │ --help                                     Show this message and exit.                           │

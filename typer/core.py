@@ -130,7 +130,7 @@ def _get_default_string(
     ):
         default_string = ""
     elif default_value is None:
-        default_string = ""
+        default_string = "None" if obj.show_none_defaults else ""
     else:
         default_string = str(default_value)
     return default_string

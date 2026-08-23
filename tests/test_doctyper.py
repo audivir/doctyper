@@ -58,7 +58,7 @@ def test_show_none_defaults():
     app = typer.DocTyper()
     app.command()(main)
 
-    assert_help(r"opt\s+TEXT\s+\[default: None\]", main)
+    assert_help(r"opt\s+<str>\s+\[default: None\]", main)
 
 
 def test_doc_argument():
@@ -69,7 +69,7 @@ def test_doc_argument():
             arg: String Argument.
         """
 
-    assert_help(r"arg\s+TEXT\s+String Argument\. \[required\]", main)
+    assert_help(r"arg\s+<str>\s+String Argument\. \[required\]", main)
 
 
 def test_doc_option():
@@ -81,7 +81,7 @@ def test_doc_option():
         """
 
     assert_help(
-        r"--opt\s+TEXT\s+String Option with Default\. \[default: default\]", main
+        r"--opt\s+<str>\s+String Option with Default\. \[default: default\]", main
     )
 
 
@@ -102,7 +102,7 @@ def test_doc_flag():
 def test_choices_help():
     def main(choice: Literal["a", "b"]): ...
 
-    assert_help(r"choice:\{a\|b\}\s+CHOICE\s+\[required\]", main)
+    assert_help(r"choice\s+<a\|b>\s+\[required\]", main)
 
 
 def test_choices_valid_value():
@@ -128,7 +128,7 @@ def test_choices_invalid_value():
     assert_run(
         ["c"],
         2,
-        "Invalid value for 'CHOICE:{a|b}': 'c' is not one of 'a', 'b'.",
+        "Invalid value for 'choice': 'c' is not one of 'a', 'b'.",
         main,
         regex=False,
         stderr=True,
@@ -138,19 +138,19 @@ def test_choices_invalid_value():
 def test_choices_help_list():
     def main(choice: list[Literal["a", "b"]]): ...
 
-    assert_help(r"choice:\{a\|b\}\.\.\.\s+CHOICE\s+\[required\]", main)
+    assert_help(r"(?s)\{choice\}:<a\|b>\.\.\..*choice\s+<a\|b>\s+\[required\]", main)
 
 
 def test_choices_help_tuple():
     def main(choice: tuple[Literal["a", "b"], int]): ...
 
-    assert_help(r"choice\.\.\.\s+<CHOICE INTEGER>\s+\[required\]", main)
+    assert_help(r"(?s)\{choice\}\.\.\..*choice\s+<<choice int>>\s+\[required\]", main)
 
 
 def test_choices_union():
     def main(choice: 'Literal["a"] | Literal["b"]'): ...
 
-    assert_help(r"choice:\{a\|b\}\s+CHOICE\s+\[required\]", main)
+    assert_help(r"choice\s+<a\|b>\s+\[required\]", main)
 
 
 def test_choices_union_error():
@@ -181,7 +181,7 @@ def test_choices_non_unique():
 def test_choices_non_unique_case_dependent():
     def case_sensitive(choice: Literal["a", "A"]): ...
 
-    assert_help(r"choice:\{a\|A\}\s+CHOICE", case_sensitive)
+    assert_help(r"choice\s+<a\|A>", case_sensitive)
 
     def case_insensitive(
         choice: Annotated[Literal["a", "A"], typer.Option(case_sensitive=False)],
@@ -196,7 +196,7 @@ def test_choices_non_unique_case_dependent():
 
     def enum_case_sensitive(choice: CaseEnum): ...
 
-    assert_help(r"choice:\{a\|A\}\s+CHOICE", enum_case_sensitive)
+    assert_help(r"choice\s+<a\|A>", enum_case_sensitive)
 
     def enum_case_insensitive(
         choice: Annotated[CaseEnum, typer.Option(case_sensitive=False)],
@@ -211,7 +211,7 @@ def test_future_annotations():
         opt: "str | None" = None,  # future annotation would convert str | None to "str | None"
     ): ...
 
-    assert_help(r"--opt\s+TEXT\s+\[default: None\]", main)
+    assert_help(r"--opt\s+<str>\s+\[default: None\]", main)
 
 
 def test_future_annotations_with_docstring():
@@ -224,7 +224,7 @@ def test_future_annotations_with_docstring():
             opt: String Option with Default.
         """
 
-    assert_help(r"--opt\s+TEXT\s+String Option with Default\. \[default: None\]", main)
+    assert_help(r"--opt\s+<str>\s+String Option with Default\. \[default: None\]", main)
 
 
 def test_help_preference():
@@ -242,11 +242,11 @@ def test_help_preference():
         """
 
     assert_help(
-        r"--doc-opt\s+TEXT\s+String Option with Docstring Help\. \[default: string\]",
+        r"--doc-opt\s+<str>\s+String Option with Docstring Help\. \[default: string\]",
         main,
     )
     assert_help(
-        r"--ann-opt\s+TEXT\s+String Option with Annotated Help\. \[default: string\]",
+        r"--ann-opt\s+<str>\s+String Option with Annotated Help\. \[default: string\]",
         main,
     )
 
@@ -262,7 +262,7 @@ def test_custom_annotated():
         """
 
     assert_help(
-        r"--opt\s+TEXT\s+String Option with Custom Default\. \[default: \(Custom\)\]",
+        r"--opt\s+<str>\s+String Option with Custom Default\. \[default: \(Custom\)\]",
         main,
     )
 
@@ -288,7 +288,7 @@ def test_typing_type_alias(type_: type[Any]):
 
     def main(arg: Alias): ...
 
-    assert_help(r"arg:{a\|b}\s+CHOICE\s+\[required\]", main)
+    assert_help(r"arg\s+<a\|b>\s+\[required\]", main)
 
 
 def test_typing_annotated():
@@ -297,7 +297,7 @@ def test_typing_annotated():
     ): ...
 
     assert_help(
-        r"ann_arg\s+TEXT\s+Annotated Argument\. \[required\]",
+        r"ann_arg\s+<str>\s+Annotated Argument\. \[required\]",
         main,
     )
 
@@ -305,7 +305,7 @@ def test_typing_annotated():
 def test_typing_literal():
     def main(choice: Literal["a", "b"]): ...
 
-    assert_help(r"choice:\{a\|b\}\s+CHOICE\s+\[required\]", main)
+    assert_help(r"choice\s+<a\|b>\s+\[required\]", main)
 
 
 def test_ignore():
@@ -328,7 +328,7 @@ def test_test_ignore_doc():
         """
 
     output = assert_help(
-        r"visible\s+TEXT\s+This argument is visible\.\s+\[required\]", main
+        r"visible\s+<str>\s+This argument is visible\.\s+\[required\]", main
     )
     assert "invisible" not in output
 

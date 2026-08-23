@@ -15,4 +15,4 @@ def test_future_annotations():
     def main(opt: str | None = None): ...
 
     result = runner.invoke(app, ["--help"])
-    assert re.search(r"--opt\s+TEXT\s+\[default: None\]", result.stdout)
+    assert re.search(r"--opt\s+<str>\s+\[default: None\]", result.stdout)
