@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import re
 import shutil
 from pathlib import Path
 from typing import TYPE_CHECKING, TypeVar
@@ -52,9 +53,22 @@ def adjust_file(file: Path, src: str, target: str) -> None:
     if src not in content:
         return
 
-    # custom fix
-    template = '"Annotated[int, {}.Argument()]"'
-    content = content.replace(template.format(src), template.format(target))
+    # custom fixes
+    templates = [
+        '"Annotated[int, {0}.Argument()]"',
+        '"COMP_WORDS": "{0}',
+        "{0}.FileText = {0}.Option(...)",
+        'patch("{0}.',
+        'setattr("{0}.',
+    ]
+    for t in templates:
+        content = content.replace(t.format(src), t.format(target))
+
+    upper_templates = ['"_PYTHON _M {}_COMPLETE']
+    for t in upper_templates:
+        content = content.replace(t.format(src.upper()), t.format(target.upper()))
+
+    content = re.sub(rf'(-m",\s*"){src}(")', rf"\1{target}\2", content)
 
     tree = cst.parse_module(content)
     wrapper = MetadataWrapper(tree)

@@ -20,9 +20,7 @@ def test_script() -> None:
         encoding="utf-8",
     )
     assert result.returncode == 0
-    assert (
-        "def main(config: doctyper.FileText = doctyper.Option(...)):" in result.stdout
-    )
+    assert "def main(config: typer.FileText = typer.Option(...)):" in result.stdout
 
 
 def test_completion_file_bash() -> None:

@@ -36,11 +36,13 @@ def main(
     lit_arg: Literal["arg", "other"],  # only strings allowed for literals
     lit_opt: Literal["opt"]
     | Literal["other"] = "opt",  # only unions of literals are supported
-    ann_opt: Annotated[int, doctyper.Option(help="Supersedes help from docstring.")] = 1,
+    ann_opt: Annotated[
+        int, doctyper.Option(help="Supersedes help from docstring.")
+    ] = 1,
     other: int = 1,
     str_or_none: str | None = None,  # enable "str | None" type hints
     flag: bool = False,
-    hidden: Annotated[bool, doctyper.Ignore()] = True
+    hidden: Annotated[bool, doctyper.Ignore()] = True,
 ) -> None:
     """Run the main application.
 

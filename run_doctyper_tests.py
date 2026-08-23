@@ -13,7 +13,9 @@ def _bash_executable() -> str:
     """Find a real bash, avoiding Windows' WSL bash.exe stub in System32."""
     if sys.platform == "win32":
         for program_files in ("ProgramFiles", "ProgramFiles(x86)"):
-            candidate = Path(os.environ.get(program_files, "")) / "Git" / "bin" / "bash.exe"
+            candidate = (
+                Path(os.environ.get(program_files, "")) / "Git" / "bin" / "bash.exe"
+            )
             if candidate.is_file():
                 return str(candidate)
     return shutil.which("bash") or "bash"

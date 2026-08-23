@@ -13,6 +13,6 @@ coverage.xml
 .coverage*
 .cache
 .pdm-build
-doctyper
+doctyper/
 .DS_Store
 .pdm-python

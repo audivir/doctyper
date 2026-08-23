@@ -68,7 +68,7 @@ def test_rich_markup_mode_envvar(env_var_value: str, expected_result: bool):
             "coverage",
             "run",
             "-m",
-            "doctyper",
+            "typer",
             "tests/assets/cli/sample.py",
             "--help",
         ],
