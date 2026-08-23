@@ -1745,7 +1745,7 @@ def combine_literals_union(type_: Any) -> Any:
     # Literal[1, 2, 3] | Literal[4, 5, 6] -> Literal[1, 2, 3, 4, 5, 6]
     if is_literal_type(type_):
         return Literal[all_literal_values(type_)]  # ty: ignore[invalid-type-form]
-    if is_union(type_):
+    if is_union(get_origin(type_)):
         types = combine_literals(get_args(type_))
         assert len(types) == 1, "Typer Currently doesn't support Union types"
         return types[0]

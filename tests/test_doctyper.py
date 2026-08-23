@@ -53,7 +53,7 @@ def test_doc_typer():
 
 def test_show_none_defaults():
     def main(opt: str | None = None) -> None:
-        pass
+        """No docstring."""
 
     app = typer.DocTyper()
     app.command()(main)
@@ -135,6 +135,30 @@ def test_choices_invalid_value():
     )
 
 
+def test_doc_non_google_style():
+    def main(arg: str):
+        """Docstring.
+
+        :param arg: String Argument.
+        """
+
+    with pytest.raises(ValueError, match="Docstring style must be Google"):
+        assert_help("", main)
+
+
+def test_doc_long_description():
+    def main(arg: str):
+        """Short description.
+
+        Longer description that spans more detail.
+
+        Args:
+            arg: String Argument.
+        """
+
+    assert_help(r"Short description\.\s+Longer description that spans more detail\.", main)
+
+
 def test_choices_help_list():
     def main(choice: list[Literal["a", "b"]]): ...
 
@@ -151,6 +175,12 @@ def test_choices_union():
     def main(choice: 'Literal["a"] | Literal["b"]'): ...
 
     assert_help(r"choice\s+<a\|b>\s+\[required\]", main)
+
+
+def test_choices_union_list():
+    def main(choice: 'list[Literal["a", "b"] | Literal["c", "d"]]'): ...
+
+    assert_help(r"(?s)\{choice\}:<a\|b\|c\|d>\.\.\..*choice\s+<a\|b\|c\|d>", main)
 
 
 def test_choices_union_error():
