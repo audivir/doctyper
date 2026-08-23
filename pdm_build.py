@@ -48,7 +48,7 @@ def adjust_file(file: Path, src: str, target: str) -> None:
     """Replace the calls/imports to `src` with `target`."""
     if file.suffix not in {".py", ".pyi"}:
         return
-    content = file.read_text()
+    content = file.read_text(encoding="utf-8")
     if src not in content:
         return
 
@@ -59,7 +59,7 @@ def adjust_file(file: Path, src: str, target: str) -> None:
     tree = cst.parse_module(content)
     wrapper = MetadataWrapper(tree)
     new_tree = wrapper.visit(ReplacePackageTransformer(src, target, wrapper))
-    file.write_text(new_tree.code)
+    file.write_text(new_tree.code, encoding="utf-8")
 
 
 def pdm_build_initialize(context: Context) -> None:
