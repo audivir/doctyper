@@ -1616,7 +1616,7 @@ def are_unique_values(values: Sequence[str], case_sensitive: bool) -> bool:
 
 def get_click_type(
     *, annotation: Any, parameter_info: ParameterInfo
-) -> _click.types.ParamType:
+) -> types.ParamType:
     if is_type_alias_type(type(annotation)):
         annotation = annotation.__value__
 

@@ -4,6 +4,109 @@
 .md-content .md-typeset h1 { display: none; }
 </style>
 
+# doctyper
+
+> It is fully compatible with `typer`'s API (use with `import doctyper as typer`)
+> all specific features are activated via keyword arguments.
+
+A wrapper around [Typer](https://typer.tiangolo.com) to simplify the creation of command-line interfaces (CLIs).
+It uses parsed docstrings to extract arguments and options for CLI commands.
+
+## Features
+
+* Use Google-style docstrings to generate help text for arguments and options.
+* Support type-aliased identifiers.
+* Interpret `Literal` types (for choices) (now partially available in upstream Typer):
+  * Interpret unions, lists, or tuples of `Literal`s (not yet available upstream).
+  * Check for uniqueness in `Literal`s/Enums (e.g. `Literal["1", 1]` would break type safety).
+* Disable completion and pretty tracebacks by default.
+* Enable `str | None` type hints.
+* Show `[default: None]` for clarity.
+* Add arguments hidden from the CLI with `doctyper.Ignore()`
+
+## Example
+
+```python
+from typing import Annotated, Literal
+
+import doctyper
+from typing_extensions import TypeAliasType
+
+Alias = TypeAliasType("Alias", int)  # in >=3.12: type Alias = int
+
+
+def main(
+    arg: str,  # disables [default: None] in output
+    ann_arg: Annotated[str, doctyper.Argument(help="Supersedes help from docstring.")],
+    alias_arg: Alias,  # output original name
+    lit_arg: Literal["arg", "other"],  # only strings allowed for literals
+    lit_opt: Literal["opt"]
+    | Literal["other"] = "opt",  # only unions of literals are supported
+    ann_opt: Annotated[
+        int, doctyper.Option(help="Supersedes help from docstring.")
+    ] = 1,
+    other: int = 1,
+    str_or_none: str | None = None,  # enable "str | None" type hints
+    flag: bool = False,
+    hidden: Annotated[bool, doctyper.Ignore()] = True,
+) -> None:
+    """Run the main application.
+
+    Args:
+        arg: String argument.
+        ann_arg: This will not be used.
+        alias_arg: Argument using an aliased identifier.
+        other: Integer argument with a default.
+        lit_arg: Argument with choices.
+        lit_opt: Option with choices and a default.
+        ann_opt: This will not be used.
+        str_or_none: String argument with a default of None.
+        flag: Boolean flag.
+        hidden: This is a python-only argument and this docstring is hidden.
+    """
+
+
+if __name__ == "__main__":
+    app = doctyper.DocTyper()
+    app.command()(main)
+    app()
+```
+
+```console
+ Usage: t.py [OPTIONS] {arg} {ann_arg} {alias_arg} {lit_arg}:<arg|other>
+
+ Run the main application.
+
+╭─ Arguments ──────────────────────────────────────────────────────────────────────────────────────╮
+│ *    arg            <str>        String argument. [required]                                     │
+│ *    ann_arg        <str>        Supersedes help from docstring. [required]                      │
+│ *    alias_arg      <int>        Argument using an aliased identifier. [required]                │
+│ *    lit_arg        <arg|other>  Argument with choices. [required]                               │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
+│ --lit-opt                     <opt|other>  Option with choices and a default. [default: opt]     │
+│ --ann-opt                     <int>        Supersedes help from docstring. [default: 1]          │
+│ --other                       <int>        Integer argument with a default. [default: 1]         │
+│ --str-or-none                 <str>        String argument with a default of None.               │
+│                                            [default: None]                                       │
+│ --flag           --no-flag                 Boolean flag. [default: no-flag]                      │
+│ --help                                     Show this message and exit.                           │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+```
+
+## Configuration
+
+| Keyword Argument        | Description                                                                 |
+|--------------------------|-----------------------------------------------------------------------------|
+| `parse_docstrings`       | Parse Google-style docstrings to generate help text for arguments/options. |
+| `show_none_defaults`     | Explicitly show `[default: None]` for parameters with a default of `None`. |
+
+## Testing
+
+To run `typer`'s test suite including extra tests for `doctyper` run `python run_doctyper_tests.py`.
+
+---
+
 <p align="center">
   <a href="https://typer.tiangolo.com"><img src="https://typer.tiangolo.com/img/logo-margin/logo-margin-vector.svg#only-light" alt="Typer"></a>
 <!-- only-mkdocs -->

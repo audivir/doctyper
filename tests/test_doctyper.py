@@ -156,7 +156,9 @@ def test_doc_long_description():
             arg: String Argument.
         """
 
-    assert_help(r"Short description\.\s+Longer description that spans more detail\.", main)
+    assert_help(
+        r"Short description\.\s+Longer description that spans more detail\.", main
+    )
 
 
 def test_choices_help_list():
@@ -354,7 +356,7 @@ def test_test_ignore_doc():
 
         Args:
             visible: This argument is visible.
-            invisibile: This argument isn't.
+            invisible: This argument isn't.
         """
 
     output = assert_help(
