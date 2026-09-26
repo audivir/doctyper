@@ -68,6 +68,7 @@ def adjust_file(file: Path, src: str, target: str) -> None:
     for t in upper_templates:
         content = content.replace(t.format(src.upper()), t.format(target.upper()))
 
+    # "-m", "src" -> "-m", "target"
     content = re.sub(rf'(-m",\s*"){src}(")', rf"\1{target}\2", content)
 
     tree = cst.parse_module(content)

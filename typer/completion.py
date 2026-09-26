@@ -37,11 +37,17 @@ def install_callback(ctx: _click.Context, param: _click.Parameter, value: Any) -
     if not value or ctx.resilient_parsing:
         return value  # pragma: no cover
     if isinstance(value, str):
-        shell, path = install(shell=value)
+        shell, path, custom = install(shell=value)
     else:
-        shell, path = install()
+        shell, path, custom = install()
     _click.termui.secho(f"{shell} completion installed in {path}", fg="green")
-    _click.echo("Completion will take effect once you restart the terminal")
+    if custom:
+        _click.termui.secho(
+            "Custom completion directory used. Make sure it is loaded in your shell configuration.",
+            fg="yellow",
+        )
+    else:
+        _click.echo("Completion will take effect once you restart the terminal")
     sys.exit(0)
 
 

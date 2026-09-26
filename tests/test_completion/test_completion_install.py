@@ -4,6 +4,7 @@ import sys
 from pathlib import Path
 from unittest import mock
 
+import pytest
 import shellingham
 from typer.testing import CliRunner
 
@@ -15,14 +16,24 @@ runner = CliRunner()
 app = mod.app
 
 
+@pytest.fixture()
+def tmp_home(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
+    monkeypatch.setenv("HOME", str(tmp_path))
+    monkeypatch.delenv("ZDOTDIR", raising=False)
+    monkeypatch.delenv("TYPER_ZSH_COMPLETION_DIR", raising=False)
+    monkeypatch.delenv("XDG_CONFIG_HOME", raising=False)
+    return tmp_path
+
+
 @requires_completion_permission
-def test_completion_install_no_shell():
+def test_completion_install_no_shell(tmp_home: Path):
     result = subprocess.run(
         [sys.executable, "-m", "coverage", "run", mod.__file__, "--install-completion"],
         capture_output=True,
         encoding="utf-8",
         env={
             **os.environ,
+            "HOME": str(tmp_home),
             "_TYPER_COMPLETE_TEST_DISABLE_SHELL_DETECTION": "True",
         },
     )
@@ -30,10 +41,10 @@ def test_completion_install_no_shell():
 
 
 @requires_completion_permission
-def test_completion_install_bash():
+def test_completion_install_bash(tmp_home: Path):
     bash_completion_path: Path = Path.home() / ".bashrc"
     text = ""
-    if bash_completion_path.is_file():
+    if bash_completion_path.is_file():  # pragma: no cover
         text = bash_completion_path.read_text()
     result = subprocess.run(
         [
@@ -49,6 +60,7 @@ def test_completion_install_bash():
         encoding="utf-8",
         env={
             **os.environ,
+            "HOME": str(tmp_home),
             "_TYPER_COMPLETE_TEST_DISABLE_SHELL_DETECTION": "True",
         },
     )
@@ -70,7 +82,7 @@ def test_completion_install_bash():
 
 
 @requires_completion_permission
-def test_completion_install_zsh():
+def test_completion_install_zsh(tmp_home: Path):
     completion_path: Path = Path.home() / ".zshrc"
     text = ""
     if not completion_path.is_file():  # pragma: no cover
@@ -91,6 +103,7 @@ def test_completion_install_zsh():
         encoding="utf-8",
         env={
             **os.environ,
+            "HOME": str(tmp_home),
             "_TYPER_COMPLETE_TEST_DISABLE_SHELL_DETECTION": "True",
         },
     )
@@ -111,7 +124,7 @@ def test_completion_install_zsh():
 
 
 @requires_completion_permission
-def test_completion_install_fish():
+def test_completion_install_fish(tmp_home: Path):
     script_path = Path(mod.__file__)
     completion_path: Path = (
         Path.home() / f".config/fish/completions/{script_path.name}.fish"
@@ -130,6 +143,7 @@ def test_completion_install_fish():
         encoding="utf-8",
         env={
             **os.environ,
+            "HOME": str(tmp_home),
             "_TYPER_COMPLETE_TEST_DISABLE_SHELL_DETECTION": "True",
         },
     )

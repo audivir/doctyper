@@ -93,7 +93,7 @@ def get_completion_script(*, prog_name: str, complete_var: str, shell: str) -> s
     ).strip()
 
 
-def install_bash(*, prog_name: str, complete_var: str, shell: str) -> Path:
+def install_bash(*, prog_name: str, complete_var: str, shell: str) -> tuple[Path, bool]:
     # Ref: https://github.com/scop/bash-completion#faq
     # It seems bash-completion is the official completion system for bash:
     # Ref: https://www.gnu.org/software/bash/manual/html_node/A-Programmable-Completion-Example.html
@@ -116,49 +116,80 @@ def install_bash(*, prog_name: str, complete_var: str, shell: str) -> Path:
         prog_name=prog_name, complete_var=complete_var, shell=shell
     )
     completion_path.write_text(script_content)
-    return completion_path
+    return completion_path, False
 
 
-def install_zsh(*, prog_name: str, complete_var: str, shell: str) -> Path:
+def install_zsh(*, prog_name: str, complete_var: str, shell: str) -> tuple[Path, bool]:
     # Setup Zsh and load ~/.zfunc
-    zshrc_path = Path.home() / ".zshrc"
-    zshrc_path.parent.mkdir(parents=True, exist_ok=True)
-    zshrc_content = ""
-    if zshrc_path.is_file():
-        zshrc_content = zshrc_path.read_text()
-    completion_line = "fpath+=~/.zfunc; autoload -Uz compinit; compinit"
-    if completion_line not in zshrc_content:
-        zshrc_content += f"\n{completion_line}\n"
-    style_line = "zstyle ':completion:*' menu select"
-    # TODO: consider setting the style only for the current program
-    # style_line = f"zstyle ':completion:*:*:{prog_name}:*' menu select"
-    # Install zstyle completion config only if the user doesn't have a customization
-    if "zstyle" not in zshrc_content:
-        zshrc_content += f"\n{style_line}\n"
-    zshrc_content = f"{zshrc_content.strip()}\n"
-    zshrc_path.write_text(zshrc_content)
-    # Install completion under ~/.zfunc/
-    path_obj = Path.home() / f".zfunc/_{prog_name}"
-    path_obj.parent.mkdir(parents=True, exist_ok=True)
+    custom = False
+    completion_dir_str = os.getenv("TYPER_ZSH_COMPLETION_DIR")
+    if completion_dir_str and completion_dir_str.strip():
+        custom = True
+        completion_dir = Path(completion_dir_str.strip()).expanduser()
+        completion_dir.mkdir(parents=True, exist_ok=True)
+        style_file_path = completion_dir / ".compstyles"
+        style_file_content = "# this file is managed by typer, do not edit\n"
+        if style_file_path.is_file():
+            style_file_content = style_file_path.read_text().strip() + "\n"
+        style_line = f"zstyle ':completion:*:*:{prog_name}:*' menu select"
+        if style_line not in style_file_content:
+            style_file_content += f"{style_line}\n"
+        style_file_content = f"{style_file_content.strip()}\n"
+        style_file_path.write_text(style_file_content)
+    else:
+        completion_dir = Path.home() / ".zfunc"
+        completion_dir.mkdir(parents=True, exist_ok=True)
+        zdotdir = os.getenv("ZDOTDIR")
+        zshrc_dir = (
+            Path(zdotdir.strip()).expanduser()
+            if zdotdir and zdotdir.strip()
+            else Path.home()
+        )
+        zshrc_path = zshrc_dir / ".zshrc"
+        zshrc_path.parent.mkdir(parents=True, exist_ok=True)
+        zshrc_content = ""
+        if zshrc_path.is_file():
+            zshrc_content = zshrc_path.read_text()
+        completion_line = "fpath+=~/.zfunc; autoload -Uz compinit; compinit"
+        if completion_line not in zshrc_content:
+            zshrc_content += f"\n{completion_line}\n"
+        style_line = "zstyle ':completion:*' menu select"
+        # TODO: consider setting the style only for the current program
+        # style_line = f"zstyle ':completion:*:*:{prog_name}:*' menu select"
+        # Install zstyle completion config only if the user doesn't have a customization
+        if "zstyle" not in zshrc_content:
+            zshrc_content += f"\n{style_line}\n"
+        zshrc_content = f"{zshrc_content.strip()}\n"
+        zshrc_path.write_text(zshrc_content)
+    # Install completion under TYPER_ZSH_COMPLETION_DIR or ~/.zfunc
+    path_obj = completion_dir / f"_{prog_name}"
     script_content = get_completion_script(
         prog_name=prog_name, complete_var=complete_var, shell=shell
     )
     path_obj.write_text(script_content)
-    return path_obj
+    return path_obj, custom
 
 
-def install_fish(*, prog_name: str, complete_var: str, shell: str) -> Path:
-    path_obj = Path.home() / f".config/fish/completions/{prog_name}.fish"
+def install_fish(*, prog_name: str, complete_var: str, shell: str) -> tuple[Path, bool]:
+    xdg_config = os.getenv("XDG_CONFIG_HOME")
+    config_dir = (
+        Path(xdg_config.strip()).expanduser()
+        if xdg_config and xdg_config.strip()
+        else Path.home() / ".config"
+    )
+    path_obj = config_dir / f"fish/completions/{prog_name}.fish"
     parent_dir: Path = path_obj.parent
     parent_dir.mkdir(parents=True, exist_ok=True)
     script_content = get_completion_script(
         prog_name=prog_name, complete_var=complete_var, shell=shell
     )
     path_obj.write_text(f"{script_content}\n")
-    return path_obj
+    return path_obj, False
 
 
-def install_powershell(*, prog_name: str, complete_var: str, shell: str) -> Path:
+def install_powershell(
+    *, prog_name: str, complete_var: str, shell: str
+) -> tuple[Path, bool]:
     subprocess.run(
         [
             shell,
@@ -198,14 +229,14 @@ def install_powershell(*, prog_name: str, complete_var: str, shell: str) -> Path
     )
     with path_obj.open(mode="a") as f:
         f.write(f"{script_content}\n")
-    return path_obj
+    return path_obj, False
 
 
 def install(
     shell: str | None = None,
     prog_name: str | None = None,
     complete_var: str | None = None,
-) -> tuple[str, Path]:
+) -> tuple[str, Path, bool]:
     prog_name = prog_name or get_current_context().find_root().info_name
     assert prog_name
     if complete_var is None:
@@ -214,28 +245,25 @@ def install(
     if shell is None and not test_disable_detection:
         shell = _get_shell_name()
     if shell == "bash":
-        installed_path = install_bash(
+        installed_path, custom = install_bash(
             prog_name=prog_name, complete_var=complete_var, shell=shell
         )
-        return shell, installed_path
     elif shell == "zsh":
-        installed_path = install_zsh(
+        installed_path, custom = install_zsh(
             prog_name=prog_name, complete_var=complete_var, shell=shell
         )
-        return shell, installed_path
     elif shell == "fish":
-        installed_path = install_fish(
+        installed_path, custom = install_fish(
             prog_name=prog_name, complete_var=complete_var, shell=shell
         )
-        return shell, installed_path
     elif shell in {"powershell", "pwsh"}:
-        installed_path = install_powershell(
+        installed_path, custom = install_powershell(
             prog_name=prog_name, complete_var=complete_var, shell=shell
         )
-        return shell, installed_path
     else:
         _click.echo(f"Shell {shell} is not supported.")
         raise Exit(1)
+    return shell, installed_path, custom
 
 
 def _get_shell_name() -> str | None:
