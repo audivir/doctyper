@@ -108,7 +108,61 @@ def test_mutex_option():
     assert "--bar" in out
 
 
-def test_mutex_option_required():
+def test_mutex_required():
+    group1 = typer.Mutex("group1", required=True)
+
+    def main(
+        foo: Annotated[str | None, typer.Option(mutex=group1)] = None,
+        bar: Annotated[str | None, typer.Option(mutex=group1)] = None,
+    ):
+        """Test required mutex options."""
+
+    assert_run(["--foo", "val1"], 0, "", main)
+    assert_run(["--bar", "val2"], 0, "", main)
+    out = assert_run(
+        [],
+        2,
+        r"Missing one of the required mutually exclusive options from 'group1'",
+        main,
+    )
+    assert "--foo" in out
+    assert "--bar" in out
+    assert_run(
+        ["--foo", "val1", "--bar", "val2"],
+        2,
+        r"Mutually exclusive options from 'group1' option group",
+        main,
+    )
+
+
+@pytest.mark.parametrize("rich_markup_mode", ["rich", None])
+@pytest.mark.parametrize(
+    ("mutex", "marker"),
+    [
+        ("group1", "mutually exclusive: group1"),
+        (typer.Mutex("group1"), "mutually exclusive: group1"),
+        (typer.Mutex("group1", required=True), "exactly one of: group1"),
+    ],
+)
+def test_mutex_option_help(
+    rich_markup_mode: Literal["rich"] | None, mutex: str | typer.Mutex, marker: str
+):
+    app = typer.DocTyper(rich_markup_mode=rich_markup_mode)
+
+    @app.command()
+    def main(
+        foo: Annotated[str | None, typer.Option(mutex=mutex)] = None,
+        bar: str | None = None,
+    ):
+        """Test mutex options."""
+
+    res = runner.invoke(app, ["--help"])
+    assert res.exit_code == 0
+    assert re.search(rf"--foo .*\[{marker}\]", res.output)
+    assert not re.search(r"--bar .*(mutually exclusive|exactly one of)", res.output)
+
+
+def test_mutex_option_no_default():
     def main(
         foo: Annotated[str, typer.Option(mutex="group1")],
         bar: Annotated[str | None, typer.Option(mutex="group1")] = None,
@@ -119,7 +173,25 @@ def test_mutex_option_required():
     app.command()(main)
     with pytest.raises(
         TypeError,
-        match="'required' attribute is not allowed for 'MutuallyExclusiveOptionGroup'",
+        match=r"Option 'foo' of option group 'group1' must not be required: .*"
+        r"typer\.Mutex\('group1', required=True\)",
+    ):
+        typer.main.get_command(app)
+
+
+def test_mutex_conflicting_declarations():
+    def main(
+        foo: Annotated[str | None, typer.Option(mutex="group1")] = None,
+        bar: Annotated[
+            str | None, typer.Option(mutex=typer.Mutex("group1", required=True))
+        ] = None,
+    ):
+        """Test mutex options."""
+
+    app = typer.DocTyper()
+    app.command()(main)
+    with pytest.raises(
+        TypeError, match="Conflicting declarations for mutex group 'group1'"
     ):
         typer.main.get_command(app)
 
@@ -128,9 +200,10 @@ def test_option_group():
     from typer._click_option_group import GroupedOption, OptionGroup
 
     group = OptionGroup("group1")
-    option = GroupedOption(["--foo"], group=group, required=True)
+    option = GroupedOption(["--foo"], group=group)
     assert option.group is group
     assert group.get_options() == {"foo": option}
+    assert group.get_help_extra() == "option group: group1"
 
 
 def test_show_none_defaults():

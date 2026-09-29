@@ -385,6 +385,19 @@ class ParameterInfo:
         self.rich_help_panel = rich_help_panel
 
 
+class Mutex:
+    """
+    A group of mutually exclusive options, used with `typer.Option(mutex=...)`.
+
+    Passing a plain string as `mutex` is equivalent to `Mutex(name)`.
+    If `required` is `True`, exactly one option of the group must be given.
+    """
+
+    def __init__(self, name: str, *, required: bool = False) -> None:
+        self.name = name
+        self.required = required
+
+
 class OptionInfo(ParameterInfo):
     def __init__(
         self,
@@ -449,7 +462,7 @@ class OptionInfo(ParameterInfo):
         path_type: None | type[str] | type[bytes] = None,
         # Rich settings
         rich_help_panel: str | None = None,
-        mutex: str | None = None,
+        mutex: str | Mutex | None = None,
     ):
         super().__init__(
             default=default,

@@ -1,4 +1,5 @@
 from collections.abc import Mapping, Sequence
+from gettext import gettext as _
 from typing import Any
 
 from .._click.core import Context, augment_usage_errors
@@ -25,10 +26,12 @@ class GroupedOption(TyperOption):
     ):
         super().__init__(param_decls=list(param_decls or []), **attrs)
 
-        for attr in group.forbidden_option_attrs:
-            if attrs.get(attr):
-                msg = f"'{attr}' attribute is not allowed for '{type(group).__name__}' option `{self.name}'."
-                raise TypeError(msg)
+        if attrs.get("required"):
+            msg = (
+                f"Option '{self.name}' of option group '{group.name}' must not be required: "
+                f"give it a default (e.g. None) or use `typer.Mutex('{group.name}', required=True)`."
+            )
+            raise TypeError(msg)
 
         self.__group = group
         group.add_option(self)
@@ -62,6 +65,8 @@ class OptionGroup:
     :param name: the group name
     """
 
+    help_extra = _("option group: {name}")
+
     def __init__(self, name: str) -> None:
         self._name = name
         self._options: dict[str, GroupedOption] = {}
@@ -74,10 +79,9 @@ class OptionGroup:
         """
         return self._name
 
-    @property
-    def forbidden_option_attrs(self) -> list[str]:
-        """Returns the list of forbidden option attributes for the group"""
-        return []
+    def get_help_extra(self) -> str:
+        """Returns the marker shown in the help text of the group options"""
+        return self.help_extra.format(name=self.name)
 
     def add_option(self, option: GroupedOption) -> None:
         """Adds an option to the group"""
@@ -108,9 +112,7 @@ class MutuallyExclusiveOptionGroup(OptionGroup):
         - Only one or none option from the group must be set
     """
 
-    @property
-    def forbidden_option_attrs(self) -> list[str]:
-        return ["required"]
+    help_extra = _("mutually exclusive: {name}")
 
     def handle_parse_result(
         self, option: GroupedOption, ctx: Context, opts: Mapping[str, Any]
@@ -122,4 +124,27 @@ class MutuallyExclusiveOptionGroup(OptionGroup):
             option_info = self.get_error_hint(ctx, given_option_names)
 
             msg = f"Mutually exclusive options from '{self.name}' option group cannot be used at the same time:\n{option_info}"
+            raise UsageError(msg, ctx=ctx)
+
+
+class RequiredMutuallyExclusiveOptionGroup(MutuallyExclusiveOptionGroup):
+    """Option group with required and mutually exclusive behavior for grouped options
+
+    `RequiredMutuallyExclusiveOptionGroup` defines the behavior:
+        - Only one required option from the group must be set
+    """
+
+    help_extra = _("exactly one of: {name}")
+
+    def handle_parse_result(
+        self, option: GroupedOption, ctx: Context, opts: Mapping[str, Any]
+    ) -> None:
+        super().handle_parse_result(option, ctx, opts)
+
+        option_names = set(self.get_options())
+
+        if not option_names.intersection(opts):
+            option_info = self.get_error_hint(ctx, option_names)
+
+            msg = f"Missing one of the required mutually exclusive options from '{self.name}' option group:\n{option_info}"
             raise UsageError(msg, ctx=ctx)

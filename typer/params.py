@@ -6,7 +6,7 @@ from annotated_doc import Doc
 from . import _click
 from ._click import types
 from ._click.shell_completion import CompletionItem
-from .models import ArgumentInfo, IgnoreInfo, OptionInfo
+from .models import ArgumentInfo, IgnoreInfo, Mutex, OptionInfo
 
 if TYPE_CHECKING:  # pragma: no cover
     pass
@@ -78,7 +78,7 @@ def Option(
     path_type: None | type[str] | type[bytes] = None,
     # Rich settings
     rich_help_panel: str | None = None,
-    mutex: str | None = None,
+    mutex: str | Mutex | None = None,
 ) -> Any: ...
 
 
@@ -144,7 +144,7 @@ def Option(
     path_type: None | type[str] | type[bytes] = None,
     # Rich settings
     rich_help_panel: str | None = None,
-    mutex: str | None = None,
+    mutex: str | Mutex | None = None,
 ) -> Any: ...
 
 
@@ -931,11 +931,13 @@ def Option(
         ),
     ] = None,
     mutex: Annotated[
-        str | None,
+        str | Mutex | None,
         Doc(
             """
             Specify a mutually exclusive option group name. Options sharing the same `mutex`
             tag cannot be used at the same time.
+
+            Use `typer.Mutex(name, required=True)` to require exactly one option of the group.
             """
         ),
     ] = None,

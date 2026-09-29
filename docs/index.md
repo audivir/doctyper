@@ -24,6 +24,7 @@ It uses parsed docstrings to extract arguments and options for CLI commands.
 * Show `[default: None]` for clarity.
 * Add arguments hidden from the CLI with `doctyper.Ignore()`
 * Customize the completions directories (zsh, fish).
+* Mutually exclusive options with `doctyper.Option(mutex=...)`.
 
 ## Example
 
@@ -49,6 +50,9 @@ def main(
     other: int = 1,
     str_or_none: str | None = None,  # enable "str | None" type hints
     flag: bool = False,
+    # mutually exclusive, use doctyper.Mutex("out", required=True) to require one
+    to_file: Annotated[str | None, doctyper.Option(mutex="out")] = None,
+    to_url: Annotated[str | None, doctyper.Option(mutex="out")] = None,
     hidden: Annotated[bool, doctyper.Ignore()] = True,
 ) -> None:
     """Run the main application.
@@ -63,6 +67,8 @@ def main(
         ann_opt: This will not be used.
         str_or_none: String argument with a default of None.
         flag: Boolean flag.
+        to_file: Write to a file.
+        to_url: Upload to a URL.
         hidden: This is a python-only argument and this docstring is hidden.
     """
 
@@ -74,6 +80,7 @@ if __name__ == "__main__":
 ```
 
 ```console
+
  Usage: t.py [OPTIONS] {arg} {ann_arg} {alias_arg} {lit_arg}:<arg|other>
 
  Run the main application.
@@ -91,6 +98,10 @@ if __name__ == "__main__":
 │ --str-or-none                 <str>        String argument with a default of None.               │
 │                                            [default: None]                                       │
 │ --flag           --no-flag                 Boolean flag. [default: no-flag]                      │
+│ --to-file                     <str>        Write to a file.          [default: None]             │
+│                                            [mutually exclusive: out]                             │
+│ --to-url                      <str>        Upload to a URL.          [default: None]             │
+│                                            [mutually exclusive: out]                             │
 │ --help                                     Show this message and exit.                           │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ```
@@ -110,6 +121,11 @@ If `$TYPER_ZSH_COMPLETION_DIR` is set, the user is responsible for adding `$TYPE
 sourcing `$TYPER_ZSH_COMPLETION_DIR/.compstyles`, and running `compinit` **after** adding `$TYPER_ZSH_COMPLETION_DIR` to `$fpath`
 
 For fish, `--install-completion` writes into `$XDG_CONFIG_HOME/fish/completions` (falls back to `~/.config/fish/completions`).
+
+## Roadmap
+
+- `doctyper.Mutex("fmt", panel=True | "Title")`: render the group as its own rich help panel instead of the `[mutually exclusive: fmt]` marker (the marker stays in plain help).
+  Setting `rich_help_panel` on a member option, or reusing the panel title for any other option or group, raises an error, so the panel contains exactly the mutex group.
 
 ## Testing
 

@@ -25,6 +25,7 @@ from ._click_option_group import (
     GroupedOption,
     MutuallyExclusiveOptionGroup,
     OptionGroup,
+    RequiredMutuallyExclusiveOptionGroup,
 )
 from ._typing import (
     all_literal_values,
@@ -59,6 +60,7 @@ from .models import (
     FileText,
     FileTextWrite,
     IgnoreInfo,
+    Mutex,
     NoneType,
     OptionInfo,
     ParameterInfo,
@@ -1435,6 +1437,25 @@ def get_default_option_flag_name(name: str, metavar: str | None) -> str:
     return flag_name
 
 
+def get_mutex_group(
+    mutex: str | Mutex, mutex_groups: dict[str, MutuallyExclusiveOptionGroup]
+) -> MutuallyExclusiveOptionGroup:
+    if isinstance(mutex, str):
+        mutex = Mutex(mutex)
+    group_cls = (
+        RequiredMutuallyExclusiveOptionGroup
+        if mutex.required
+        else MutuallyExclusiveOptionGroup
+    )
+    group = mutex_groups.setdefault(mutex.name, group_cls(name=mutex.name))
+    if type(group) is not group_cls:
+        raise TypeError(
+            f"Conflicting declarations for mutex group '{mutex.name}': "
+            "all options of the group must agree on 'required'."
+        )
+    return group
+
+
 def get_params_convertors_ctx_param_name_from_function(
     callback: Callable[..., Any] | None,
     *,
@@ -1458,10 +1479,7 @@ def get_params_convertors_ctx_param_name_from_function(
                 continue
             group = None
             if isinstance(param.default, OptionInfo) and param.default.mutex:
-                group = mutex_groups.setdefault(
-                    param.default.mutex,
-                    MutuallyExclusiveOptionGroup(name=param.default.mutex),
-                )
+                group = get_mutex_group(param.default.mutex, mutex_groups)
             click_param, convertor = get_click_param(
                 param, doctyper_opts=doctyper_opts, group=group
             )

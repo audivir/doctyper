@@ -44,6 +44,7 @@ STYLE_HELPTEXT = "dim"
 STYLE_OPTION_HELP = ""
 STYLE_OPTION_DEFAULT = "dim"
 STYLE_OPTION_ENVVAR = "dim yellow"
+STYLE_OPTION_MUTEX = "dim magenta"
 STYLE_REQUIRED_SHORT = "red"
 STYLE_REQUIRED_LONG = "dim red"
 STYLE_OPTIONS_PANEL_BORDER = "dim"
@@ -89,6 +90,7 @@ DEFAULT_STRING = _("[default: {}]")
 ENVVAR_STRING = _("[env var: {}]")
 REQUIRED_SHORT_STRING = "*"
 REQUIRED_LONG_STRING = _("[required]")
+GROUP_STRING = "[{}]"
 RANGE_STRING = " [{}]"
 ARGUMENTS_PANEL_TITLE = _("Arguments")
 OPTIONS_PANEL_TITLE = _("Options")
@@ -250,6 +252,7 @@ def _get_parameter_help(
     applicable.
     """
     # import here to avoid cyclic imports
+    from ._click_option_group import GroupedOption
     from .core import TyperArgument, TyperOption
 
     items: list[Text | Markdown] = []
@@ -320,6 +323,15 @@ def _get_parameter_help(
     # Required?
     if param.required:
         items.append(Text(REQUIRED_LONG_STRING, style=STYLE_REQUIRED_LONG))
+
+    # Mutually exclusive group?
+    if isinstance(param, GroupedOption):
+        items.append(
+            Text(
+                GROUP_STRING.format(param.group.get_help_extra()),
+                style=STYLE_OPTION_MUTEX,
+            )
+        )
 
     # Use Columns - this allows us to group different renderable types
     # (Text, Markdown) onto a single line.

@@ -832,6 +832,12 @@ class TyperOption(_click.Parameter):
         if self.required:
             extra.append(_("required"))
 
+        # import here to avoid cyclic imports
+        from ._click_option_group import GroupedOption
+
+        if isinstance(self, GroupedOption):
+            extra.append(self.group.get_help_extra())
+
         if extra:
             extra_str = "; ".join(extra)
             extra_str = f"[{extra_str}]"

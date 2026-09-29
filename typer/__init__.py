@@ -31,6 +31,7 @@ from .models import FileBinaryRead as FileBinaryRead
 from .models import FileBinaryWrite as FileBinaryWrite
 from .models import FileText as FileText
 from .models import FileTextWrite as FileTextWrite
+from .models import Mutex as Mutex
 from .params import Argument as Argument
 from .params import Ignore as Ignore
 from .params import Option as Option

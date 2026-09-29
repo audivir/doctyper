@@ -5,3 +5,6 @@ Code taken and adapted from click-option-group: https://github.com/click-contrib
 from ._core import GroupedOption as GroupedOption
 from ._core import MutuallyExclusiveOptionGroup as MutuallyExclusiveOptionGroup
 from ._core import OptionGroup as OptionGroup
+from ._core import (
+    RequiredMutuallyExclusiveOptionGroup as RequiredMutuallyExclusiveOptionGroup,
+)
