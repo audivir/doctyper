@@ -121,6 +121,7 @@ def except_hook(
 
 def get_install_completion_arguments(
     *,
+    hidden: bool = False,
     doctyper_opts: DocTyperOptions = DocTyperOptions(),
 ) -> tuple[_click.Parameter, _click.Parameter]:
     install_param, show_param = get_completion_inspect_parameters(
@@ -128,6 +129,9 @@ def get_install_completion_arguments(
     )
     click_install_param, _ = get_click_param(install_param, doctyper_opts=doctyper_opts)
     click_show_param, _ = get_click_param(show_param, doctyper_opts=doctyper_opts)
+    if hidden:
+        click_install_param.hidden = True
+        click_show_param.hidden = True
     return click_install_param, click_show_param
 
 
@@ -407,10 +411,11 @@ class Typer:
             ),
         ] = Default(False),
         add_completion: Annotated[
-            bool,
+            bool | Literal["hidden"],
             Doc(
                 """
                 Toggle whether or not to add the `--install-completion` and `--show-completion` options to the app.
+                If set to `"hidden"`, the options are added but hidden from help text.
                 Set to `True` by default.
 
                 **Example**
@@ -418,7 +423,7 @@ class Typer:
                 ```python
                 import typer
 
-                app = typer.Typer(add_completion=False)
+                app = typer.Typer(add_completion="hidden")
                 ```
                 """
             ),
@@ -1187,10 +1192,11 @@ class DocTyper(Typer):
     These features are:
     - parse_docstrings: Parse docstrings to generate command help.
     - show_none_defaults: Do not hide None default values for optional arguments.
+    - add_completion: Add completion options hidden from help text by default ("hidden").
     """
 
     def __init__(self, **kwargs: Any):
-        add_completion = kwargs.pop("add_completion", False)
+        add_completion = kwargs.pop("add_completion", "hidden")
         pretty_exceptions_enable = kwargs.pop("pretty_exceptions_enable", False)
         parse_docstrings = kwargs.pop("parse_docstrings", True)
         show_none_defaults = kwargs.pop("show_none_defaults", True)
@@ -1217,7 +1223,8 @@ def get_group(typer_instance: Typer) -> TyperGroup:
 def get_command(typer_instance: Typer) -> _click.Command:
     if typer_instance._add_completion:
         click_install_param, click_show_param = get_install_completion_arguments(
-            doctyper_opts=typer_instance.doctyper_opts
+            hidden=typer_instance._add_completion == "hidden",
+            doctyper_opts=typer_instance.doctyper_opts,
         )
     if (
         typer_instance.registered_callback

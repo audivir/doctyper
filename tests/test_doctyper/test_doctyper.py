@@ -46,9 +46,48 @@ def test_doc_typer():
 
     assert isinstance(app, typer.Typer)
     assert not app.pretty_exceptions_enable
-    assert not app._add_completion
+    assert app._add_completion == "hidden"
     assert app.doctyper_opts.parse_docstrings
     assert app.doctyper_opts.show_none_defaults
+
+
+def test_add_completion_hidden():
+    def main(opt: str = "val"):
+        """Main func."""
+
+    output = assert_help(r"--opt\s+<str>\s+\[default: val\]", main)
+    assert "--install-completion" not in output
+    assert "--show-completion" not in output
+
+
+def test_add_completion_override():
+    app_false = typer.DocTyper(add_completion=False)
+    assert not app_false._add_completion
+
+    app_true = typer.DocTyper(add_completion=True)
+    assert app_true._add_completion is True
+
+    @app_true.command()
+    def main():
+        """Main func."""
+
+    res = runner.invoke(app_true, ["--help"])
+    assert res.exit_code == 0
+    assert "--install-completion" in res.output
+    assert "--show-completion" in res.output
+
+
+def test_typer_add_completion_hidden():
+    app = typer.Typer(add_completion="hidden")
+    assert app._add_completion == "hidden"
+
+    @app.command()
+    def main(): ...
+
+    res = runner.invoke(app, ["--help"])
+    assert res.exit_code == 0
+    assert "--install-completion" not in res.output
+    assert "--show-completion" not in res.output
 
 
 def test_show_none_defaults():

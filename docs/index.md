@@ -97,10 +97,11 @@ if __name__ == "__main__":
 
 ## Configuration
 
-| Keyword Argument        | Description                                                                 |
-|--------------------------|-----------------------------------------------------------------------------|
-| `parse_docstrings`       | Parse Google-style docstrings to generate help text for arguments/options. |
-| `show_none_defaults`     | Explicitly show `[default: None]` for parameters with a default of `None`. |
+| Keyword Argument     | Description                                                                |
+|----------------------|----------------------------------------------------------------------------|
+| `parse_docstrings`   | Parse Google-style docstrings to generate help text for arguments/options. |
+| `show_none_defaults` | Explicitly show `[default: None]` for parameters with a default of `None`. |
+| `add_completion`     | Defaults to `"hidden"`: completion options work but are hidden from help.  |
 
 ## Shell completion
 
