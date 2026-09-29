@@ -78,6 +78,7 @@ def Option(
     path_type: None | type[str] | type[bytes] = None,
     # Rich settings
     rich_help_panel: str | None = None,
+    mutex: str | None = None,
 ) -> Any: ...
 
 
@@ -143,6 +144,7 @@ def Option(
     path_type: None | type[str] | type[bytes] = None,
     # Rich settings
     rich_help_panel: str | None = None,
+    mutex: str | None = None,
 ) -> Any: ...
 
 
@@ -928,6 +930,15 @@ def Option(
             """
         ),
     ] = None,
+    mutex: Annotated[
+        str | None,
+        Doc(
+            """
+            Specify a mutually exclusive option group name. Options sharing the same `mutex`
+            tag cannot be used at the same time.
+            """
+        ),
+    ] = None,
 ) -> Any:
     """
     A [CLI Option](https://typer.tiangolo.com/tutorial/options) is a parameter to your command line application that is called with a single or double dash, something like `--verbose` or `-v`.
@@ -1003,6 +1014,7 @@ def Option(
         path_type=path_type,
         # Rich settings
         rich_help_panel=rich_help_panel,
+        mutex=mutex,
     )
 
 

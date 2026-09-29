@@ -21,6 +21,11 @@ from typer._types import TyperChoice
 from . import _click
 from ._click import types
 from ._click.globals import get_current_context
+from ._click_option_group import (
+    GroupedOption,
+    MutuallyExclusiveOptionGroup,
+    OptionGroup,
+)
 from ._typing import (
     all_literal_values,
     get_args,
@@ -1440,6 +1445,7 @@ def get_params_convertors_ctx_param_name_from_function(
     context_param_name = None
     if callback:
         parameters = get_params_from_function(callback, doctyper_opts=doctyper_opts)
+        mutex_groups: dict[str, MutuallyExclusiveOptionGroup] = {}
         for param_name, param in parameters.items():
             if isinstance(param.default, IgnoreInfo):
                 if param.default.default == Required:
@@ -1450,7 +1456,15 @@ def get_params_convertors_ctx_param_name_from_function(
             if lenient_issubclass(param.annotation, _click.Context):
                 context_param_name = param_name
                 continue
-            click_param, convertor = get_click_param(param, doctyper_opts=doctyper_opts)
+            group = None
+            if isinstance(param.default, OptionInfo) and param.default.mutex:
+                group = mutex_groups.setdefault(
+                    param.default.mutex,
+                    MutuallyExclusiveOptionGroup(name=param.default.mutex),
+                )
+            click_param, convertor = get_click_param(
+                param, doctyper_opts=doctyper_opts, group=group
+            )
             if convertor:
                 convertors[param_name] = convertor
             params.append(click_param)
@@ -1760,7 +1774,10 @@ def combine_literals_union(type_: Any) -> Any:
 
 
 def get_click_param(
-    param: ParamMeta, *, doctyper_opts: DocTyperOptions = DocTyperOptions()
+    param: ParamMeta,
+    *,
+    doctyper_opts: DocTyperOptions = DocTyperOptions(),
+    group: OptionGroup | None = None,
 ) -> tuple[TyperArgument | TyperOption, Any]:
     # First, find out what will be:
     # * ParamInfo (ArgumentInfo or OptionInfo)
@@ -1861,8 +1878,13 @@ def get_click_param(
             param_decls.extend(parameter_info.param_decls)
         else:
             param_decls.append(default_option_declaration)
+        option_cls: type[TyperOption] = TyperOption
+        extra_kwargs: dict[str, Any] = {}
+        if group is not None:
+            option_cls = GroupedOption
+            extra_kwargs["group"] = group
         return (
-            TyperOption(
+            option_cls(
                 # Option
                 param_decls=param_decls,
                 show_default=parameter_info.show_default,
@@ -1899,6 +1921,7 @@ def get_click_param(
                 # Rich settings
                 rich_help_panel=parameter_info.rich_help_panel,
                 show_none_defaults=doctyper_opts.show_none_defaults,
+                **extra_kwargs,
             ),
             convertor,
         )

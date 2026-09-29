@@ -449,6 +449,7 @@ class OptionInfo(ParameterInfo):
         path_type: None | type[str] | type[bytes] = None,
         # Rich settings
         rich_help_panel: str | None = None,
+        mutex: str | None = None,
     ):
         super().__init__(
             default=default,
@@ -511,6 +512,7 @@ class OptionInfo(ParameterInfo):
         self.hide_input = hide_input
         self.count = count
         self.allow_from_autoenv = allow_from_autoenv
+        self.mutex = mutex
 
 
 class ArgumentInfo(ParameterInfo):

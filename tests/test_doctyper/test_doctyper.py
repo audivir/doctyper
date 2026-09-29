@@ -90,6 +90,49 @@ def test_typer_add_completion_hidden():
     assert "--show-completion" not in res.output
 
 
+def test_mutex_option():
+    def main(
+        foo: Annotated[str | None, typer.Option(mutex="group1")] = None,
+        bar: Annotated[str | None, typer.Option(mutex="group1")] = None,
+    ):
+        """Test mutex options."""
+
+    assert_run(["--foo", "val1"], 0, "", main)
+    out = assert_run(
+        ["--foo", "val1", "--bar", "val2"],
+        2,
+        r"Mutually exclusive options from 'group1' option group",
+        main,
+    )
+    assert "--foo" in out
+    assert "--bar" in out
+
+
+def test_mutex_option_required():
+    def main(
+        foo: Annotated[str, typer.Option(mutex="group1")],
+        bar: Annotated[str | None, typer.Option(mutex="group1")] = None,
+    ):
+        """Test mutex options."""
+
+    app = typer.DocTyper()
+    app.command()(main)
+    with pytest.raises(
+        TypeError,
+        match="'required' attribute is not allowed for 'MutuallyExclusiveOptionGroup'",
+    ):
+        typer.main.get_command(app)
+
+
+def test_option_group():
+    from typer._click_option_group import GroupedOption, OptionGroup
+
+    group = OptionGroup("group1")
+    option = GroupedOption(["--foo"], group=group, required=True)
+    assert option.group is group
+    assert group.get_options() == {"foo": option}
+
+
 def test_show_none_defaults():
     def main(opt: str | None = None) -> None:
         """No docstring."""
