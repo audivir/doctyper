@@ -23,6 +23,7 @@ It uses parsed docstrings to extract arguments and options for CLI commands.
 * Enable `str | None` type hints.
 * Show `[default: None]` for clarity.
 * Add arguments hidden from the CLI with `doctyper.Ignore()`
+* Customize the completions directories (zsh, fish).
 
 ## Example
 
@@ -100,6 +101,14 @@ if __name__ == "__main__":
 |--------------------------|-----------------------------------------------------------------------------|
 | `parse_docstrings`       | Parse Google-style docstrings to generate help text for arguments/options. |
 | `show_none_defaults`     | Explicitly show `[default: None]` for parameters with a default of `None`. |
+
+## Shell completion
+
+`--install-completion` writes the zsh completion script into `$TYPER_ZSH_COMPLETION_DIR` (falls back to `~/.zfunc`)
+If `$TYPER_ZSH_COMPLETION_DIR` is set, the user is responsible for adding `$TYPER_ZSH_COMPLETION_DIR` to `$fpath`,
+sourcing `$TYPER_ZSH_COMPLETION_DIR/.compstyles`, and running `compinit` **after** adding `$TYPER_ZSH_COMPLETION_DIR` to `$fpath`
+
+For fish, `--install-completion` writes into `$XDG_CONFIG_HOME/fish/completions` (falls back to `~/.config/fish/completions`).
 
 ## Testing
 
